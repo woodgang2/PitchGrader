@@ -19,28 +19,28 @@ Stuff Model: The stuff model is split into three submodels - contact, foul, and 
 Location Model: Similar to the stuff model, except with 2 extra submodels, take and swing. Assumes average stuff for each pitcher. The full set of features used are: 'PitchType', 'PitcherThrows', 'BatterSide', 'Balls', 'Strikes', 'PlateLocHeight', 'PlateLocSide'.
 
 Swing Mechanics: the batters were in the database, so I had to do something with them, right? Some notable outputs of the model are:
-  Collision Coefficient - taken from Professor Alan Nathan's research, collision coefficient represents how efficiently the bat was able to 
+  
+- Collision Coefficient - taken from Professor Alan Nathan's research, collision coefficient represents how efficiently the bat was able to 
   convert the speed of the ball coming in and the speed of the bat into exit velocity. It scales with distance from the sweet spot, meaning the    collision is most efficient in the sweet spot of the bat (I know, hard to believe) and decreases as you travel towards the tips. Collision     
   coefficient has a linear relationship with exit velocity, so I ran a regression to estimate the collision coefficient. This assumes that the 
   bat speed is constant, so to mitigate the effects I regressed individually for each batter, assuming that their top evit velos were produced 
   by striking the ball in the sweet spot. It still ended up a bit overfit with exit velo, but that probably won't be a problem, right?
 
-  (Effective) Bat Speed - also taken from Professor Alan Nathan's research. It turns out, CC being overfit with EV is a problem after all. Once you have the 
-  CC of each batted ball event you can calculate bat speed, but it ends up underestimating speeds for low EV players. 
+- (Effective) Bat Speed - also taken from Professor Alan Nathan's research. It turns out, CC being overfit with EV is a problem after all. Once you have the CC of each batted ball event you can calculate bat speed, but it ends up underestimating speeds for low EV players. 
 
-  True Bat Speed - by taking only "barrels" (https://www.mlb.com/glossary/statcast/barrel) into account, we can assume that the ball impacted
+- True Bat Speed - by taking only "barrels" (https://www.mlb.com/glossary/statcast/barrel) into account, we can assume that the ball impacted
   the bat somewhere close to the sweet spot, sidestepping the issue of calculating CC completely. Really, "True Bat Speed" would also need the     attack angle to match the launch angle, but I don't think I'd have enough data to make a stable measurement for more than a handful of       
   batters. Probably low hanging fruit for the future.
 
-  Attack Angle - the average vertical angle of the bat when it impacts the ball. EVs are maximized when attack angle equals centerline angle,    
+- Attack Angle - the average vertical angle of the bat when it impacts the ball. EVs are maximized when attack angle equals centerline angle,    
   and furthermore AA = LA when LA = CA. So, AA was calculated by fitting a parabola to the highest EVs bucketed into LAs of a player's BBEs.
 
-  "Smash Factor" - a confusingly named stat form Driveline which is just balls in play divided by fouls and whiffs weighted by collision 
+- "Smash Factor" - a confusingly named stat form Driveline which is just balls in play divided by fouls and whiffs weighted by collision 
   coefficient. It's stickier than zone contact and K%, so it is their "bat to ball" skill marker.
 
-  Contact Quality - intrinsic run value of ball when contact is made
+- Contact Quality - intrinsic run value of ball when contact is made
 
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Swing Decision - calculated by fitting a model to predict swings based on the difference between the expected intrinsic value of a swing vs. the run value of a take. Final metric is based off how often they choose "correctly" compared to the league. It's a little funky right now, and I need to tinker with the model a little.
+- Swing Decision - calculated by fitting a model to predict swings based on the difference between the expected intrinsic value of a swing vs. the run value of a take. Final metric is based off how often they choose "correctly" compared to the league. It's a little funky right now, and I need to tinker with the model a little.
 
 **References**:
 
