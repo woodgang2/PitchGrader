@@ -40,9 +40,7 @@ Swing Mechanics: the batters were in the database, so I had to do something with
 
   Contact Quality - intrinsic run value of ball when contact is made
 
-  Swing Decision - calculated by fitting a model to predict swings based on the difference between the expected intrinsic 
-  value of a swing vs. the run value of a take. Final metric is based off how often they choose "correctly" compared to the league. It's a 
-  little funky right now, and I need to tinker with the model a little.
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Swing Decision - calculated by fitting a model to predict swings based on the difference between the expected intrinsic value of a swing vs. the run value of a take. Final metric is based off how often they choose "correctly" compared to the league. It's a little funky right now, and I need to tinker with the model a little.
 
 **References**:
 
