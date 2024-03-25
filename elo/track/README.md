@@ -1,4 +1,4 @@
-“_Well, this year I’m told the team did well because one pitcher had a fine curve ball. I understand that a curve ball is thrown with a deliberate attempt to deceive. Surely this is not an ability we should want to foster at Harvard._” - A quote commonly attributed to Charles Eliot, President of Harvard, but in actuality was likely sourced from Charles Eliot Norton, Professor of the History of Art at Harvard (Hershberger, 2017).
+“_Well, this year I’m told the team did well because one pitcher had a fine curve ball. I understand that a curve ball is thrown with a deliberate attempt to deceive. Surely this is not an ability we should want to foster at Harvard._” - A quote commonly attributed to Charles Eliot, President of Harvard, but in actuality was likely sourced from Charles Eliot Norton in 1884, Professor of the History of Art at Harvard (Hershberger, 2017).
 
 A good century and then some has passed since this quote entered the annals of history, and times sure have changed. Fastballs only ever get faster, sliders only slide more, and every pitcher now has an arsenal of secondary pitches relying primarily on deception. 
 
@@ -43,3 +43,6 @@ Swing Mechanics: the batters were in the database, so I had to do something with
   Swing Decision - calculated by fitting a model to predict swings based on the difference between the expected intrinsic 
   value of a swing vs. the run value of a take. Final metric is based off how often they choose "correctly" compared to the league. It's a 
   little funky right now, and I need to tinker with the model a little.
+
+**References**:
+Hershberger, R. (2017). With a Deliberate Attempt to Deceive: Correcting a Quotation Misattributed to Charles Eliot, President of Harvard. Baseball Research Journal, Spring 2017.
