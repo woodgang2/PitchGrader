@@ -4,7 +4,7 @@ A good century and then some has passed since this quote entered the annals of h
 
 This project (accessible [here](https://pitchgrader.streamlit.app/)) represents a white-box (or at least a box which is not totally black) effort to assess collegiate pitchers based off of the intrinsic quality of their pitches, opposition quality notwithstanding. Significant inspiration was taken from Cameron Grove's work on PitchingBot and Professor Alan Nathan's various papers on the physics of baseball. All data was taken from trackman, and the methodology is detailed below. 
 
-Note: some files were ommitted from this directory, like the raw .csvs and .db files used for the models. If you for some reason clone this repo, you'll have to add the csvs to your directory, and then run the code in database_driver to create the database files from them.
+Note: some files were ommitted from this directory, like the raw .csvs and .db files used for the models. The code in database_driver can be run with the csv files in the track directory to create the necessary database files.
 
 Pitch Classification: The manually tagged pitch type was used for most pitches. For "corrupted" pitch tags, the trackman autotagging tool was generally used. Unfortunately, the trackman auto-tagging tool is... not very good, so some efforts were made to correct or otherwise remove rows relying on auto pitch type. Cluster-based classification represents low hanging fruit for future improvement, but an issue is that global clustering is not viable and the most efficient solution I've thought of so far is to cluster on a pitcher by pitcher basis and then fit a classifier on a subset of "representative" pitchers (hierarchical clustering has also seemed to struggle globally).
 
