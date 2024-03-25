@@ -46,5 +46,4 @@ Swing Mechanics: the batters were in the database, so I had to do something with
 
 **References**:
 
-  * Hershberger, R. (2017). With a Deliberate Attempt to Deceive: Correcting a Quotation Misattributed to Charles Eliot, President of Harvard. 
-   * Baseball Research Journal, Spring 2017.
+  * Hershberger, R. (2017). With a Deliberate Attempt to Deceive: Correcting a Quotation Misattributed to Charles Eliot, President of Harvard. &nbsp;&nbsp;&nbsp;Baseball Research Journal, Spring 2017.
