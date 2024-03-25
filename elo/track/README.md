@@ -15,8 +15,8 @@ Stuff Model: The stuff model is split into three submodels - contact, foul, and 
                 self.radar_df['InferredSpinAxis'] = np.where(self.radar_df['pfxx'] < 0,
                                                     (np.arctan(self.radar_df['pfxz'] / self.radar_df['pfxx']) * 180 / math.pi + 90) + 180,
                                                     np.arctan (self.radar_df['pfxz'] / self.radar_df['pfxx']) * 180 / math.pi + 90),
-  and the spin axis given by trackman. VAA is, as far as I can tell, not usually used for stuff models because it is heavily dependent on 
-  location. However, VAA has a linear relation with plate height, so a regression was run to normalize it. 
+  and the spin axis given by trackman. VAA is, as far as I can tell, not usually used for public stuff models because it is heavily dependent on 
+  location. However, VAA has a linear relation with plate height, so a normalized version was used, since fastball shape is such a big piece of its effectiveness.
   
 Location Model: Similar to the stuff model, except with 2 extra submodels, take and swing. Assumes average stuff for each pitcher. The full set of features used are: 'PitchType', 'PitcherThrows', 'BatterSide', 'Balls', 'Strikes', 'PlateLocHeight', 'PlateLocSide'.
 
