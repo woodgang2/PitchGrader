@@ -1,1 +1,1 @@
-Swing mechanics and stuff+
+“_Well, this year I’m told the team did well because one pitcher had a fine curve ball. I understand that a curve ball is thrown with a deliberate attempt to deceive. Surely this is not an ability we should want to foster at Harvard._” - A quote commonly attributed to Charles Eliot, President of Harvard, but in actuality likely given by Charles Eliot Norton, Professor of the History of Art at Harvard (Hershberger, 2017).
