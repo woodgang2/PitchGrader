@@ -128,6 +128,7 @@ with col2:
         # st.write (team_flag)
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
+    st.write("")
     year_selected = st.selectbox ("Year", options = ['All', 2024, 2023], key = 'year')
 year = year_selected
 if (year_selected == 'All'):
