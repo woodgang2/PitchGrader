@@ -377,9 +377,9 @@ if not st.session_state.team_flag:
             stuff_history_df = stuff_history_df.drop_duplicates (['Pitcher', 'Year'])
             stuff_history_df = stuff_history_df.set_index('Year')
             stuff_history_df.index.name = 'Year'
+            stuff_history_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
             stuff_history_df = stuff_history_df[desired_order]
             stuff_history_df = stuff_history_df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows'])
-            stuff_history_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
             columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
             stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
             stuff_history_df = stuff_history_df.dropna(axis=1)
