@@ -384,7 +384,7 @@ if not st.session_state.team_flag:
             stuff_history_df = stuff_history_df.set_index('Year')
             stuff_history_df.index.name = 'Year'
             stuff_history_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
-            stuff_history_df [desired_order] = stuff_history_df [desired_order].round(0)
+            # stuff_history_df [desired_order] = stuff_history_df [desired_order].round(0)
             desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
             stuff_history_df = stuff_history_df[desired_order]
             # columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
