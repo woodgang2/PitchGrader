@@ -129,6 +129,7 @@ with col2:
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
     year_selected = st.selectbox ("Year", options = ['All', 2024, 2023], key = 'year')
+st.success ('test')
 year = year_selected
 driver = database_driver.DatabaseDriver(year=year)
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
