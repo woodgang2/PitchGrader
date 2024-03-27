@@ -384,7 +384,7 @@ if not st.session_state.team_flag:
             stuff_history_df = stuff_history_df.dropna(axis=1)
             st.dataframe (stuff_history_df)
             actual_order = [col for col in desired_order if col in stuff_history_df.columns]
-            stuff_history_df = stuff_history_df[actual_order]
+            stuff_history_df = stuff_history_df[desired_order]
             st.dataframe (stuff_history_df)
             # update = st.button("Update Percentiles", key='update_percentiles', type = 'secondary')
             #TODO: this
