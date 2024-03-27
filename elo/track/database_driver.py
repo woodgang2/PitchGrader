@@ -281,12 +281,16 @@ class DatabaseDriver:
     def retrieve_stuff_history (self, player):
         df1 = self.retrieve_stuff(player, 2023)
         df2 = self.retrieve_stuff(player, 2024)
+        df1['Year'] = 2023
+        df2['Year'] = 2024
         df = pd.concat([df1, df2])
         return df
 
     def retrieve_location_history (self, player):
         df1 = self.retrieve_location(player, 2023)
         df2 = self.retrieve_location(player, 2024)
+        df1['Year'] = 2023
+        df2['Year'] = 2024
         df = pd.concat([df1, df2])
         return df
 
