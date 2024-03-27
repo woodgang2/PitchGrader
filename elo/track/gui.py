@@ -183,7 +183,7 @@ if not st.session_state.team_flag:
         st.session_state['player_name'] = random_option
     if 'player_name' not in st.session_state:
         st.session_state['player_name'] = options[0]
-    selected_name = st.selectbox('Player', options=options, index=options.index(st.session_state['player_name']), key='player_name')
+    selected_name = st.selectbox('Player', options=options, key='player_name')
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
