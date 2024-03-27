@@ -165,6 +165,9 @@ options_teams = ['', 'All', 'VIR_CAV'] + team_names
 # options = list(zip(combined_names, combined_names_raw))
 # options_sorted = sorted(options, key=lambda x: x[1])
 options = [''] + list(combined_names)
+if random_player:
+    random_option = random.choice(options)
+    st.session_state['player_name'] = random_option
 
 # batting_percentages_df = driver.retrieve_percentages_bat_team ('All')
 # pitching_percentages_df = driver.retrieve_percentages_team ('All')
@@ -178,11 +181,9 @@ if not st.session_state.team_flag:
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
-    selected_name = st.selectbox('Player', options=options, key='player_name')
-    if random_player:
-        pick_random()
-        # random_option = random.choice(options)
-        # st.session_state['player_name'] = random_option
+    if 'player_name' not in st.session_state:
+        st.session_state['player_name'] = options[0]
+    selected_name = st.selectbox('Player', index=options.index(st.session_state['player_name']), key='player_name')
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
