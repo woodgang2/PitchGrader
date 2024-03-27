@@ -103,10 +103,10 @@ if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
 
 # Your database initialization
-driver = database_driver.DatabaseDriver()
-stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
+# driver = database_driver.DatabaseDriver()
+# stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 # Update dataset button
-col1, col2, space = st.columns([2, 2, 2])
+col1, col2, col3 = st.columns([2, 2, 2])
 with col1:
     team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 #     update = st.button("Update Dataset", key='update_dataset', type = 'primary')
@@ -127,6 +127,13 @@ with col2:
 #         st.session_state.team_flag = not st.session_state.team_flag
         # st.write (team_flag)
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
+with col3:
+    year_selected = st.selectbox ("Year", options = ['All', 2024, 2023], key = 'year')
+year = year_selected
+driver = database_driver.DatabaseDriver(year=year)
+stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
+if (year_selected == 'All'):
+    year = ''
 if (team_toggle):
     st.session_state.team_flag = not st.session_state.team_flag
 # random_player = st.button ("Random player", key = 'random_player')

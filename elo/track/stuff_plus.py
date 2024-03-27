@@ -73,6 +73,10 @@ class Driver:
         self.players_df = []
         self.percentiles_df = []
         self.model = xgb.Booster()
+        self.year = None
+
+    def set_year (self, year):
+        self.year = year
 
     def read_radar_data (self, new = 0):
         print ("Reading radar data")
@@ -187,7 +191,10 @@ class Driver:
 
     def read_predictions (self, focus):
         print ("Reading predictions")
-        table_name = f'{focus.name}_Probabilities'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table_name = f'{focus.name}_Probabilities{year}'
         conn = sqlite3.connect(f'{self.db_file}')
         total_rows = pd.read_sql_query(f'SELECT COUNT(*) FROM {table_name}', conn).iloc[0, 0]
         chunksize = 10000
@@ -198,6 +205,9 @@ class Driver:
             pbar.update(chunk.shape[0])
         self.predictions_df = pd.concat(df_list, ignore_index=True)
         self.predictions_df = self.predictions_df.drop_duplicates(subset='PitchUID')
+        # self.predictions_df['Date'] = pd.to_datetime(self.predictions_df['Date'])
+        # if (self.year is not None):
+        #     self.predictions_df = self.predictions_df[self.predictions_df['Date'].dt.year == self.year]
         pbar.close()
         conn.close()
         # self.write_predictions(Focus.Stuff)
@@ -580,7 +590,10 @@ class Driver:
         final_columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage'] + \
                         [col for col in averages_df.columns if col not in ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage']]
         predictions_df = averages_df[final_columns]
-        table = f'{focus.name}_Probabilities_Pitchers'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table = f'{focus.name}_Probabilities_Pitchers{year}'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(predictions_df) // chunk_size + 1
         conn = sqlite3.connect(f'{self.db_file}')
@@ -615,7 +628,10 @@ class Driver:
 
         self.write_df(df, 'Stuff_Probabilities_Pitchers_No_Pitch_Type')
     def write_predictions (self, focus=Focus.Stuff):
-        table = f'{focus.name}_Probabilities'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table = f'{focus.name}_Probabilities{year}'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.predictions_df) // chunk_size + 1
         conn = sqlite3.connect(f'{self.db_file}')
@@ -645,7 +661,10 @@ class Driver:
 
 
     def write_players (self, focus=Focus.Stuff):
-        table = f'Pitcher_{focus.name}_Ratings_20_80_scale'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.players_df) // chunk_size + 1
@@ -664,7 +683,10 @@ class Driver:
                         [col for col in self.percentiles_df.columns if col not in ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage', 'EV', 'xRV', 'average_xRV']] +\
                         ['xRV']
         self.percentiles_df = self.percentiles_df[final_columns]
-        table = f'Percentiles_{focus.name}_Pitchers'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table = f'Percentiles_{focus.name}_Pitchers{year}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.percentiles_df) // chunk_size + 1
@@ -1109,8 +1131,8 @@ class Driver:
     #TODO: find average foul/strike value
     def calculate_run_values_swing (self):
         expected_run_values = {
-            "SwingingStrike": 0.11,
-            "Foul": 0.02,
+            "SwingingStrike": 0.085,
+            "Foul": 0.015,
             "SoftGB": 0,
             "HardGB": -0.1,
             "SoftLD": -0.25,
@@ -1378,7 +1400,11 @@ class Driver:
         for i, class_label in enumerate(class_labels):
             self.current_df[f'Prob_{class_label}'] = probabilities[:, i]
         self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
-
+    def prune_predictions (self):
+        self.predictions_df['NewDate'] = pd.to_datetime(self.predictions_df['Date'])
+        if (self.year is not None):
+            self.predictions_df = self.predictions_df[self.predictions_df['NewDate'].dt.year == self.year]
+        self.predictions_df = self.predictions_df.drop ('NewDate', axis = 1)
 # xgb_clf = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
         # xgb.set_config(verbosity=1)
         # xgb_clf.fit(X_train, y_train)
@@ -1478,11 +1504,16 @@ def run_model (focus=Focus.Stuff):
     driver.generate_predictions()
     return driver
 
-def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)):
+def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.Stuff), year = None):
     driver.read_variable_data ()
     driver.load_predictions ()
+    # driver.read_predictions(Focus.Stuff)
     driver.calculate_run_values_swing()
     driver.write_predictions ();
+    if (year is not None):
+        driver.set_year(year)
+        driver.prune_predictions()
+        driver.write_predictions()
     #
     driver.read_predictions(Focus.Stuff)
     driver.calculate_average_xRVs()
@@ -1558,7 +1589,7 @@ driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
 # driver.read_radar_data()
 # driver.load_relevant_data()
 # driver.write_variable_data()
-
+generate_stuff_ratings()
 def process_data ():
     driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
     driver.read_radar_data()

@@ -9,6 +9,7 @@ import joblib
 from matplotlib.colors import TwoSlopeNorm, LinearSegmentedColormap
 #TODO: how identify Cutter_S when auto pitch classifies sinkers?
 from flask import Flask, render_template, request, app
+from matplotlib.patches import Rectangle
 from scipy.stats import gaussian_kde
 # from shiny import App, render, ui
 import numpy as np
@@ -71,6 +72,9 @@ class Driver:
         self.players_df = []
         self.percentiles_df = []
         self.model = xgb.Booster()
+        self.year = None
+    def set_year (self, year):
+        self.year = year
 
     def read_radar_data (self, new = 0):
         print ("Reading radar data")
@@ -185,7 +189,10 @@ class Driver:
 
     def read_predictions (self, focus):
         print ("Reading predictions")
-        table_name = f'{focus.name}_Probabilities'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table_name = f'{focus.name}_Probabilities{year}'
         conn = sqlite3.connect(f'{self.db_file}')
         total_rows = pd.read_sql_query(f'SELECT COUNT(*) FROM {table_name}', conn).iloc[0, 0]
         chunksize = 10000
@@ -578,7 +585,11 @@ class Driver:
         final_columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage'] + \
                         [col for col in averages_df.columns if col not in ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage']]
         predictions_df = averages_df[final_columns]
-        table = f'{focus.name}_Probabilities_Pitchers'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table = f'{focus.name}_Probabilities_Pitchers{year}'
+        # table = f'{focus.name}_Probabilities_Pitchers'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(predictions_df) // chunk_size + 1
         conn = sqlite3.connect(f'{self.db_file}')
@@ -613,7 +624,10 @@ class Driver:
 
         self.write_df(df, 'Location_Probabilities_Pitchers_No_Pitch_Type')
     def write_predictions (self, focus=Focus.Location):
-        table = f'{focus.name}_Probabilities'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table = f'{focus.name}_Probabilities{year}'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.predictions_df) // chunk_size + 1
         conn = sqlite3.connect(f'{self.db_file}')
@@ -627,8 +641,6 @@ class Driver:
         conn.close()
 
     def write_df (self, df, table):
-        def write_predictions (self, focus=Focus.Location):
-            table = f'{focus.name}_Probabilities'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(df) // chunk_size + 1
         conn = sqlite3.connect(f'{self.db_file}')
@@ -643,7 +655,10 @@ class Driver:
 
 
     def write_players (self, focus=Focus.Location):
-        table = f'Pitcher_{focus.name}_Ratings_20_80_scale'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.players_df) // chunk_size + 1
@@ -662,7 +677,10 @@ class Driver:
                         [col for col in self.percentiles_df.columns if col not in ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage', 'EV', 'xRV', 'average_xRV']] + \
                         ['xRV']
         self.percentiles_df = self.percentiles_df[final_columns]
-        table = f'Percentiles_{focus.name}_Pitchers'
+        year = self.year
+        if (self.year is None):
+            year = ''
+        table = f'Percentiles_{focus.name}_Pitchers{year}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.percentiles_df) // chunk_size + 1
@@ -1485,6 +1503,80 @@ class Driver:
             self.current_df[f'Prob_{class_label}'] = probabilities[:, i]
         self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
 
+    def generate_loc_plot (self):
+        df = self.predictions_df
+        df = df [df ['PitchType'] == 'Four-Seam']
+        df = df [['PlateLocHeight', 'PlateLocSide', 'xRV']]
+        # Calculate the boundaries for the heatmap (assuming a standard strike zone for illustration)
+        strike_zone_bottom = 1.5
+        strike_zone_top = 3.5
+        strike_zone_left = -0.8
+        strike_zone_right = 0.8
+
+        # Create the heatmap
+        plt.figure(figsize=(6, 6))
+        heatmap, xedges, yedges = np.histogram2d(df['PlateLocSide'], df['PlateLocHeight'], bins=50, range=[[strike_zone_left, strike_zone_right], [strike_zone_bottom, strike_zone_top]])
+        extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+        plt.imshow(heatmap.T, extent=extent, origin='lower', cmap='coolwarm', aspect='auto')
+
+        # Draw the strike zone outline
+        strike_zone = Rectangle((strike_zone_left, strike_zone_bottom), strike_zone_right - strike_zone_left, strike_zone_top - strike_zone_bottom, fill=False, edgecolor='white', lw=3)
+        plt.gca().add_patch(strike_zone)
+
+        # Add colorbar
+        plt.colorbar()
+
+        # Labels and title
+        plt.xlabel('Plate Location Side')
+        plt.ylabel('Plate Location Height')
+        plt.title('Baseball Heatmap with Strike Zone')
+
+        # Show the plot
+        plt.show()
+
+    def createPlots_L (self, x_axis = 'HorzBreak', y_axis = 'InducedVertBreak', heat = 'xRV', pitch_type = 'Four-Seam'):
+
+        # Now let's modify the hexbin plot to use the data from the DataFrame
+        plt.figure(figsize=(10, 8))
+        pitch_type = 'Sinker'
+        predictions_df = self.predictions_df [self.predictions_df ['PitchType'] == pitch_type]
+        # predictions_df = predictions_df [(predictions_df ['PlateLocSide'] >= -1) & (predictions_df ['PlateLocSide'] <= 1)]
+        # predictions_df = predictions_df [(predictions_df ['PlateLocHeight'] >= 1.3) & (predictions_df ['PlateLocHeight'] <= 3.7)]
+        vmin = -0.05#-.1#self.predictions_df ['xRV'].min()
+        vmax = .05#0.1
+        vcenter = 0
+        norm = TwoSlopeNorm(vmin=vmin, vcenter=vcenter, vmax=vmax)
+        x_axis = 'PlateLocSide'
+        y_axis = 'PlateLocHeight'
+        heat = 'xRV'
+        cmap_colors = ["#1a1cf4", "#ffdd7d", "#ff191a"]
+        custom_colormap = LinearSegmentedColormap.from_list("custom_color_map", cmap_colors)
+
+        hb = plt.hexbin(predictions_df [x_axis], predictions_df[y_axis], C=predictions_df[heat],
+                        gridsize=30, cmap=custom_colormap, reduce_C_function=np.mean, norm=norm, extent = [-1, 1, 1.3, 3.7])
+
+        # Add a color bar
+        cb = plt.colorbar(hb, spacing='proportional', label=heat)
+        cb.set_label(heat)
+        # cmap_colors = [(0.0, 0x2922c2), (0.5, 0xffdd7d), (1, 0xda3127)]
+        # Use this colormap in a plot
+        # plt.imshow([[0,1]], cmap=custom_colormap)
+
+        plt.axvline(self.predictions_df [x_axis].mean (), linestyle = 'dashed', color='k', linewidth=2)
+        plt.axhline(self.predictions_df [y_axis].mean (), linestyle = 'dashed', color='k', linewidth=2)
+
+        # Add labels and title
+        plt.xlabel(x_axis)
+        plt.ylabel(y_axis)
+        plt.title(pitch_type)
+        plt.show()
+
+    def prune_predictions (self):
+        self.predictions_df['NewDate'] = pd.to_datetime(self.predictions_df['Date'])
+        if (self.year is not None):
+            self.predictions_df = self.predictions_df[self.predictions_df['NewDate'].dt.year == self.year]
+            self.predictions_df = self.predictions_df.drop ('NewDate', axis = 1)
+
 # xgb_clf = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
 # xgb.set_config(verbosity=1)
 # xgb_clf.fit(X_train, y_train)
@@ -1634,12 +1726,16 @@ def run_model (focus=Focus.Location):
     driver.generate_predictions()
     return driver
 
-def generate_Location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus.Location)):
-    # driver.read_variable_data ()
-    # driver.load_predictions ()
-    driver.read_predictions (Focus.Location)
+def generate_Location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus.Location), year = None):
+    driver.read_variable_data ()
+    driver.load_predictions ()
+    # driver.read_predictions (Focus.Location)
     driver.calculate_run_values_swing()
     driver.write_predictions ();
+    if (year is not None):
+        driver.set_year(year)
+        driver.prune_predictions()
+        driver.write_predictions()
     #
     driver.read_predictions(Focus.Location)
     driver.calculate_average_xRVs()
@@ -1656,7 +1752,7 @@ def generate_Location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus
 # exit (0)
 # run_model(Focus.Location)
 # run_Location_model()
-generate_Location_ratings()
+# generate_Location_ratings()
 driver = Driver ('radar4.db', 'radar_data', Focus.Location)
 # driver.read_variable_data()
 # driver.classify_pitches()
@@ -1670,9 +1766,9 @@ driver = Driver ('radar4.db', 'radar_data', Focus.Location)
 
 # print(tf.__version__)
 # run_model ()
-# generate_Location_ratings()
+generate_Location_ratings()
 # driver.find_overall_percentiles()
-# generate_Location_ratings()
+# generate_Location_ratings(year = 2024)
 # driver.load_model(step = 'InPlay', type = 'Fastball')
 # driver.read_variable_data()
 # driver.clean_data_for_in_play_model()
@@ -1717,7 +1813,9 @@ driver = Driver ('radar4.db', 'radar_data', Focus.Location)
 # driver.read_radar_data()
 # driver.load_relevant_data()
 # driver.write_variable_data()
-
+# driver.read_predictions(Focus.Location)
+# driver.generate_loc_plot()
+# driver.createPlots_L()
 def process_data ():
     driver = Driver ('radar4.db', 'radar_data', Focus.Location)
     driver.read_radar_data()
