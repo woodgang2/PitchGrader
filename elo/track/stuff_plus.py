@@ -1508,16 +1508,22 @@ def run_model (focus=Focus.Stuff):
     return driver
 
 def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.Stuff), year = None):
+    driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
     driver.read_variable_data ()
     driver.load_predictions ()
-    # driver.read_predictions(Focus.Stuff)
-    driver.calculate_run_values_swing()
-    driver.write_predictions ();
     if (year is not None):
         driver.set_year(year)
         driver.prune_predictions()
-        driver.write_predictions()
-    #
+        # driver.write_predictions()
+    # driver.read_predictions(Focus.Stuff)
+    driver.calculate_run_values_swing()
+    driver.write_predictions ();
+    # if (year is not None):
+    #     driver.set_year(year)
+    #     driver.prune_predictions()
+    #     driver.write_predictions()
+
+    # driver.set_year(year)
     driver.read_predictions(Focus.Stuff)
     driver.calculate_average_xRVs()
     driver.read_predictions(Focus.Stuff)
@@ -1527,7 +1533,8 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
     driver.calculate_percentiles()
     driver.write_percentiles()
     # driver.table_to_excel ("Pitcher_Stuff_Ratings_20_80_scale")
-
+# generate_stuff_ratings(year = 2024)
+# generate_stuff_ratings(year = 2023)
 # print (Focus.Stuff.name)
 # exit (0)
 # run_model(Focus.Stuff)
