@@ -176,7 +176,7 @@ if not st.session_state.team_flag:
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
     selected_name = st.selectbox('Player', options=options, key='player_name')
-    if st.button('Pick a random option'):
+    if random_player:
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
     team_name = ''
