@@ -373,6 +373,7 @@ if not st.session_state.team_flag:
             stuff_history_df = stuff_history_df.merge (location_history_df, on = 'Pitcher')
             stuff_history_df = stuff_history_df.round(0)
             stuff_history_df = stuff_history_df.rename(columns=rename_columns)
+            st.dataframe (stuff_history_df)
             stuff_history_df = stuff_history_df.drop_duplicates (['Pitcher', 'Year'])
             stuff_history_df = stuff_history_df.set_index('Year')
             stuff_history_df.index.name = 'Year'
