@@ -365,6 +365,23 @@ if not st.session_state.team_flag:
             prob_df = prob_df[cols]
             prob_df = prob_df.sort_values(by='Usage', ascending = False)
             input_df = st.data_editor(prob_df)
+            st.write ("History")
+            stuff_history_df = driver.retrieve_stuff_history(name)
+            location_history_df = driver.retrieve_location_history(name)
+            location_history_df = location_history_df [['Pitcher', 'Overall']]
+            location_history_df = location_history_df.rename(columns={'Overall': 'Command'})
+            stuff_history_df = stuff_history_df.merge (location_history_df, on = 'Pitcher')
+            stuff_history_df = stuff_history_df.round(0)
+            stuff_history_df = stuff_history_df.rename(columns=rename_columns)
+            stuff_history_df = stuff_history_df.drop_duplicates ('Pitcher')
+            stuff_history_df = stuff_history_df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows'])
+            stuff_history_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
+            columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
+            stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
+            stuff_history_df = stuff_history_df.dropna(axis=1)
+            actual_order = [col for col in desired_order if col in stuff_history_df.columns]
+            stuff_history_df = stuff_history_df[actual_order]
+            st.dataframe (stuff_history_df)
             # update = st.button("Update Percentiles", key='update_percentiles', type = 'secondary')
             #TODO: this
     # df = pd.read_csv("my_data.csv")

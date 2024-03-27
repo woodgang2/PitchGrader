@@ -259,13 +259,15 @@ class DatabaseDriver:
         # print (df)
         return df
 
-    def retrieve_stuff (self, player):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+    def retrieve_stuff (self, player, year = None):
+        if (year is None):
+            year = self.year
+        db_filename = os.path.join(self.current_dir, f'{year}radar3.db')
 
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Pitcher_Stuff_Ratings_20_80_scale{self.year}'
+        table = f'Pitcher_Stuff_Ratings_20_80_scale{year}'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -276,9 +278,23 @@ class DatabaseDriver:
         # print (df)
         return df
 
-    def retrieve_location (self, player):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
-        table = f'Pitcher_Location_Ratings_20_80_scale{self.year}'
+    def retrieve_stuff_history (self, player):
+        df1 = self.retrieve_stuff(player, 2023)
+        df2 = self.retrieve_stuff(player, 2024)
+        df = pd.concat(df1, df2)
+        return df
+
+    def retrieve_location_history (self, player):
+        df1 = self.retrieve_location(player, 2023)
+        df2 = self.retrieve_location(player, 2024)
+        df = pd.concat(df1, df2)
+        return df
+
+    def retrieve_location (self, player, year = None):
+        if (year is None):
+            year = self.year
+        db_filename = os.path.join(self.current_dir, f'{year}radar3.db')
+        table = f'Pitcher_Location_Ratings_20_80_scale{year}'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
