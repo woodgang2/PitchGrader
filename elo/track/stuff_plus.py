@@ -1408,6 +1408,8 @@ class Driver:
         if (self.year is not None):
             self.predictions_df = self.predictions_df[self.predictions_df['NewDate'].dt.year == self.year]
         self.predictions_df = self.predictions_df.drop ('NewDate', axis = 1)
+    def store_probs_LZ4 (self):
+        self.predictions_df.to_parquet (f'{self.focus}_Probs.parquet', engine='pyarrow', compression='zstd')
 # xgb_clf = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
         # xgb.set_config(verbosity=1)
         # xgb_clf.fit(X_train, y_train)
@@ -1540,6 +1542,8 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
 # run_model(Focus.Stuff)
 # run_Stuff_model()
 driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
+# driver.read_predictions(focus=Focus.Stuff)
+# driver.store_probs_LZ4()
 # driver.set_year(2024)
 # driver.calculate_percentiles()
 # driver.write_percentiles()

@@ -1727,15 +1727,24 @@ def run_model (focus=Focus.Location):
     return driver
 
 def generate_Location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus.Location), year = None):
+    # driver.read_variable_data ()
+    # driver.load_predictions ()
+    # # driver.read_predictions (Focus.Location)
+    # driver.calculate_run_values_swing()
+    # driver.write_predictions ();
+    # if (year is not None):
+    #     driver.set_year(year)
+    #     driver.prune_predictions()
+    #     driver.write_predictions()
     driver.read_variable_data ()
     driver.load_predictions ()
-    # driver.read_predictions (Focus.Location)
-    driver.calculate_run_values_swing()
-    driver.write_predictions ();
     if (year is not None):
         driver.set_year(year)
         driver.prune_predictions()
-        driver.write_predictions()
+        # driver.write_predictions()
+    # driver.read_predictions(Focus.Stuff)
+    driver.calculate_run_values_swing()
+    driver.write_predictions ();
     #
     driver.read_predictions(Focus.Location)
     driver.calculate_average_xRVs()

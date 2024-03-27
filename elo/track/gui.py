@@ -385,9 +385,9 @@ if not st.session_state.team_flag:
             stuff_history_df ['Year'] = stuff_history_df ['Year'].astype(str)
             stuff_history_df = stuff_history_df.set_index('Year')
             stuff_history_df.index.name = 'Year'
-            stuff_history_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
+            stuff_history_df.rename(columns={'Overall': 'Overall Stuff', 'PitcherTeam' : 'Team'}, inplace=True)
             stuff_history_df [desired_order] = stuff_history_df [desired_order].round(0)
-            desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
+            desired_order = ['PitchCount', 'Team', 'Command', 'Overall Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
             stuff_history_df = stuff_history_df[desired_order]
             # columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
             # stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
@@ -399,6 +399,8 @@ if not st.session_state.team_flag:
             # stuff_history_df = stuff_history_df[actual_order]
             # st.dataframe (stuff_history_df)
             # update = st.button("Update Percentiles", key='update_percentiles', type = 'secondary')
+            st.write ("Game Log")
+
             #TODO: this
     # df = pd.read_csv("my_data.csv")
     # st.line_chart(df)
