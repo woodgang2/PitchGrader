@@ -375,17 +375,18 @@ if not st.session_state.team_flag:
             stuff_history_df = stuff_history_df.rename(columns=rename_columns)
             st.dataframe (stuff_history_df)
             stuff_history_df = stuff_history_df.drop_duplicates (['Pitcher', 'Year'])
+            stuff_history_df ['Year'] = stuff_history_df ['Year'].astype(str)
             stuff_history_df = stuff_history_df.set_index('Year')
             stuff_history_df.index.name = 'Year'
             stuff_history_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
             stuff_history_df = stuff_history_df[desired_order]
             columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
             stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
-            stuff_history_df = stuff_history_df.dropna(axis=1)
+            # stuff_history_df = stuff_history_df.dropna(axis=1)
             st.dataframe (stuff_history_df)
             actual_order = [col for col in desired_order if col in stuff_history_df.columns]
             # stuff_history_df = stuff_history_df[actual_order]
-            st.dataframe (stuff_history_df)
+            # st.dataframe (stuff_history_df)
             # update = st.button("Update Percentiles", key='update_percentiles', type = 'secondary')
             #TODO: this
     # df = pd.read_csv("my_data.csv")
