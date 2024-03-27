@@ -283,7 +283,14 @@ if not st.session_state.team_flag:
                 'Four-Seam' : 'FF',
                 'Sinker' : 'SI',
                 'Slider' : 'SL',
-                'Splitter' : 'FS'
+                'Splitter' : 'FS',
+                'ChangeUp_Usage': 'CH%',
+                'Curveball_Usage': 'CU%',
+                'Cutter_Usage' : 'FC%',
+                'Four-Seam_Usage' : 'FF%',
+                'Sinker_Usage' : 'SI%',
+                'Slider_Usage' : 'SL%',
+                'Splitter_Usage' : 'FS%'
             }
             desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             stuff_df = stuff_df.rename(columns=rename_columns)
@@ -371,20 +378,20 @@ if not st.session_state.team_flag:
             location_history_df = location_history_df [['Pitcher', 'Overall']]
             location_history_df = location_history_df.rename(columns={'Overall': 'Command'})
             stuff_history_df = stuff_history_df.merge (location_history_df, on = 'Pitcher')
-            stuff_history_df = stuff_history_df.round(0)
             stuff_history_df = stuff_history_df.rename(columns=rename_columns)
-            st.dataframe (stuff_history_df)
             stuff_history_df = stuff_history_df.drop_duplicates (['Pitcher', 'Year'])
             stuff_history_df ['Year'] = stuff_history_df ['Year'].astype(str)
             stuff_history_df = stuff_history_df.set_index('Year')
             stuff_history_df.index.name = 'Year'
             stuff_history_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
+            stuff_history_df [desired_order] = stuff_history_df [desired_order].round(0)
+            desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
             stuff_history_df = stuff_history_df[desired_order]
-            columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
-            stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
-            # stuff_history_df = stuff_history_df.dropna(axis=1)
+            # columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
+            # stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
+            stuff_history_df = stuff_history_df.dropna(axis=1, how = 'all')
             st.dataframe (stuff_history_df)
-            actual_order = [col for col in desired_order if col in stuff_history_df.columns]
+            # actual_order = [col for col in desired_order if col in stuff_history_df.columns]
             # stuff_history_df = stuff_history_df[actual_order]
             # st.dataframe (stuff_history_df)
             # update = st.button("Update Percentiles", key='update_percentiles', type = 'secondary')
