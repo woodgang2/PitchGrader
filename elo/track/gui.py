@@ -381,6 +381,7 @@ if not st.session_state.team_flag:
             columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
             stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
             stuff_history_df = stuff_history_df.dropna(axis=1)
+            st.dataframe (stuff_history_df)
             actual_order = [col for col in desired_order if col in stuff_history_df.columns]
             stuff_history_df = stuff_history_df[actual_order]
             st.dataframe (stuff_history_df)
