@@ -102,6 +102,9 @@ st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
 if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
 
+if 'selected_player_index' not in st.session_state:
+    st.session_state ['selected_player_index'] = 0
+
 # Your database initialization
 # driver = database_driver.DatabaseDriver()
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
@@ -193,7 +196,8 @@ if not st.session_state.team_flag:
         st.session_state['player_name'] = random_option
     if 'player_name' not in st.session_state:
         st.session_state['player_name'] = options[0]
-    selected_name = st.selectbox('Player', options=options, key='player_name')
+    selected_name = st.selectbox('Player', options=options, index = st.session_state['selected_player_index'], key='player_name')
+    st.session_state['selected_player_index'] = options.index(selected_name)
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
@@ -399,7 +403,7 @@ if not st.session_state.team_flag:
             # stuff_history_df = stuff_history_df[actual_order]
             # st.dataframe (stuff_history_df)
             # update = st.button("Update Percentiles", key='update_percentiles', type = 'secondary')
-            st.write ("Game Log")
+            # st.write ("Game Log")
 
             #TODO: this
     # df = pd.read_csv("my_data.csv")
