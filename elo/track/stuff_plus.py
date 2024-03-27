@@ -1248,8 +1248,11 @@ class Driver:
         self.players_df = players_df
 
     def calculate_percentiles (self, focus=Focus.Stuff):
+        year = self.year
+        if (self.year is None):
+            year = ''
         print ("Reading player predictions")
-        table_name = f'{focus.name}_Probabilities_Pitchers'
+        table_name = f'{focus.name}_Probabilities_Pitchers{year}'
         conn = sqlite3.connect(f'{self.db_file}')
         total_rows = pd.read_sql_query(f'SELECT COUNT(*) FROM {table_name}', conn).iloc[0, 0]
         chunksize = 10000
@@ -1530,6 +1533,9 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
 # run_model(Focus.Stuff)
 # run_Stuff_model()
 driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
+# driver.set_year(2024)
+# driver.calculate_percentiles()
+# driver.write_percentiles()
 # driver.read_variable_data()
 # driver.classify_pitches()
 # driver.write_variable_data()
@@ -1589,7 +1595,6 @@ driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
 # driver.read_radar_data()
 # driver.load_relevant_data()
 # driver.write_variable_data()
-# generate_stuff_ratings()
 def process_data ():
     driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
     driver.read_radar_data()
