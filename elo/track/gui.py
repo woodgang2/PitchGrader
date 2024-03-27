@@ -1,3 +1,5 @@
+import random
+
 import database_driver
 import stuff_plus
 import streamlit as st
@@ -125,6 +127,7 @@ stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 if (team_toggle):
     st.session_state.team_flag = not st.session_state.team_flag
+random_player = st.button ("Random player", key = 'random_player')
 batting_percentiles_df = driver.retrieve_percentiles_bat_team ('All')
 pitching_stuff_df = driver.retrieve_stuff_team ('All')
 # batting_names_raw = batting_percentiles_df ['Batter']
@@ -173,6 +176,9 @@ if not st.session_state.team_flag:
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
     selected_name = st.selectbox('Player', options=options, key='player_name')
+    if st.button('Pick a random option'):
+        random_option = random.choice(options)
+        st.session_state['player_name'] = random_option
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
