@@ -270,6 +270,7 @@ if not st.session_state.team_flag:
         else:
             location_df = driver.retrieve_location (name)
             location_df = location_df [['Pitcher', 'Overall']]
+            location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
             location_df = location_df.rename(columns={'Overall': 'Command'})
             # st.dataframe (location_df)
             stuff_df = driver.retrieve_stuff (name)
