@@ -129,7 +129,7 @@ with col2:
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
     year_selected = st.selectbox ("Year", options = ['All', 2024, 2023], key = 'year')
-st.success ('test2')
+st.success ('test3')
 year = year_selected
 if (year_selected == 'All'):
     year = ''
