@@ -129,12 +129,12 @@ with col2:
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
     year_selected = st.selectbox ("Year", options = ['All', 2024, 2023], key = 'year')
-st.success ('test')
+# st.success ('test')
 year = year_selected
-driver = database_driver.DatabaseDriver(year=year)
-stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (year_selected == 'All'):
     year = ''
+driver = database_driver.DatabaseDriver(year=year)
+stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (team_toggle):
     st.session_state.team_flag = not st.session_state.team_flag
 # random_player = st.button ("Random player", key = 'random_player')
