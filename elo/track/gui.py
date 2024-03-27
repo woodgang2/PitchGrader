@@ -106,8 +106,9 @@ if 'team_flag' not in st.session_state:
 driver = database_driver.DatabaseDriver()
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 # Update dataset button
-# col1, col2, space = st.columns([2, 2, 2])
-# with col1:
+col1, col2, space = st.columns([2, 2, 2])
+with col1:
+    team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 #     update = st.button("Update Dataset", key='update_dataset', type = 'primary')
 #     if update:
 #         st.write (f"I'm just a placeholder button")
@@ -119,15 +120,16 @@ stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
         # driver.write_data()
         # st.write('Updated. You may have to reload the page to see the effects')
 # Button to toggle between personal details and team view
-# with col2:
+with col2:
+    random_player = st.button ("Random player", key = 'random_player')
 #     team_toggle = st.button("Toggle team/player")
 #     if (team_toggle):
 #         st.session_state.team_flag = not st.session_state.team_flag
         # st.write (team_flag)
-team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
+# team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 if (team_toggle):
     st.session_state.team_flag = not st.session_state.team_flag
-random_player = st.button ("Random player", key = 'random_player')
+# random_player = st.button ("Random player", key = 'random_player')
 batting_percentiles_df = driver.retrieve_percentiles_bat_team ('All')
 pitching_stuff_df = driver.retrieve_stuff_team ('All')
 # batting_names_raw = batting_percentiles_df ['Batter']
