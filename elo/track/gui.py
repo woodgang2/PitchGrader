@@ -284,13 +284,13 @@ if not st.session_state.team_flag:
                 'Sinker' : 'SI',
                 'Slider' : 'SL',
                 'Splitter' : 'FS',
-                'ChangeUp_Usage': 'CH%',
-                'Curveball_Usage': 'CU%',
-                'Cutter_Usage' : 'FC%',
-                'Four-Seam_Usage' : 'FF%',
-                'Sinker_Usage' : 'SI%',
-                'Slider_Usage' : 'SL%',
-                'Splitter_Usage' : 'FS%'
+                'ChangeUp Usage': 'CH%',
+                'Curveball Usage': 'CU%',
+                'Cutter Usage' : 'FC%',
+                'Four-Seam Usage' : 'FF%',
+                'Sinker Usage' : 'SI%',
+                'Slider Usage' : 'SL%',
+                'Splitter Usage' : 'FS%'
             }
             desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             stuff_df = stuff_df.rename(columns=rename_columns)
@@ -384,8 +384,7 @@ if not st.session_state.team_flag:
             stuff_history_df = stuff_history_df.set_index('Year')
             stuff_history_df.index.name = 'Year'
             stuff_history_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
-            st.dataframe (stuff_history_df)
-            # stuff_history_df [desired_order] = stuff_history_df [desired_order].round(0)
+            stuff_history_df [desired_order] = stuff_history_df [desired_order].round(0)
             desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
             stuff_history_df = stuff_history_df[desired_order]
             # columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
