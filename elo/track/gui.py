@@ -103,7 +103,7 @@ if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
 
 if 'selected_player_index' not in st.session_state:
-    st.session_state ['selected_player_index'] = 0
+    st.session_state ['selected_player_index'] = 1
 
 # Your database initialization
 # driver = database_driver.DatabaseDriver()
