@@ -390,7 +390,8 @@ if not st.session_state.team_flag:
             # columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
             # stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
             stuff_history_df = stuff_history_df.dropna(axis=1, how = 'all')
-            stuff_history_df.update(stuff_history_df.filter(like='%').apply(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x))
+            # stuff_history_df.update(stuff_history_df.filter(like='%').apply(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x))
+            stuff_history_df.loc[:, stuff_history_df.columns.str.contains('%')] = stuff_history_df.filter(like='%').applymap(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x)
             st.dataframe (stuff_history_df)
             # actual_order = [col for col in desired_order if col in stuff_history_df.columns]
             # stuff_history_df = stuff_history_df[actual_order]
