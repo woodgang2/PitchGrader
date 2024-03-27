@@ -375,10 +375,9 @@ if not st.session_state.team_flag:
             st.write ("History")
             stuff_history_df = driver.retrieve_stuff_history(name)
             location_history_df = driver.retrieve_location_history(name)
-            st.dataframe (location_history_df)
             location_history_df = location_history_df [['Pitcher', 'Overall']]
             location_history_df = location_history_df.rename(columns={'Overall': 'Command'})
-            stuff_history_df = stuff_history_df.merge (location_history_df, on = 'Pitcher')
+            stuff_history_df = stuff_history_df.merge (location_history_df, on = 'Year')
             stuff_history_df = stuff_history_df.rename(columns=rename_columns)
             stuff_history_df = stuff_history_df.drop_duplicates (['Pitcher', 'Year'])
             stuff_history_df ['Year'] = stuff_history_df ['Year'].astype(str)
