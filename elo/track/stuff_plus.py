@@ -1589,7 +1589,7 @@ driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
 # driver.read_radar_data()
 # driver.load_relevant_data()
 # driver.write_variable_data()
-generate_stuff_ratings()
+# generate_stuff_ratings()
 def process_data ():
     driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
     driver.read_radar_data()

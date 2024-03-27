@@ -1766,7 +1766,7 @@ driver = Driver ('radar4.db', 'radar_data', Focus.Location)
 
 # print(tf.__version__)
 # run_model ()
-generate_Location_ratings()
+# generate_Location_ratings()
 # driver.find_overall_percentiles()
 # generate_Location_ratings(year = 2024)
 # driver.load_model(step = 'InPlay', type = 'Fastball')
