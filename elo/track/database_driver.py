@@ -61,7 +61,7 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Percentiles_Stuff_Pitchers{self.year}'
+        table = f'Percentiles_Stuff_Pitchers'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -76,7 +76,7 @@ class DatabaseDriver:
 
     def retrieve_percentiles_batter (self, player, team = None):
         db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
-        table = f'Percentiles_Batters{self.year}'
+        table = f'Percentiles_Batters'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
@@ -87,7 +87,7 @@ class DatabaseDriver:
 
     def retrieve_percentiles_bat_team (self, team):
         db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
-        table = f'Percentiles_Batters{self.year}'
+        table = f'Percentiles_Batters'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
@@ -100,7 +100,7 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Stuff_Probabilities_Pitchers{self.year}'
+        table = f'Stuff_Probabilities_Pitchers'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -117,7 +117,7 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Stuff_Probabilities_Pitchers{self.year}'
+        table = f'Stuff_Probabilities_Pitchers'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -142,7 +142,7 @@ class DatabaseDriver:
 
     def retrieve_percentages_batter (self, player):
         db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
-        table = f'Probabilities_Batters{self.year}'
+        table = f'Probabilities_Batters'
         # table = 'batting_variables'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
@@ -158,7 +158,7 @@ class DatabaseDriver:
 
     def retrieve_percentages_bat_team (self, team):
         db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
-        table = f'Probabilities_Batters{self.year}'
+        table = f'Probabilities_Batters'
         # table = 'batting_variables'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
@@ -179,7 +179,7 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Percentiles_Stuff_Pitchers{self.year}'
+        table = f'Percentiles_Stuff_Pitchers'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -208,7 +208,7 @@ class DatabaseDriver:
 
     def retrieve_percentiles_team_bat (self, team):
         db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
-        table = f'Percentiles_Batters{self.year}'
+        table = f'Percentiles_Batters'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
@@ -232,7 +232,7 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Pitcher_Stuff_Ratings_20_80_scale{self.year}'
+        table = f'Pitcher_Stuff_Ratings_20_80_scale'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -250,7 +250,7 @@ class DatabaseDriver:
 
     def retrieve_location_team (self, team):
         db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
-        table = f'Pitcher_Location_Ratings_20_80_scale{self.year}'
+        table = f'Pitcher_Location_Ratings_20_80_scale'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
@@ -265,7 +265,7 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Pitcher_Stuff_Ratings_20_80_scale{self.year}'
+        table = f'Pitcher_Stuff_Ratings_20_80_scale'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -278,7 +278,7 @@ class DatabaseDriver:
 
     def retrieve_location (self, player):
         db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
-        table = f'Pitcher_Location_Ratings_20_80_scale{self.year}'
+        table = f'Pitcher_Location_Ratings_20_80_scale'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
@@ -326,7 +326,7 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Stuff_Probabilities{self.year}'
+        table = f'Stuff_Probabilities'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
