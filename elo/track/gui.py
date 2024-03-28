@@ -105,6 +105,9 @@ if 'team_flag' not in st.session_state:
 if 'selected_player_index' not in st.session_state:
     st.session_state ['selected_player_index'] = 0
 
+if 'player_name' not in st.session_state:
+    st.session_state['player_name'] = ''
+
 # Your database initialization
 # driver = database_driver.DatabaseDriver()
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
@@ -185,7 +188,7 @@ if random_player:
 # batting_percentages_df = driver.retrieve_percentages_bat_team ('All')
 # pitching_percentages_df = driver.retrieve_percentages_team ('All')
 # pitching_stuff_df = driver.retrieve_stuff_team ('All')
-st.success (st.session_state['selected_player_index'] )
+# st.success (st.session_state['selected_player_index'] )
 # Conditional rendering based on the toggle state
 if not st.session_state.team_flag:
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
@@ -194,12 +197,13 @@ if not st.session_state.team_flag:
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
-    if 'player_name' not in st.session_state:
-        st.session_state['player_name'] = options[0]
-    st.success (st.session_state['selected_player_index'] )
+    # if 'player_name' not in st.session_state:
+    #     st.session_state['player_name'] = options[0]
+    # st.success (st.session_state['selected_player_index'] )
     selected_name = st.selectbox('Player', options=options, key='player_name')
-    st.session_state['selected_player_index'] = options.index(selected_name)
-    st.success (st.session_state['selected_player_index'] )
+    st.session_state['player_name'] = selected_name
+    # st.session_state['selected_player_index'] = options.index(selected_name)
+    # st.success (st.session_state['selected_player_index'] )
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
