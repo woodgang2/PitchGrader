@@ -102,11 +102,11 @@ st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
 if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
 
-if 'selected_player_index' not in st.session_state:
-    st.session_state ['selected_player_index'] = 0
-
-if 'player_name' not in st.session_state:
-    st.session_state['player_name'] = ''
+# if 'selected_player_index' not in st.session_state:
+#     st.session_state ['selected_player_index'] = 0
+#
+# if 'player_name' not in st.session_state:
+#     st.session_state['player_name'] = ''
 
 # Your database initialization
 # driver = database_driver.DatabaseDriver()
@@ -197,13 +197,9 @@ if not st.session_state.team_flag:
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
-    # if 'player_name' not in st.session_state:
-    #     st.session_state['player_name'] = options[0]
-    # st.success (st.session_state['selected_player_index'] )
+    if 'player_name' not in st.session_state:
+        st.session_state['player_name'] = options[0]
     selected_name = st.selectbox('Player', options=options, key='player_name')
-    st.session_state['player_name'] = selected_name
-    # st.session_state['selected_player_index'] = options.index(selected_name)
-    # st.success (st.session_state['selected_player_index'] )
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
