@@ -205,6 +205,7 @@ if not st.session_state.team_flag:
         st.session_state['player_name'] = options[0]
     st.success (st.session_state.player_name_update)
     selected_name = st.selectbox('Player', options=options, key='player_name')
+    st.error (selected_name)
     st.session_state.player_name_update = selected_name
     st.success (st.session_state.player_name_update)
     team_name = ''
