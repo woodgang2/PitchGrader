@@ -196,6 +196,7 @@ if not st.session_state.team_flag:
         st.session_state['player_name'] = random_option
     if 'player_name' not in st.session_state:
         st.session_state['player_name'] = options[0]
+    st.success (st.session_state['selected_player_index'] )
     selected_name = st.selectbox('Player', options=options, key='player_name')
     st.session_state['selected_player_index'] = options.index(selected_name)
     st.success (st.session_state['selected_player_index'] )
