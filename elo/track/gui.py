@@ -385,6 +385,8 @@ if not st.session_state.team_flag:
             cols.insert(2, 'xRV')
             prob_df = prob_df[cols]
             prob_df = prob_df.sort_values(by='Usage', ascending = False)
+            prob_df = prob_df.set_index('PitchType')
+            prob_df.index.name = "Pitch Type"
             input_df = st.data_editor(prob_df)
             st.write ("History")
             stuff_history_df = driver.retrieve_stuff_history(name)
