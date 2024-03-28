@@ -105,8 +105,11 @@ if 'team_flag' not in st.session_state:
 # if 'selected_player_index' not in st.session_state:
 #     st.session_state ['selected_player_index'] = 0
 #
-# if 'player_name' not in st.session_state:
-#     st.session_state['player_name'] = ''
+if 'player_name_update' not in st.session_state:
+    st.session_state.player_name_update = ''
+
+if 'player_name' not in st.session_state:
+    st.session_state['player_name'] = st.session_state.player_name_update
 
 # Your database initialization
 # driver = database_driver.DatabaseDriver()
@@ -134,10 +137,10 @@ with col2:
         # st.write (team_flag)
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 # with col3:
-year_selected = st.selectbox ("Year", options = ['All', 2024, 2023], index = 1, key = 'year')
+year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 
 year = year_selected
-if (year_selected == 'All'):
+if (year_selected == 'Combined'):
     year = ''
 driver = database_driver.DatabaseDriver(year=year)
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
@@ -200,6 +203,7 @@ if not st.session_state.team_flag:
     if 'player_name' not in st.session_state:
         st.session_state['player_name'] = options[0]
     selected_name = st.selectbox('Player', options=options, key='player_name')
+    st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
