@@ -197,10 +197,10 @@ if not st.session_state.team_flag:
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
-    st.success (st.session_state['player_name'])
+    # st.success (st.session_state['player_name'])
     if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
         st.session_state['player_name'] = st.session_state.player_name_update
-    st.success (st.session_state['player_name'])
+    # st.success (st.session_state['player_name'])
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
