@@ -109,7 +109,7 @@ if 'player_name_update' not in st.session_state:
     st.session_state.player_name_update = ''
 
 if 'player_name' not in st.session_state:
-    st.session_state['player_name'] = st.session_state.player_name_update
+    st.session_state['player_name'] = ''
 
 # Your database initialization
 # driver = database_driver.DatabaseDriver()
@@ -193,7 +193,6 @@ if random_player:
 # pitching_stuff_df = driver.retrieve_stuff_team ('All')
 # st.success (st.session_state['selected_player_index'] )
 # Conditional rendering based on the toggle state
-st.success ('test')
 if not st.session_state.team_flag:
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
