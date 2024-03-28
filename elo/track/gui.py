@@ -197,17 +197,12 @@ if not st.session_state.team_flag:
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
-    st.session_state['player_name'] = st.session_state.player_name_update
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
     if 'player_name' not in st.session_state:
         st.session_state['player_name'] = options[0]
-    st.success (st.session_state.player_name_update)
     selected_name = st.selectbox('Player', options=options, key='player_name')
-    st.error (selected_name)
-    st.session_state.player_name_update = selected_name
-    st.success (st.session_state.player_name_update)
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
