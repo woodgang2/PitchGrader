@@ -435,7 +435,6 @@ else:
     # Here you can add your logic or widgets to display team view
     # team_name = st.text_input('Team ID (from trackman)', '', placeholder='Team ID (UVA is VIR_CAV) - Enter "All" to see all players', key='team_name')
     # team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, key='team_name')
-    st.empty
     if (st.session_state.team_name_update != '') & (st.session_state['team_name'] == ''):
         st.session_state['team_name'] = st.session_state.team_name_update
     # st.success (st.session_state['player_name'])
