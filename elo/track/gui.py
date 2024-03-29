@@ -441,12 +441,12 @@ else:
     default_index = options_teams.index(st.session_state['team_name']) if st.session_state['team_name'] in options_teams else 0
     team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, index=default_index, key='team_name')
     # st.success ('n2')
-    st.session_state.player_name_update = team_name
+    st.session_state.team_name_update = team_name
     # st.success ('n1')
     min_pitch = st.text_input('Minimum Pitch Count', '', placeholder='Pitch Count', key='min_pitch')
     display_name = st.empty()
     # st.success (team_name)
-    if st.session_state.player_name_update != '':
+    if st.session_state['team_name'] != '':
         st.success ('yes')
         df = driver.retrieve_percentiles_team (team_name)
         # df = pitching_percentiles_df [pitching_percentiles_df ['PitcherTeam'] == team_name]
