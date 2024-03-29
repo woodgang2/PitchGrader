@@ -111,6 +111,12 @@ if 'player_name_update' not in st.session_state:
 if 'player_name' not in st.session_state:
     st.session_state['player_name'] = ''
 
+if 'team_name_update' not in st.session_state:
+    st.session_state.team_name_update = ''
+
+if 'team_name' not in st.session_state:
+    st.session_state['team_name'] = ''
+
 # Your database initialization
 # driver = database_driver.DatabaseDriver()
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
@@ -428,7 +434,13 @@ if not st.session_state.team_flag:
 else:
     # Here you can add your logic or widgets to display team view
     # team_name = st.text_input('Team ID (from trackman)', '', placeholder='Team ID (UVA is VIR_CAV) - Enter "All" to see all players', key='team_name')
-    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, key='team_name')
+    # team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, key='team_name')
+    if (st.session_state.team_name_update != '') & (st.session_state['team_name'] == ''):
+        st.session_state['team_name'] = st.session_state.team_name_update
+    # st.success (st.session_state['player_name'])
+    default_index = options.index(st.session_state['team_name']) if st.session_state['team_name'] in options else 0
+    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options, index=default_index, key='team_name')
+    st.session_state.player_name_update = team_name
     min_pitch = st.text_input('Minimum Pitch Count', '', placeholder='Pitch Count', key='min_pitch')
     display_name = st.empty()
     if team_name != '':
