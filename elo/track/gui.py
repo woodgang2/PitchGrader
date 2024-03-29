@@ -438,8 +438,8 @@ else:
     if (st.session_state.team_name_update != '') & (st.session_state['team_name'] == ''):
         st.session_state['team_name'] = st.session_state.team_name_update
     # st.success (st.session_state['player_name'])
-    default_index = options.index(st.session_state['team_name']) if st.session_state['team_name'] in options else 0
-    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options, index=default_index, key='team_name')
+    default_index = options_teams.index(st.session_state['team_name']) if st.session_state['team_name'] in options_teams else 0
+    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, index=default_index, key='team_name')
     st.session_state.player_name_update = team_name
     min_pitch = st.text_input('Minimum Pitch Count', '', placeholder='Pitch Count', key='min_pitch')
     display_name = st.empty()
