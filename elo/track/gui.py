@@ -445,7 +445,7 @@ else:
     st.success ('n1')
     min_pitch = st.text_input('Minimum Pitch Count', '', placeholder='Pitch Count', key='min_pitch')
     display_name = st.empty()
-    st.success ('no')
+    st.success (team_name)
     if team_name != '':
         st.success ('yes')
         df = driver.retrieve_percentiles_team (team_name)
