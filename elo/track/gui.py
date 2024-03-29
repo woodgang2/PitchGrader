@@ -439,7 +439,7 @@ else:
         st.session_state['team_name'] = st.session_state.team_name_update
     # st.success (st.session_state['player_name'])
     default_index = options_teams.index(st.session_state['team_name']) if st.session_state['team_name'] in options_teams else 0
-    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, index=1, key='team_name')
+    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, key='team_name')
     # st.success ('n2', team_name, 'h')
     st.success (team_name)
     st.session_state.team_name_update = team_name
