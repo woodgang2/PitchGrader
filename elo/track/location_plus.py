@@ -1726,7 +1726,7 @@ def run_model (focus=Focus.Location):
     driver.generate_predictions()
     return driver
 
-def generate_Location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus.Location), year = None):
+def generate_location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus.Location), year = None):
     # driver.read_variable_data ()
     # driver.load_predictions ()
     # # driver.read_predictions (Focus.Location)
@@ -1846,3 +1846,12 @@ def process_data ():
 # driver.write_variable_data()
 # run_model()
 # generate_Location_ratings()
+
+def generate_all ():
+    # process_data()
+    run_model(Focus.Location)
+    generate_location_ratings()
+    generate_location_ratings(year = 2023)
+    generate_location_ratings(year = 2024)
+
+# generate_all()

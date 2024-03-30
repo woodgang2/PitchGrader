@@ -1535,6 +1535,7 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
     driver.calculate_percentiles()
     driver.write_percentiles()
     # driver.table_to_excel ("Pitcher_Stuff_Ratings_20_80_scale")
+# generate_stuff_ratings()
 # generate_stuff_ratings(year = 2024)
 # generate_stuff_ratings(year = 2023)
 # print (Focus.Stuff.name)
@@ -1608,7 +1609,7 @@ driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
 # driver.write_variable_data()
 def process_data ():
     driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
-    driver.read_radar_data()
+    driver.read_radar_data(new = 1)
     driver.calculate_inferred_spin_axis()
     driver.calculate_seam_shifted_wake()
     driver.calculate_spin_efficiency()
@@ -1627,3 +1628,12 @@ def process_data ():
 # driver.write_variable_data()
 # run_model()
 # generate_stuff_ratings()
+
+def generate_all ():
+    process_data()
+    run_model(Focus.Stuff)
+    generate_stuff_ratings()
+    generate_stuff_ratings(year = 2023)
+    generate_stuff_ratings(year = 2024)
+
+# generate_all()
