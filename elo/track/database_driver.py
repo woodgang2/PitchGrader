@@ -135,6 +135,8 @@ class DatabaseDriver:
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
+        # df.to_parquet (f'test.parquet', engine='pyarrow', compression='lz4')
+        # exit (0)
         # conn.close()
         # print (df)
         self.write_data_table(df, table)
@@ -520,12 +522,7 @@ class DatabaseDriver:
 
 
 
-# driver = DatabaseDriver ()
-# driver.write_percentages_batter()
-# driver.write_percentages()
-# driver.write_percentiles_bat()
-# driver.write_percentiles()
-# driver.write_stuff()
+driver = DatabaseDriver ()
 # driver.retrieve_percentages_batter()
 # driver.add_column(['PitchUID', 'PlayResult'], 'batting_variables')
 # driver.add_column(['PitchUID', 'Angle', 'Direction'], 'batting_variables')
@@ -535,8 +532,9 @@ class DatabaseDriver:
 # driver.retrieve_percentiles("Moore, Bryson")
 # driver.read_data()
 # driver.write_data()
-# driver = DatabaseDriver ()
 # driver.write_locations ()
+# driver = DatabaseDriver ()
+# driver.write_percentages()
 
 def update_gui (year = ''):
     driver = DatabaseDriver (year)

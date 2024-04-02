@@ -94,9 +94,9 @@ st.title('PitchGrader')
 # st.markdown('<hr style="height:2px;border:none;color:#333;background-color:#333;" /> ', unsafe_allow_html=True)
 # st.divider ()
 # st.markdown("""---""")
-st.caption ('Stuff, Command, and Swing Mechanics Model for Collegiate Players')
+st.caption ('Stuff, Command, and Swing Mechanics models for collegiate players')
 # st.title('Stuff+ Model (also a swing mechanics model now)')
-st.write('Database last updated 3/28/2024')
+st.write('Database last updated 4/02/2024')
 st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
 # Create two text input boxes for the first and last name
 if 'team_flag' not in st.session_state:

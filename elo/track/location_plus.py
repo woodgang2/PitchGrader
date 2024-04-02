@@ -131,7 +131,7 @@ class Driver:
     def read_variable_data (self):
         print ("Reading variable data")
         table_name = 'variables'
-        conn = sqlite3.connect(f'{self.db_file}')
+        conn = sqlite3.connect(f'radar2.db')
         total_rows = pd.read_sql_query(f'SELECT COUNT(*) FROM {self.table_name}', conn).iloc[0, 0]
         chunksize = 10000
         pbar = tqdm(total=total_rows)
@@ -1274,7 +1274,7 @@ class Driver:
         pitch_type_count = predictions_df.groupby(['Pitcher', 'PitchType'])['PitchType'].transform('count')
         predictions_df['Usage'] = (pitch_type_count / pitcher_total_pitches).round(2)
         # print (predictions_df)
-        predictions_df = predictions_df [predictions_df ['Usage'] >= 0.04]
+        predictions_df = predictions_df [predictions_df ['Usage'] >= 0.03]
         # predictions_df = predictions_df[pitcher_total_pitches >= 20]
         predictions_df = predictions_df.drop_duplicates(subset=['PitchUID'], keep='first')
         predictions_df.drop ('Usage', axis=1)
@@ -1381,7 +1381,7 @@ class Driver:
         players_df ['DifferenceHB'] = abs (players_df ['DifferenceHB'])
         # print (players_df)
         # print (predictions_df)
-        players_df = players_df [players_df ['Usage'] >= 0.04]
+        players_df = players_df [players_df ['Usage'] >= 0.03]
         #players_df = players_df.drop_duplicates(subset=['Pitcher'], keep='first')
         players_df = players_df.drop_duplicates(subset=['Pitcher', 'PitchType'])
 
@@ -1854,4 +1854,4 @@ def generate_all ():
     generate_location_ratings(year = 2023)
     generate_location_ratings(year = 2024)
 
-# generate_all()
+generate_all()

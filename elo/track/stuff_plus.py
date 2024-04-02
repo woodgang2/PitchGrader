@@ -1173,7 +1173,7 @@ class Driver:
         pitch_type_count = predictions_df.groupby(['Pitcher', 'PitchType'])['PitchType'].transform('count')
         predictions_df['Usage'] = (pitch_type_count / pitcher_total_pitches).round(2)
         # print (predictions_df)
-        predictions_df = predictions_df [predictions_df ['Usage'] >= 0.04]
+        predictions_df = predictions_df [predictions_df ['Usage'] >= 0.03]
         # predictions_df = predictions_df[pitcher_total_pitches >= 20]
         predictions_df = predictions_df.drop_duplicates(subset=['PitchUID'], keep='first')
         predictions_df.drop ('Usage', axis=1)
@@ -1282,7 +1282,7 @@ class Driver:
         players_df ['DifferenceHB'] = abs (players_df ['DifferenceHB'])
         # print (players_df)
         # print (predictions_df)
-        players_df = players_df [players_df ['Usage'] >= 0.04]
+        players_df = players_df [players_df ['Usage'] >= 0.03]
         #players_df = players_df.drop_duplicates(subset=['Pitcher'], keep='first')
         players_df = players_df.drop_duplicates(subset=['Pitcher', 'PitchType'])
 
