@@ -340,13 +340,11 @@ if not st.session_state.team_flag:
                         else:
                             return str(original)
 
-            # Apply the formatting to all columns based on the presence of the same columns in df1
                 for col in stuff_df.columns:
                     if col != 'Pitcher' and col in stuff_df.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
-
-                # Replace df2's columns with the formatted ones from merged_df
                 stuff_df.update(merged_df[stuff_df2.columns])
+                stuff_df = stuff_df.round(0)
 
             rename_columns = {
                 'ChangeUp': 'CH',
