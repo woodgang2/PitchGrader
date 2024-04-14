@@ -160,7 +160,7 @@ elif (year_selected == 2023):
 else:
     st.session_state['disabled'] = False
 driver = database_driver.DatabaseDriver(year=year)
-show_changes = show_changes_placeholder.button (f"Compare stats to previous year", key = 'show_changes', disabled=st.session_state["disabled"])
+show_changes = show_changes_placeholder.button (f"Compare pitches to previous year", key = 'show_changes', disabled=st.session_state["disabled"])
 # driver = database_driver.DatabaseDriver(year=year)
 if (show_changes):
     driver2 = database_driver.DatabaseDriver(year=(year-1))
