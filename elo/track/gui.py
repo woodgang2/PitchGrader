@@ -161,6 +161,8 @@ else:
     st.session_state['disabled'] = False
 show_changes = show_changes_placeholder.button ("Show changes from previous years", key = 'show_changes', disabled=st.session_state["disabled"])
 driver = database_driver.DatabaseDriver(year=year)
+if (show_changes):
+    driver2 = database_driver.DatabaseDriver(year=(year-1))
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (team_toggle):
     st.session_state.team_flag = not st.session_state.team_flag
@@ -312,25 +314,32 @@ if not st.session_state.team_flag:
             stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
             stuff_df = stuff_df.round(0)
 
-            # if (show_changes):
-            #
-            #     merged_df = df2.merge(df1, on='PitchType', how='left', suffixes=('_df2', '_df1'))
-            #     def calculate_and_format(row, col):
-            #         original = row[f"{col}_df2"]
-            #         if pd.isna(row[f"{col}_df1"]):
-            #             return str(original)  # No corresponding value in df1, keep df2 value
-            #         else:
-            #             difference = original - row[f"{col}_df1"]
-            #             sign = '+' if difference >= 0 else ''
-            #             return f"{original} ({sign}{difference})"
-            #
-            #     # Apply the formatting to all columns based on the presence of the same columns in df1
-            #     for col in df2.columns:
-            #         if col != 'PitchType' and col in df1.columns:  # Check if column is also in df1
-            #             merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
-            #
-            #     # Replace df2's columns with the formatted ones from merged_df
-            #     df2.update(merged_df[df2.columns])
+            if (show_changes):
+                location_df = driver2.retrieve_location (name)
+                location_df = location_df [['Pitcher', 'Overall']]
+                location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                location_df = location_df.rename(columns={'Overall': 'Command'})
+                # st.dataframe (location_df)
+                stuff_df2 = driver2.retrieve_stuff (name)
+                stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
+                stuff_df2 = stuff_df2.round(0)
+                merged_df = stuff_df.merge(stuff_df2, on='PitchType', how='left', suffixes=('_df2', '_df1'))
+                def calculate_and_format(row, col):
+                    original = row[f"{col}_df2"]
+                    if pd.isna(row[f"{col}_df1"]):
+                        return str(original)  # No corresponding value in df1, keep df2 value
+                    else:
+                        difference = original - row[f"{col}_df1"]
+                        sign = '+' if difference >= 0 else ''
+                        return f"{original} ({sign}{difference})"
+
+                # Apply the formatting to all columns based on the presence of the same columns in df1
+                for col in stuff_df.columns:
+                    if col != 'PitchType' and col in stuff_df.columns:  # Check if column is also in df1
+                        merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+
+                # Replace df2's columns with the formatted ones from merged_df
+                stuff_df.update(merged_df[stuff_df2.columns])
 
             rename_columns = {
                 'ChangeUp': 'CH',
