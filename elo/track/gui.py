@@ -332,11 +332,15 @@ if not st.session_state.team_flag:
                     if pd.isna(row[f"{col}_df1"]):
                         return str(original)  # No corresponding value in df1, keep df2 value
                     else:
-                        difference = original - row[f"{col}_df1"]
-                        sign = '+' if difference >= 0 else ''
-                        return f"{original} ({sign}{difference})"
+                        # Check if both values are numbers before attempting to calculate difference
+                        if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
+                            difference = original - row[f"{col}_df1"]
+                            sign = '+' if difference >= 0 else ''
+                            return f"{original} ({sign}{difference})"
+                        else:
+                            return str(original)
 
-                # Apply the formatting to all columns based on the presence of the same columns in df1
+            # Apply the formatting to all columns based on the presence of the same columns in df1
                 for col in stuff_df.columns:
                     if col != 'Pitcher' and col in stuff_df.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
