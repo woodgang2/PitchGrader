@@ -423,7 +423,10 @@ if not st.session_state.team_flag:
                     original = row[f"{col}_df2"]
                     if pd.isna(row[f"{col}_df1"]):
                         if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
-                            return str(round (original, 2))
+                            if (col == 'Usage'):
+                                return str(round (original, 2))
+                            else:
+                                return str(round (original))
                         else:
                             return str (original)
                     else:
@@ -431,7 +434,10 @@ if not st.session_state.team_flag:
                         if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
                             difference = original - row[f"{col}_df1"]
                             sign = '+' if difference >= 0 else ''
-                            return f"{round (original, 2)} ({sign}{round (difference, 2)})"
+                            if (col == 'Usage'):
+                                return f"{round (original, 2)} ({sign}{round (difference, 2)})"
+                            else:
+                                return f"{round (original)} ({sign}{round (difference)})"
                         else:
                             return str(original)
 
