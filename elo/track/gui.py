@@ -361,9 +361,9 @@ if not st.session_state.team_flag:
                 stuff_df = merged_df.drop(columns=columns_to_drop)
                 # st.table (stuff_df)
                 st.dataframe (stuff_df)
-                stuff_df3 = merged_df.drop(columns=columns_to_drop)
+                # stuff_df3 = merged_df.drop(columns=columns_to_drop)
                 # st.table (stuff_df)
-                st.dataframe (stuff_df3)
+                # st.dataframe (stuff_df3)
             else:
                 location_df = driver.retrieve_location (name)
                 location_df = location_df [['Pitcher', 'Overall']]
