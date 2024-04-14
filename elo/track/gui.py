@@ -461,7 +461,7 @@ if not st.session_state.team_flag:
                     original = row[f"{col}_df2"]
                     if pd.isna(row[f"{col}_df1"]):
                         if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
-                            return str(round (original))
+                            return str(round (original, 2))
                         else:
                             return str (original)
                     else:
@@ -469,7 +469,7 @@ if not st.session_state.team_flag:
                         if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
                             difference = original - row[f"{col}_df1"]
                             sign = '+' if difference >= 0 else ''
-                            return f"{round (original)} ({sign}{round (difference)})"
+                            return f"{round (original, 2)} ({sign}{round (difference, 2)})"
                         else:
                             return str(original)
 
@@ -478,8 +478,9 @@ if not st.session_state.team_flag:
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                 # st.dataframe (prob_df)
                 st.dataframe (merged_df)
-                prob_df.update(merged_df[prob_df2.columns])
-                st.dataframe (prob_df)
+                # prob_df.update(merged_df[prob_df2.columns])
+                prob_df = merged_df [[prob_df.columns]]
+                # st.dataframe (prob_df)
 
             prob_df = prob_df.sort_values(by='Usage', ascending = False)
             prob_df = prob_df.set_index('PitchType')
