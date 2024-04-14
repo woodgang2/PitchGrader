@@ -445,50 +445,61 @@ class Driver:
 
     def clear_fastball_averages (self):
         self.radar_df.drop(columns=['AverageSinkerRS', 'AverageSinkerHB', 'AverageSinkerIVB', 'AverageCutterRS', 'AverageCutterHB', 'AverageCutterIVB', 'AverageFour-SeamRS', 'AverageFour-SeamHB', 'AverageFour-SeamIVB'], inplace=True)
-    def calculate_average_fastball (self, pitch_type = 'Cutter'):
+    def calculate_average_fastball (self, pitch_type = 'Cutter', year = None):
+        years = [2023, 2024]
+        suffix = ''
+        if (year is not None):
+            years = [year]
+            suffix = year
+        self.radar_df['NewDate'] = pd.to_datetime(self.radar_df['Date'])
+        #Done (?) here, fix so that rows are ignored instead of dropped
         self.radar_df.loc[(self.radar_df['PitchType'] == 'Fastball') & (self.radar_df['AutoPitchType'] != 'Changeup'), 'PitchType'] = self.radar_df['AutoPitchType']
         self.radar_df.loc[(self.radar_df['PitchType'] == 'Fastball') & (self.radar_df['AutoPitchType'] == 'Changeup'), 'PitchType'] = 'Sinker'
         print ("Calculating Fastballs")
-        four_seam_averages = self.radar_df[self.radar_df['PitchType'] == pitch_type].groupby('Pitcher').agg({
+        four_seam_averages = self.radar_df[(self.radar_df['PitchType'] == pitch_type) & (self.radar_df['NewDate'].dt.year.isin(years))].groupby('Pitcher').agg({
             'RelSpeed': 'mean',
             'InducedVertBreak': 'mean',
             'HorzBreak': 'mean'
         }).reset_index()
 
-        # Rename columns to reflect they are averages of Four-Seam fastballs
         four_seam_averages.rename(columns={
-            'RelSpeed': f'Average{pitch_type}RS',
-            'InducedVertBreak': f'Average{pitch_type}IVB',
-            'HorzBreak': f'Average{pitch_type}HB'
+            'RelSpeed': f'Average{pitch_type}RS{suffix}',
+            'InducedVertBreak': f'Average{pitch_type}IVB{suffix}',
+            'HorzBreak': f'Average{pitch_type}HB{suffix}'
         }, inplace=True)
-        print ('RelSpeed:', f'Average{pitch_type}RS',
-        'InducedVertBreak:', f'Average{pitch_type}IVB',
-        'HorzBreak:', f'Average{pitch_type}HB')
+        print ('RelSpeed:', f'Average{pitch_type}RS{suffix}',
+        'InducedVertBreak:', f'Average{pitch_type}IVB{suffix}',
+        'HorzBreak:', f'Average{pitch_type}HB{suffix}')
         # Step 2: Merge the averages back into the original DataFrame
         self.radar_df = pd.merge(self.radar_df, four_seam_averages, on='Pitcher', how='left')
+        self.radar_df = self.radar_df.drop ('NewDate', axis = 1)
         print (self.radar_df)
 
-    def aggregate_fastball_data (self):
+    def aggregate_fastball_data (self, year = None):
+        suffix = ''
+        if (year is not None):
+            suffix = year
         print ("Aggregating Fastballs")
-        self.radar_df['AverageFastballRS_y'] = self.radar_df['AverageFour-SeamRS']
-        self.radar_df['AverageFastballIVB_y'] = self.radar_df['AverageFour-SeamIVB']
-        self.radar_df['AverageFastballHB_y'] = self.radar_df['AverageFour-SeamHB']
+        self.radar_df[f'AverageFastballRS{suffix}_y'] = self.radar_df[f'AverageFour-SeamRS{suffix}']
+        self.radar_df[f'AverageFastballIVB{suffix}_y'] = self.radar_df[f'AverageFour-SeamIVB{suffix}']
+        self.radar_df[f'AverageFastballHB{suffix}_y'] = self.radar_df[f'AverageFour-SeamHB{suffix}']
         print ('here')
-        self.radar_df['AverageFastballRS_y'] = self.radar_df['AverageFastballRS_y'].fillna(self.radar_df['AverageSinkerRS'])
-        self.radar_df['AverageFastballIVB_y'] = self.radar_df['AverageFastballIVB_y'].fillna(self.radar_df['AverageSinkerIVB'])
-        self.radar_df['AverageFastballHB_y'] = self.radar_df['AverageFastballHB_y'].fillna(self.radar_df['AverageSinkerHB'])
-        self.radar_df['AverageFastballRS_y'] = self.radar_df['AverageFastballRS_y'].fillna(self.radar_df['AverageCutterRS'])
-        self.radar_df['AverageFastballIVB_y'] = self.radar_df['AverageFastballIVB_y'].fillna(self.radar_df['AverageCutterIVB'])
-        self.radar_df['AverageFastballHB_y'] = self.radar_df['AverageFastballHB_y'].fillna(self.radar_df['AverageCutterHB'])
-        self.radar_df['DifferenceRS'] = np.where(self.radar_df['AverageFastballRS_y'].isnull(),
+        self.radar_df[f'AverageFastballRS{suffix}_y'] = self.radar_df[f'AverageFastballRS{suffix}_y'].fillna(self.radar_df[f'AverageSinkerRS{suffix}'])
+        self.radar_df[f'AverageFastballIVB{suffix}_y'] = self.radar_df[f'AverageFastballIVB{suffix}_y'].fillna(self.radar_df[f'AverageSinkerIVB{suffix}'])
+        self.radar_df[f'AverageFastballHB{suffix}_y'] = self.radar_df[f'AverageFastballHB{suffix}_y'].fillna(self.radar_df[f'AverageSinkerHB{suffix}'])
+        self.radar_df[f'AverageFastballRS{suffix}_y'] = self.radar_df[f'AverageFastballRS{suffix}_y'].fillna(self.radar_df[f'AverageCutterRS{suffix}'])
+        self.radar_df[f'AverageFastballIVB{suffix}_y'] = self.radar_df[f'AverageFastballIVB{suffix}_y'].fillna(self.radar_df[f'AverageCutterIVB{suffix}'])
+        self.radar_df[f'AverageFastballHB{suffix}_y'] = self.radar_df[f'AverageFastballHB{suffix}_y'].fillna(self.radar_df[f'AverageCutterHB{suffix}'])
+        #Done (?) here, fix by adding different types of differences, eg. combined + years
+        self.radar_df[f'DifferenceRS{suffix}'] = np.where(self.radar_df[f'AverageFastballRS{suffix}_y'].isnull(),
                                                  0,
-                                                 self.radar_df['RelSpeed'] - self.radar_df['AverageFastballRS_y'])
-        self.radar_df['DifferenceIVB'] = np.where(self.radar_df['AverageFastballIVB_y'].isnull(),
+                                                 self.radar_df['RelSpeed'] - self.radar_df[f'AverageFastballRS{suffix}_y'])
+        self.radar_df[f'DifferenceIVB{suffix}'] = np.where(self.radar_df[f'AverageFastballIVB{suffix}_y'].isnull(),
                                                   0,
-                                                  self.radar_df['InducedVertBreak'] - self.radar_df['AverageFastballIVB_y'])
-        self.radar_df['DifferenceHB'] = np.where(self.radar_df['AverageFastballHB_y'].isnull(),
+                                                  self.radar_df['InducedVertBreak'] - self.radar_df[f'AverageFastballIVB{suffix}_y'])
+        self.radar_df[f'DifferenceHB{suffix}'] = np.where(self.radar_df[f'AverageFastballHB{suffix}_y'].isnull(),
                                                  0,
-                                                 self.radar_df['HorzBreak'] - self.radar_df['AverageFastballHB_y'])
+                                                 self.radar_df['HorzBreak'] - self.radar_df[f'AverageFastballHB{suffix}_y'])
     def write_radar_data (self):
             chunk_size = 1000  # Adjust based on your needs and system capabilities
             num_chunks = len(self.radar_df) // chunk_size + 1
@@ -739,6 +750,7 @@ class Driver:
                             'PitchCall',
                             'TaggedHitType',
                             'ExitSpeed',
+                            'PitcherId',
                             'Pitcher',
                             'PitcherThrows',
                             'Batter',
@@ -762,6 +774,12 @@ class Driver:
                             'DifferenceRS',
                             'DifferenceIVB',
                             'DifferenceHB',
+                            'DifferenceRS2023',
+                            'DifferenceIVB2023',
+                            'DifferenceHB2023',
+                            'DifferenceRS2024',
+                            'DifferenceIVB2024',
+                            'DifferenceHB2024',
 
                             'PlateLocHeight',
                             'PlateLocSide']
@@ -1084,6 +1102,9 @@ class Driver:
     # -> Pitcher_Stuff_Ratings_20_80
     # -> Percentiles_Stuff_Pitchers
     def load_predictions (self):
+        suffix = ''
+        if (self.year is not None):
+            suffix = self.year
         predictions_df = self.input_variables_df
         # new_columns = ['Prob_SwingingStrike', 'Prob_Contact', 'Prob_InPlay', 'Prob_Foul', 'Prob_SoftGB', 'Prob_HardGB', 'Prob_SoftLD', 'Prob_HardLD','Prob_SoftFB', 'Prob_HardFB']
         #
@@ -1092,29 +1113,29 @@ class Driver:
         #     predictions_df[column] = np.nan
 
         conn = sqlite3.connect(f'{self.db_file}')
-        CBB_df = pd.read_sql_query('SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Contact-BreakingBall"', conn)
+        CBB_df = pd.read_sql_query(f'SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Contact-BreakingBall"', conn)
         CBB_df = CBB_df.rename (columns = {"Prob_0" : "xWhiff%", "Prob_1" : "Prob_Contact"})
-        CF_df = pd.read_sql_query('SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Contact-Fastball"', conn)
+        CF_df = pd.read_sql_query(f'SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Contact-Fastball"', conn)
         CF_df = CF_df.rename (columns = {"Prob_0" : "xWhiff%", "Prob_1" : "Prob_Contact"})
-        CO_df = pd.read_sql_query('SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Contact-Offspeed"', conn)
+        CO_df = pd.read_sql_query(f'SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Contact-Offspeed"', conn)
         CO_df = CO_df.rename (columns = {"Prob_0" : "xWhiff%", "Prob_1" : "Prob_Contact"})
         con_df = pd.concat([CF_df, CBB_df, CO_df], axis=0)
         con_df.reset_index(drop=True, inplace=True)
 
-        FBB_df = pd.read_sql_query('SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Foul-BreakingBall"', conn)
+        FBB_df = pd.read_sql_query(f'SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Foul-BreakingBall"', conn)
         FBB_df = FBB_df.rename (columns = {"Prob_0" : "Prob_InPlay", "Prob_1" : "xFoul%"})
-        FF_df = pd.read_sql_query('SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Foul-Fastball"', conn)
+        FF_df = pd.read_sql_query(f'SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Foul-Fastball"', conn)
         FF_df = FF_df.rename (columns = {"Prob_0" : "Prob_InPlay", "Prob_1" : "xFoul%"})
-        FO_df = pd.read_sql_query('SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Foul-Offspeed"', conn)
+        FO_df = pd.read_sql_query(f'SELECT "PitchUID", "Prob_0", "Prob_1" FROM "Stuff_Foul-Offspeed"', conn)
         FO_df = FO_df.rename (columns = {"Prob_0" : "Prob_InPlay", "Prob_1" : "xFoul%"})
         foul_df = pd.concat([FF_df, FBB_df, FO_df], axis=0)
         foul_df.reset_index(drop=True, inplace=True)
 
-        IBB_df = pd.read_sql_query('SELECT "PitchUID", "Prob_0", "Prob_1", "Prob_2", "Prob_3", "Prob_4", "Prob_5", "Target" FROM "Stuff_InPlay-BreakingBall"', conn)
+        IBB_df = pd.read_sql_query(f'SELECT "PitchUID", "Prob_0", "Prob_1", "Prob_2", "Prob_3", "Prob_4", "Prob_5", "Target" FROM "Stuff_InPlay-BreakingBall"', conn)
         IBB_df = IBB_df.rename (columns = {"Prob_0" : "Prob_SoftGB", "Prob_1" : "Prob_HardGB", "Prob_2" : "Prob_SoftLD", "Prob_3" : "Prob_HardLD", "Prob_4" : "Prob_SoftFB", "Prob_5" : "Prob_HardFB"})
-        IF_df = pd.read_sql_query('SELECT "PitchUID", "Prob_0", "Prob_1", "Prob_2", "Prob_3", "Prob_4", "Prob_5", "Target" FROM "Stuff_InPlay-Fastball"', conn)
+        IF_df = pd.read_sql_query(f'SELECT "PitchUID", "Prob_0", "Prob_1", "Prob_2", "Prob_3", "Prob_4", "Prob_5", "Target" FROM "Stuff_InPlay-Fastball"', conn)
         IF_df = IF_df.rename (columns = {"Prob_0" : "Prob_SoftGB", "Prob_1" : "Prob_HardGB", "Prob_2" : "Prob_SoftLD", "Prob_3" : "Prob_HardLD", "Prob_4" : "Prob_SoftFB", "Prob_5" : "Prob_HardFB"})
-        IO_df = pd.read_sql_query('SELECT "PitchUID", "Prob_0", "Prob_1", "Prob_2", "Prob_3", "Prob_4", "Prob_5", "Target" FROM "Stuff_InPlay-Offspeed"', conn)
+        IO_df = pd.read_sql_query(f'SELECT "PitchUID", "Prob_0", "Prob_1", "Prob_2", "Prob_3", "Prob_4", "Prob_5", "Target" FROM "Stuff_InPlay-Offspeed"', conn)
         IO_df = IO_df.rename (columns = {"Prob_0" : "Prob_SoftGB", "Prob_1" : "Prob_HardGB", "Prob_2" : "Prob_SoftLD", "Prob_3" : "Prob_HardLD", "Prob_4" : "Prob_SoftFB", "Prob_5" : "Prob_HardFB"})
         inplay_df = pd.concat([IF_df, IBB_df, IO_df], axis=0)
         inplay_df.reset_index(drop=True, inplace=True)
@@ -1127,7 +1148,7 @@ class Driver:
         #     (predictions_df['PitchCall'] == 'StrikeSwinging') |
         #     (predictions_df['PitchCall'] == 'Foul')
         #     ]
-        predictions_df.to_sql (f'{self.focus.name}_Probabilities', conn, if_exists='replace', index=False)
+        predictions_df.to_sql (f'{self.focus.name}_Probabilities{suffix}', conn, if_exists='replace', index=False)
         self.predictions_df = predictions_df
         conn.close ()
     #TODO: find average foul/strike value
@@ -1381,10 +1402,13 @@ class Driver:
         model_filename = f'JobLib_Model_Stuff/joblib_model_{self.focus.name}_{self.currently_modeling}--{self.current_pitch_class}.joblib'
         # self.model.load_model (model_filename)
         self.model = joblib.load (model_filename)
-    def generate_predictions (self, focus = 'Stuff', step = 'Contact', type = 'BreakingBall'):
+    def generate_predictions (self, focus = 'Stuff', step = 'Contact', type = 'BreakingBall', year = None):
         # self.focus = Focus.Stuff
         # self.currently_modeling = step
         # self.current_pitch_class = type
+        suffix = ''
+        if (year is not None):
+            suffix = year
         features = self.features + self.context_features
         # print (features)
         # exit (0)
@@ -1397,6 +1421,9 @@ class Driver:
         self.current_df['PitchType'] = self.current_df['PitchType'].astype('category')
         self.current_df['PitcherThrows'] = self.current_df['PitcherThrows'].astype('category')
         self.current_df['BatterSide'] = self.current_df['BatterSide'].astype('category')
+        self.current_df['DifferenceRS'] = self.current_df[f'DifferenceRS{suffix}']
+        self.current_df['DifferenceHB'] = self.current_df[f'DifferenceHB{suffix}']
+        self.current_df['DifferenceIVB'] = self.current_df[f'DifferenceIVB{suffix}']
         # self.input_variables_df['PredictedClass'] = clf.predict(self.input_variables_df[features])
         # self.input_variables_df['PredictedProbability'] = clf.predict_proba(self.input_variables_df[features])[:, 1]
         class_labels = self.model.classes_
@@ -1410,6 +1437,11 @@ class Driver:
         if (self.year is not None):
             self.predictions_df = self.predictions_df[self.predictions_df['NewDate'].dt.year == self.year]
         self.predictions_df = self.predictions_df.drop ('NewDate', axis = 1)
+    def prune_variables (self):
+        self.input_variables_df['NewDate'] = pd.to_datetime(self.input_variables_df['Date'])
+        if (self.year is not None):
+            self.input_variables_df = self.input_variables_df[self.input_variables_df['NewDate'].dt.year == self.year]
+        self.input_variables_df = self.input_variables_df.drop ('NewDate', axis = 1)
     def store_probs_LZ4 (self):
         self.predictions_df.to_parquet (f'{self.focus}_Probs.parquet', engine='pyarrow', compression='zstd')
 # xgb_clf = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
@@ -1462,62 +1494,68 @@ def train_model (focus=Focus.Stuff):
     # driver.clean_data_for_offspeed()
     # driver.train_classifier()
 
-def run_model (focus=Focus.Stuff):
+def run_model (focus=Focus.Stuff, year = None):
     driver = Driver ('radar2.db', 'radar_data', focus)
+    if (year is not None):
+        driver.set_year(year)
+        # driver.prune_variables()
     # driver.read_radar_data()
     # driver.load_relevant_data()
     # driver.write_variable_data()
 
     driver.read_variable_data()
+    driver.prune_variables()
     driver.clean_data_for_contact_model(0)
     driver.clean_data_for_fastballs()
     driver.load_model()
-    driver.generate_predictions()
+    driver.generate_predictions(year = year)
     driver.clean_data_for_contact_model(0)
     driver.clean_data_for_breakingballs()
     driver.load_model()
-    driver.generate_predictions()
+    driver.generate_predictions(year = year)
     driver.clean_data_for_contact_model(0)
     driver.clean_data_for_offspeed()
     driver.load_model()
-    driver.generate_predictions()
+    driver.generate_predictions(year = year)
 
     driver.read_variable_data()
+    driver.prune_variables()
     driver.clean_data_for_foul_model(0)
     driver.clean_data_for_fastballs()
     driver.load_model()
-    driver.generate_predictions()
+    driver.generate_predictions(year = year)
     driver.clean_data_for_foul_model(0)
     driver.clean_data_for_breakingballs()
     driver.load_model()
-    driver.generate_predictions()
+    driver.generate_predictions(year = year)
     driver.clean_data_for_foul_model(0)
     driver.clean_data_for_offspeed()
     driver.load_model()
-    driver.generate_predictions()
+    driver.generate_predictions(year = year)
 
     driver.read_variable_data()
+    driver.prune_variables()
     driver.clean_data_for_in_play_model(0)
     driver.clean_data_for_fastballs()
     driver.load_model()
-    driver.generate_predictions()
+    driver.generate_predictions(year = year)
     driver.clean_data_for_in_play_model(0)
     driver.clean_data_for_breakingballs()
     driver.load_model()
-    driver.generate_predictions()
+    driver.generate_predictions(year = year)
     driver.clean_data_for_in_play_model(0)
     driver.clean_data_for_offspeed()
     driver.load_model()
-    driver.generate_predictions()
+    driver.generate_predictions(year = year)
     return driver
 
 def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.Stuff), year = None):
     driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
     driver.read_variable_data ()
-    driver.load_predictions ()
     if (year is not None):
         driver.set_year(year)
-        driver.prune_predictions()
+        driver.prune_variables()
+    driver.load_predictions ()
         # driver.write_predictions()
     # driver.read_predictions(Focus.Stuff)
     driver.calculate_run_values_swing()
@@ -1609,6 +1647,7 @@ driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
 # driver.read_radar_data()
 # driver.load_relevant_data()
 # driver.write_variable_data()
+#TODO: recalculate fastball averages for each year, port to PitcherID
 def process_data ():
     driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
     driver.read_radar_data(new = 1)
@@ -1631,11 +1670,22 @@ def process_data ():
 # run_model()
 # generate_stuff_ratings()
 
+# driver.read_radar_data()
+# driver.load_relevant_data()
+# driver.write_variable_data()
+# driver.calculate_average_fastball('Four-Seam', year = 2023)
+# driver.calculate_average_fastball('Sinker', year = 2023)
+# driver.calculate_average_fastball('Cutter', year = 2023)
+# driver.aggregate_fastball_data(year = 2023)
+# driver.write_radar_data()
+
 def generate_all ():
     process_data()
     run_model(Focus.Stuff)
     generate_stuff_ratings()
+    run_model(Focus.Stuff, year = 2023)
     generate_stuff_ratings(year = 2023)
+    run_model(Focus.Stuff, year = 2024)
     generate_stuff_ratings(year = 2024)
 
 # generate_all()
