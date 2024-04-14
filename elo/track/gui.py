@@ -479,8 +479,8 @@ if not st.session_state.team_flag:
                 # st.dataframe (prob_df)
                 st.dataframe (merged_df)
                 # prob_df.update(merged_df[prob_df2.columns])
-                columns_to_drop = [col for col in df.columns if col.endswith('_df1') or col.endswith('_df2')]
-                st.empty ()
+                columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
+                # st.empty ()
                 # Drop these columns
                 prob_df = merged_df.drop(columns=columns_to_drop)
                 # prob_df = merged_df [[prob_df.columns]]
