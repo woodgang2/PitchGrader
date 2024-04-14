@@ -346,7 +346,11 @@ if not st.session_state.team_flag:
                 for col in stuff_df.columns:
                     if col != 'Pitcher' and col in stuff_df.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
-                stuff_df.update(merged_df[stuff_df2.columns])
+                # stuff_df.update(merged_df[stuff_df2.columns])
+                columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
+                # st.empty ()
+                # Drop these columns
+                stuff_df = merged_df.drop(columns=columns_to_drop)
 
             rename_columns = {
                 'ChangeUp': 'CH',
@@ -477,7 +481,7 @@ if not st.session_state.team_flag:
                     if col != 'PitchType' and col in prob_df.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                 # st.dataframe (prob_df)
-                st.dataframe (merged_df)
+                # st.dataframe (merged_df)
                 # prob_df.update(merged_df[prob_df2.columns])
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
