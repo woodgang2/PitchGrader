@@ -443,6 +443,35 @@ if not st.session_state.team_flag:
             prob_df = prob_df.drop_duplicates ('PitchType')
             # prob_df = pitching_percentages_df [pitching_percentages_df ['Pitcher'] == name]
             prob_df = prob_df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
+            if (show_changes):
+                prob_df2 = driver2.retrieve_percentages(name)
+                prob_df2 = prob_df2.drop_duplicates ('PitchType')
+                # prob_df = pitching_percentages_df [pitching_percentages_df ['Pitcher'] == name]
+                prob_df2 = prob_df2.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
+                # st.dataframe (stuff_df2)
+                merged_df = prob_df.merge(prob_df2, on='PitchType', how='left', suffixes=('_df2', '_df1'))
+                # st.dataframe (merged_df)
+                def calculate_and_format(row, col):
+                    original = row[f"{col}_df2"]
+                    if pd.isna(row[f"{col}_df1"]):
+                        if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
+                            return str(round (original))
+                        else:
+                            return str (original)
+                    else:
+                        # Check if both values are numbers before attempting to calculate difference
+                        if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
+                            difference = original - row[f"{col}_df1"]
+                            sign = '+' if difference >= 0 else ''
+                            return f"{round (original)} ({sign}{round (difference)})"
+                        else:
+                            return str(original)
+
+                for col in stuff_df.columns:
+                    if col != 'PitchType' and col in stuff_df.columns:  # Check if column is also in df1
+                        merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+                prob_df.update(merged_df[prob_df2.columns])
+
             cols = [col for col in prob_df.columns if col != 'xRV']
             cols.insert(2, 'xRV')
             prob_df = prob_df[cols]
