@@ -156,7 +156,7 @@ elif (year_selected == 2023):
     st.session_state["disabled"] = False
 else:
     st.session_state["disabled"] = True
-st.session_state["disabled"] = True
+st.session_state["disabled"] = False
 driver = database_driver.DatabaseDriver(year=year)
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (team_toggle):
