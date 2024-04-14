@@ -503,10 +503,10 @@ else:
             container.dataframe(stuff_df)
             container.markdown("</div>", unsafe_allow_html=True)
 
-            weighted_sum = np.sum(df['PitchCount'] * df['Stuff'])
-            total_weights = np.sum(df['PitchCount'])
+            weighted_sum = np.sum(stuff_df['PitchCount'] * stuff_df['Stuff'])
+            total_weights = np.sum(stuff_df['PitchCount'])
             weighted_stuff = weighted_sum / total_weights
-            weighted_command = np.sum(df['PitchCount'] * df['Command']) / np.sum(df['PitchCount'])
+            weighted_command = np.sum(stuff_df['PitchCount'] * stuff_df['Command']) / np.sum(stuff_df['PitchCount'])
 
             display_name.success (f"Team: {team_name}. Average Command: {weighted_command}, Average Stuff: {weighted_stuff}")
 
