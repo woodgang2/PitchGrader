@@ -335,7 +335,7 @@ if not st.session_state.team_flag:
 
                 # Apply the formatting to all columns based on the presence of the same columns in df1
                 for col in stuff_df.columns:
-                    if col != 'PitchType' and col in stuff_df.columns:  # Check if column is also in df1
+                    if col != 'PitchCount' and col in stuff_df.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
 
                 # Replace df2's columns with the formatted ones from merged_df
