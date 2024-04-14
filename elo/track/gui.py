@@ -145,12 +145,17 @@ with col2:
         # st.write (team_flag)
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
-    show_changes = st.button ("Show changes", key = 'show_changes')
+    show_changes = st.button ("Show changes", key = 'show_changes', disabled=st.session_state.get("disabled", True))
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 
 year = year_selected
 if (year_selected == 'Combined'):
     year = ''
+    st.session_state["disabled"] = True
+elif (year_selected == 2023):
+    st.session_state["disabled"] = True
+else:
+    st.session_state["disabled"] = False
 driver = database_driver.DatabaseDriver(year=year)
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (team_toggle):
@@ -302,6 +307,26 @@ if not st.session_state.team_flag:
             stuff_df = driver.retrieve_stuff (name)
             stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
             stuff_df = stuff_df.round(0)
+
+            # if (show_changes):
+            #
+            #     merged_df = df2.merge(df1, on='PitchType', how='left', suffixes=('_df2', '_df1'))
+            #     def calculate_and_format(row, col):
+            #         original = row[f"{col}_df2"]
+            #         if pd.isna(row[f"{col}_df1"]):
+            #             return str(original)  # No corresponding value in df1, keep df2 value
+            #         else:
+            #             difference = original - row[f"{col}_df1"]
+            #             sign = '+' if difference >= 0 else ''
+            #             return f"{original} ({sign}{difference})"
+            #
+            #     # Apply the formatting to all columns based on the presence of the same columns in df1
+            #     for col in df2.columns:
+            #         if col != 'PitchType' and col in df1.columns:  # Check if column is also in df1
+            #             merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+            #
+            #     # Replace df2's columns with the formatted ones from merged_df
+            #     df2.update(merged_df[df2.columns])
 
             rename_columns = {
                 'ChangeUp': 'CH',
