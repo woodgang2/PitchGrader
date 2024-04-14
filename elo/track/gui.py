@@ -120,7 +120,7 @@ if 'team_name' not in st.session_state:
     st.session_state['team_name'] = ''
 
 if 'disabled' not in st.session_state:
-    st.session_state["disabled"] = True
+    st.session_state["disabled"] = False
 
 # Your database initialization
 # driver = database_driver.DatabaseDriver()
