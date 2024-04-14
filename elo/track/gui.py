@@ -479,7 +479,11 @@ if not st.session_state.team_flag:
                 # st.dataframe (prob_df)
                 st.dataframe (merged_df)
                 # prob_df.update(merged_df[prob_df2.columns])
-                prob_df = merged_df [[prob_df.columns]]
+                columns_to_drop = [col for col in df.columns if col.endswith('_df1') or col.endswith('_df2')]
+
+                # Drop these columns
+                prob_df = merged_df.drop(columns=columns_to_drop)
+                # prob_df = merged_df [[prob_df.columns]]
                 # st.dataframe (prob_df)
 
             prob_df = prob_df.sort_values(by='Usage', ascending = False)
