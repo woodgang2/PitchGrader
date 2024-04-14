@@ -154,9 +154,9 @@ year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index 
 year = year_selected
 if (year_selected == 'Combined'):
     year = ''
-    st.session_state["disabled"] = False
-elif (year_selected == 2023):
-    st.session_state["disabled"] = False
+    # st.session_state["disabled"] = False
+# elif (year_selected == 2023):
+    # st.session_state["disabled"] = False
 driver = database_driver.DatabaseDriver(year=year)
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (team_toggle):
