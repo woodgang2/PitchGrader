@@ -305,16 +305,24 @@ if not st.session_state.team_flag:
                     display_static_slider('"Game Power"', df ['NeutralHR'].iloc [index])
 
         else:
-            location_df = driver.retrieve_location (name)
-            location_df = location_df [['Pitcher', 'Overall']]
-            location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
-            location_df = location_df.rename(columns={'Overall': 'Command'})
-            # st.dataframe (location_df)
-            stuff_df = driver.retrieve_stuff (name)
-            stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
-            stuff_df = stuff_df.round(0)
+            # location_df = driver.retrieve_location (name)
+            # location_df = location_df [['Pitcher', 'Overall']]
+            # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+            # location_df = location_df.rename(columns={'Overall': 'Command'})
+            # # st.dataframe (location_df)
+            # stuff_df = driver.retrieve_stuff (name)
+            # stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
+            # stuff_df = stuff_df.round(0)
 
             if (show_changes):
+                location_df = driver.retrieve_location (name)
+                location_df = location_df [['Pitcher', 'Overall']]
+                location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                location_df = location_df.rename(columns={'Overall': 'Command'})
+                # st.dataframe (location_df)
+                stuff_df1 = driver.retrieve_stuff (name)
+                stuff_df1 = stuff_df1.merge (location_df, on = 'Pitcher')
+                stuff_df1 = stuff_df1.round(0)
                 location_df = driver2.retrieve_location (name)
                 location_df = location_df [['Pitcher', 'Overall']]
                 location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
@@ -325,7 +333,7 @@ if not st.session_state.team_flag:
                 stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
                 stuff_df2 = stuff_df2.round(0)
                 # st.dataframe (stuff_df2)
-                merged_df = stuff_df.merge(stuff_df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
+                merged_df = stuff_df1.merge(stuff_df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
                 # st.dataframe (merged_df)
                 def calculate_and_format(row, col):
                     original = row[f"{col}_df2"]
@@ -343,18 +351,25 @@ if not st.session_state.team_flag:
                         else:
                             return str(original)
 
-                for col in stuff_df.columns:
-                    if col != 'Pitcher' and col in stuff_df.columns:  # Check if column is also in df1
+                for col in stuff_df1.columns:
+                    if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                 # stuff_df.update(merged_df[stuff_df2.columns])
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
                 # Drop these columns
                 stuff_df = merged_df.drop(columns=columns_to_drop)
-                stuff_df3 = merged_df.drop(columns=columns_to_drop)
                 # st.table (stuff_df)
-                st.dataframe (stuff_df3)
-
+                # st.dataframe (stuff_df)
+            else:
+                location_df = driver.retrieve_location (name)
+                location_df = location_df [['Pitcher', 'Overall']]
+                location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                location_df = location_df.rename(columns={'Overall': 'Command'})
+                # st.dataframe (location_df)
+                stuff_df = driver.retrieve_stuff (name)
+                stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
+                stuff_df = stuff_df.round(0)
             rename_columns = {
                 'ChangeUp': 'CH',
                 'Curveball': 'CU',
