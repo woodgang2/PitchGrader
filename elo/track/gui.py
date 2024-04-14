@@ -152,7 +152,6 @@ with col3:
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 
 year = year_selected
-driver = database_driver.DatabaseDriver(year=year)
 if (year_selected == 'Combined'):
     year = ''
     st.session_state["disabled"] = True
@@ -160,6 +159,7 @@ elif (year_selected == 2023):
     st.session_state["disabled"] = True
 else:
     st.session_state['disabled'] = False
+driver = database_driver.DatabaseDriver(year=year)
 show_changes = show_changes_placeholder.button ("Show changes from previous year", key = 'show_changes', disabled=st.session_state["disabled"])
 # driver = database_driver.DatabaseDriver(year=year)
 if (show_changes):
