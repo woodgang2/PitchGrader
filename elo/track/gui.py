@@ -473,7 +473,7 @@ if not st.session_state.team_flag:
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
                 # Drop these columns
-                df = merged_df.drop(columns=columns_to_drop + ['ExitSpeed'])
+                df = merged_df.drop(columns=columns_to_drop + ['ExitSpeed', 'PitcherId'])
                 # df = merged_df [[df.columns]]
                 # st.dataframe (df)
 
@@ -519,6 +519,10 @@ if not st.session_state.team_flag:
             cols = [col for col in prob_df.columns if col != 'xRV']
             cols.insert(2, 'xRV')
             prob_df = prob_df[cols]
+            prob_df ['DifferenceRS'] = prob_df [f'DifferenceRS{year}']
+            prob_df ['DifferenceHB'] = prob_df [f'DifferenceHB{year}']
+            prob_df ['DifferenceIVB'] = prob_df [f'DifferenceIVB{year}']
+            prob_df = prob_df.drop (columns = [f'DifferenceRS{year}', f'DifferenceHB{year}', f'DifferenceIVB{year}'])
             if (show_changes):
                 prob_df2 = driver2.retrieve_percentages(name)
                 prob_df2 = prob_df2.drop_duplicates ('PitchType')
@@ -527,6 +531,11 @@ if not st.session_state.team_flag:
                 cols = [col for col in prob_df2.columns if col != 'xRV']
                 cols.insert(2, 'xRV')
                 prob_df2 = prob_df2[cols]
+                #Legacy: only 2 years
+                prob_df2 ['DifferenceRS'] = prob_df2 [f'DifferenceRS{year-1}']
+                prob_df2 ['DifferenceHB'] = prob_df2 [f'DifferenceHB{year-1}']
+                prob_df2 ['DifferenceIVB'] = prob_df2 [f'DifferenceIVB{year-1}']
+                prob_df2 = prob_df2.drop (columns = [f'DifferenceRS{year-1}', f'DifferenceHB{year-1}', f'DifferenceIVB{year-1}'])
                 # st.dataframe (stuff_df2)
                 merged_df = prob_df.merge(prob_df2, on='PitchType', how='left', suffixes=('_df2', '_df1'))
                 # st.dataframe (merged_df)
@@ -555,7 +564,7 @@ if not st.session_state.team_flag:
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
                 # Drop these columns
-                prob_df = merged_df.drop(columns=columns_to_drop + ['ExitSpeed'])
+                prob_df = merged_df.drop(columns=columns_to_drop + ['ExitSpeed', 'PitcherId'])
                 # prob_df = merged_df [[prob_df.columns]]
                 # st.dataframe (prob_df)
 
