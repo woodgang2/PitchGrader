@@ -124,6 +124,8 @@ class Driver:
         if (new > 0):
             self.radar_df['PitchType'] = self.radar_df['TaggedPitchType'].replace(value_map)
             self.radar_df.to_sql ('radar_data', conn, if_exists='replace', index=False)
+            self.radar_df['PitcherTeam'] = self.radar_df['PitcherTeam'].str.replace(r'1$', '', regex=True)
+            self.radar_df['BatterTeam'] = self.radar_df['BatterTeam'].str.replace(r'1$', '', regex=True)
         print ('Finished reading radar data')
         # filtered_df = self.radar_df[self.radar_df['PitcherTeam'] == 'VIR_CAV']
         # filtered_df = filtered_df[['Pitcher']]
