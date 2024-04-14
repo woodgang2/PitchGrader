@@ -144,7 +144,8 @@ with col2:
 #         st.session_state.team_flag = not st.session_state.team_flag
         # st.write (team_flag)
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
-# with col3:
+with col3:
+    show_changes = st.button ("Show changes", key = 'show_changes')
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 
 year = year_selected
