@@ -545,6 +545,6 @@ def update_gui (year = ''):
     driver.write_stuff()
     driver.write_locations ()
 
-update_gui()
-update_gui(2023)
-update_gui(2024)
+# update_gui()
+# update_gui(2023)
+# update_gui(2024)
