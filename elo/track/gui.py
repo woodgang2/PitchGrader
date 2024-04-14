@@ -351,7 +351,7 @@ if not st.session_state.team_flag:
                             return f"{round (original)} ({sign}{round (difference)})"
                         else:
                             return str(original)
-
+                print (merged_df)
                 for col in stuff_df1.columns:
                     if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
