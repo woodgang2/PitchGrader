@@ -409,6 +409,45 @@ if not st.session_state.team_flag:
             cols = [col for col in df.columns if col != 'xRV']
             cols.insert(2, 'xRV')
             df = df[cols]
+            if (show_changes):
+                df2 = driver2.retrieve_percentiles (name, team_name)
+                df2 = df2.drop_duplicates ('PitchType')
+                df2 = df2.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
+                cols = [col for col in df2.columns if col != 'xRV']
+                cols.insert(2, 'xRV')
+                df2 = df2[cols]
+                # st.dataframe (stuff_df2)
+                merged_df = df.merge(df2, on='PitchType', how='left', suffixes=('_df2', '_df1'))
+                # st.dataframe (merged_df)
+                def calculate_and_format(row, col):
+                    original = row[f"{col}_df2"]
+                    if pd.isna(row[f"{col}_df1"]):
+                        if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
+                            return str(round (original, 2))
+                        else:
+                            return str (original)
+                    else:
+                        # Check if both values are numbers before attempting to calculate difference
+                        if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
+                            difference = original - row[f"{col}_df1"]
+                            sign = '+' if difference >= 0 else ''
+                            return f"{round (original, 2)} ({sign}{round (difference, 2)})"
+                        else:
+                            return str(original)
+
+                for col in df.columns:
+                    if col != 'PitchType' and col in df.columns:  # Check if column is also in df1
+                        merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+                # st.dataframe (df)
+                # st.dataframe (merged_df)
+                # df.update(merged_df[df2.columns])
+                columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
+                # st.empty ()
+                # Drop these columns
+                df = merged_df.drop(columns=columns_to_drop)
+                # df = merged_df [[df.columns]]
+                # st.dataframe (df)
+
             df = df.sort_values(by='Usage', ascending = False)
             # df = stuff_df.set_index('PitchType')
             df_display = df
