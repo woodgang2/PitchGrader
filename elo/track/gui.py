@@ -443,11 +443,17 @@ if not st.session_state.team_flag:
             prob_df = prob_df.drop_duplicates ('PitchType')
             # prob_df = pitching_percentages_df [pitching_percentages_df ['Pitcher'] == name]
             prob_df = prob_df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
+            cols = [col for col in prob_df.columns if col != 'xRV']
+            cols.insert(2, 'xRV')
+            prob_df = prob_df[cols]
             if (show_changes):
                 prob_df2 = driver2.retrieve_percentages(name)
                 prob_df2 = prob_df2.drop_duplicates ('PitchType')
                 # prob_df = pitching_percentages_df [pitching_percentages_df ['Pitcher'] == name]
                 prob_df2 = prob_df2.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
+                cols = [col for col in prob_df2.columns if col != 'xRV']
+                cols.insert(2, 'xRV')
+                prob_df2 = prob_df2[cols]
                 # st.dataframe (stuff_df2)
                 merged_df = prob_df.merge(prob_df2, on='PitchType', how='left', suffixes=('_df2', '_df1'))
                 # st.dataframe (merged_df)
@@ -473,10 +479,6 @@ if not st.session_state.team_flag:
                 st.dataframe (prob_df)
                 st.dataframe (merged_df)
                 prob_df.update(merged_df[prob_df2.columns])
-
-            cols = [col for col in prob_df.columns if col != 'xRV']
-            cols.insert(2, 'xRV')
-            prob_df = prob_df[cols]
             prob_df = prob_df.sort_values(by='Usage', ascending = False)
             prob_df = prob_df.set_index('PitchType')
             prob_df.index.name = "Pitch Type"
