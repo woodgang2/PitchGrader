@@ -351,8 +351,9 @@ if not st.session_state.team_flag:
                 # st.empty ()
                 # Drop these columns
                 stuff_df = merged_df.drop(columns=columns_to_drop)
-                st.table (stuff_df)
-                st.dataframe (stuff_df)
+                stuff_df3 = merged_df.drop(columns=columns_to_drop)
+                # st.table (stuff_df)
+                st.dataframe (stuff_df3)
 
             rename_columns = {
                 'ChangeUp': 'CH',
