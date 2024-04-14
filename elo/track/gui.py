@@ -119,6 +119,9 @@ if 'team_name_update' not in st.session_state:
 if 'team_name' not in st.session_state:
     st.session_state['team_name'] = ''
 
+if 'disabled' not in st.session_state:
+    st.session_state["disabled"] = True
+
 # Your database initialization
 # driver = database_driver.DatabaseDriver()
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
@@ -145,7 +148,7 @@ with col2:
         # st.write (team_flag)
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
-    show_changes = st.button ("Show changes", key = 'show_changes', disabled=st.session_state.get("disabled", True))
+    show_changes = st.button ("Show changes", key = 'show_changes', disabled=st.session_state["disabled"])
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 
 year = year_selected
@@ -156,7 +159,6 @@ elif (year_selected == 2023):
     st.session_state["disabled"] = False
 else:
     st.session_state["disabled"] = True
-st.session_state["disabled"] = False
 driver = database_driver.DatabaseDriver(year=year)
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (team_toggle):
