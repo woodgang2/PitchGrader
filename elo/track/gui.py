@@ -1,5 +1,7 @@
 import random
 
+import numpy as np
+
 import database_driver
 import stuff_plus
 import streamlit as st
@@ -501,7 +503,13 @@ else:
             container.dataframe(stuff_df)
             container.markdown("</div>", unsafe_allow_html=True)
 
-            display_name.success (f"Team: {team_name}")
+            weighted_sum = np.sum(df['PitchCount'] * df['Stuff'])
+            total_weights = np.sum(df['PitchCount'])
+            weighted_stuff = weighted_sum / total_weights
+            weighted_command = np.sum(df['PitchCount'] * df['Command']) / np.sum(df['PitchCount'])
+
+            display_name.success (f"Team: {team_name}. Average Command: {weighted_command}, Average Stuff: {weighted_stuff}")
+
             if (team_name == 'All'):
                 df = df.drop (columns = ['Balls', 'Strikes'])
             else:
