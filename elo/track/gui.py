@@ -473,7 +473,7 @@ if not st.session_state.team_flag:
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
                 # Drop these columns
-                df = merged_df.drop(columns=columns_to_drop)
+                df = merged_df.drop(columns=columns_to_drop + ['ExitSpeed'])
                 # df = merged_df [[df.columns]]
                 # st.dataframe (df)
 
@@ -555,7 +555,7 @@ if not st.session_state.team_flag:
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
                 # Drop these columns
-                prob_df = merged_df.drop(columns=columns_to_drop)
+                prob_df = merged_df.drop(columns=columns_to_drop + ['ExitSpeed'])
                 # prob_df = merged_df [[prob_df.columns]]
                 # st.dataframe (prob_df)
 
