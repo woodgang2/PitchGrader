@@ -159,7 +159,7 @@ elif (year_selected == 2023):
     st.session_state["disabled"] = True
 else:
     st.session_state['disabled'] = False
-show_changes = show_changes_placeholder.button ("Show changes", key = 'show_changes', disabled=st.session_state["disabled"])
+show_changes = show_changes_placeholder.button ("Show changes from previous years", key = 'show_changes', disabled=st.session_state["disabled"])
 driver = database_driver.DatabaseDriver(year=year)
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (team_toggle):
