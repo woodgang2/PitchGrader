@@ -321,6 +321,7 @@ if not st.session_state.team_flag:
                 location_df = location_df.rename(columns={'Overall': 'Command'})
                 # st.dataframe (location_df)
                 stuff_df2 = driver2.retrieve_stuff (name)
+                st.dataframe (stuff_df2)
                 stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
                 stuff_df2 = stuff_df2.round(0)
                 merged_df = stuff_df.merge(stuff_df2, on='PitchCount', how='left', suffixes=('_df2', '_df1'))
