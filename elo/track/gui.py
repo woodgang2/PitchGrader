@@ -126,7 +126,7 @@ if 'disabled' not in st.session_state:
 # driver = database_driver.DatabaseDriver()
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 # Update dataset button
-col1, col2, col3 = st.columns([5, 3, 4])
+col1, col2, col3 = st.columns([4, 2, 4])
 with col1:
     team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 #     update = st.button("Update Dataset", key='update_dataset', type = 'primary')
@@ -160,7 +160,7 @@ elif (year_selected == 2023):
 else:
     st.session_state['disabled'] = False
 driver = database_driver.DatabaseDriver(year=year)
-show_changes = show_changes_placeholder.button ("Compare with previous year", key = 'show_changes', disabled=st.session_state["disabled"])
+show_changes = show_changes_placeholder.button (f"Compare stats to previous year", key = 'show_changes', disabled=st.session_state["disabled"])
 # driver = database_driver.DatabaseDriver(year=year)
 if (show_changes):
     driver2 = database_driver.DatabaseDriver(year=(year-1))
