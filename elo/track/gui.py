@@ -456,30 +456,31 @@ if not st.session_state.team_flag:
             st.write ("Percentiles")
             st.dataframe(df_display)
             pitch_types = df['PitchType'].unique().tolist()
-            index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
-            temp = df['PitchType'].iloc [index]
-            # st.title (temp)
-            def add_custom_css():
-                st.markdown("""
-                        <style>
-                            .block-container > .row {
-                                gap: 2rem;  /* Adjust the gap size as needed */
-                            }
-                        </style>
-                    """, unsafe_allow_html=True)
+            if (not show_changes):
+                index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
+                temp = df['PitchType'].iloc [index]
+                # st.title (temp)
+                def add_custom_css():
+                    st.markdown("""
+                            <style>
+                                .block-container > .row {
+                                    gap: 2rem;  /* Adjust the gap size as needed */
+                                }
+                            </style>
+                        """, unsafe_allow_html=True)
 
-            add_custom_css()
-            col1, space, col2 = st.columns([2, 1, 2])
+                add_custom_css()
+                col1, space, col2 = st.columns([2, 1, 2])
 
-            with col1:
-                display_static_slider('xRV', df ['xRV'].iloc [index])
-                display_static_slider('xWhiff%', df ['xWhiff%'].iloc [index])
-                display_static_slider('xFoul%', df ['xFoul%'].iloc [index])
+                with col1:
+                    display_static_slider('xRV', df ['xRV'].iloc [index])
+                    display_static_slider('xWhiff%', df ['xWhiff%'].iloc [index])
+                    display_static_slider('xFoul%', df ['xFoul%'].iloc [index])
 
-            with col2:
-                display_static_slider('xGB%', df ['xGB%'].iloc [index])
-                display_static_slider('xHH%', 100 - df ['xHH%'].iloc [index])
-                display_static_slider('xHHFB%', 100 - df ['Prob_HardFB'].iloc [index])
+                with col2:
+                    display_static_slider('xGB%', df ['xGB%'].iloc [index])
+                    display_static_slider('xHH%', 100 - df ['xHH%'].iloc [index])
+                    display_static_slider('xHHFB%', 100 - df ['Prob_HardFB'].iloc [index])
 
             st.write ("View/Edit Raws")
             prob_df = driver.retrieve_percentages(name)
