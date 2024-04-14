@@ -358,12 +358,12 @@ if not st.session_state.team_flag:
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
                 # Drop these columns
-                stuff_df = merged_df.drop(columns=columns_to_drop)
+                stuff_df3 = merged_df.drop(columns=columns_to_drop)
                 # st.table (stuff_df)
                 # st.dataframe (stuff_df)
                 # stuff_df3 = merged_df.drop(columns=columns_to_drop)
                 # st.table (stuff_df)
-                # st.dataframe (stuff_df3)
+                st.dataframe (stuff_df3)
             else:
                 location_df = driver.retrieve_location (name)
                 location_df = location_df [['Pitcher', 'Overall']]
