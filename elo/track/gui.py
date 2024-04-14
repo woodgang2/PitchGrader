@@ -325,7 +325,7 @@ if not st.session_state.team_flag:
                 stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
                 stuff_df2 = stuff_df2.round(0)
                 st.dataframe (stuff_df2)
-                merged_df = stuff_df.merge(stuff_df2, on='PitchCount', suffixes=('_df2', '_df1'))
+                merged_df = stuff_df.merge(stuff_df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
                 st.dataframe (merged_df)
                 def calculate_and_format(row, col):
                     original = row[f"{col}_df2"]
@@ -338,7 +338,7 @@ if not st.session_state.team_flag:
 
                 # Apply the formatting to all columns based on the presence of the same columns in df1
                 for col in stuff_df.columns:
-                    if col != 'PitchCount' and col in stuff_df.columns:  # Check if column is also in df1
+                    if col != 'Pitcher' and col in stuff_df.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
 
                 # Replace df2's columns with the formatted ones from merged_df
