@@ -470,6 +470,8 @@ if not st.session_state.team_flag:
                 for col in prob_df.columns:
                     if col != 'PitchType' and col in stuff_df.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+                st.dataframe (prob_df)
+                st.dataframe (merged_df)
                 prob_df.update(merged_df[prob_df2.columns])
 
             cols = [col for col in prob_df.columns if col != 'xRV']
