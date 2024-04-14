@@ -505,8 +505,8 @@ else:
 
             weighted_sum = np.sum(stuff_df['PitchCount'] * stuff_df['Stuff'])
             total_weights = np.sum(stuff_df['PitchCount'])
-            weighted_stuff = weighted_sum / total_weights
-            weighted_command = np.sum(stuff_df['PitchCount'] * stuff_df['Command']) / np.sum(stuff_df['PitchCount'])
+            weighted_stuff = round (weighted_sum / total_weights)
+            weighted_command = round (np.sum(stuff_df['PitchCount'] * stuff_df['Command']) / np.sum(stuff_df['PitchCount']))
 
             display_name.success (f"Team: {team_name}. Average Command: {weighted_command}, Average Stuff: {weighted_stuff}")
 
