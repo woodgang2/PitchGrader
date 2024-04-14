@@ -330,13 +330,16 @@ if not st.session_state.team_flag:
                 def calculate_and_format(row, col):
                     original = row[f"{col}_df2"]
                     if pd.isna(row[f"{col}_df1"]):
-                        return str(original)  # No corresponding value in df1, keep df2 value
+                        if isinstance(original, (int, float)):
+                            return str(round (original))
+                        else:
+                            return str (original)
                     else:
                         # Check if both values are numbers before attempting to calculate difference
                         if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
                             difference = original - row[f"{col}_df1"]
                             sign = '+' if difference >= 0 else ''
-                            return f"{original} ({sign}{difference})"
+                            return f"{round (original)} ({sign}{round (difference)})"
                         else:
                             return str(original)
 
@@ -344,7 +347,6 @@ if not st.session_state.team_flag:
                     if col != 'Pitcher' and col in stuff_df.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                 stuff_df.update(merged_df[stuff_df2.columns])
-                stuff_df = stuff_df.round(0)
 
             rename_columns = {
                 'ChangeUp': 'CH',
