@@ -330,7 +330,7 @@ if not st.session_state.team_flag:
                 def calculate_and_format(row, col):
                     original = row[f"{col}_df2"]
                     if pd.isna(row[f"{col}_df1"]):
-                        if isinstance(original, (int, float)):
+                        if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
                             return str(round (original))
                         else:
                             return str (original)
