@@ -505,7 +505,7 @@ else:
 
             weighted_sum1 = np.sum(stuff_df['PitchCount'] * stuff_df['Stuff'])
             weighted_sum2= np.sum(stuff_df['PitchCount'] * stuff_df['Command'])
-            unweighted_stuff = np.sum (stuff_df ['Stuff'])
+            unweighted_stuff = round (np.mean (stuff_df ['Stuff']))
             total_weights = np.sum(stuff_df['PitchCount'])
             weighted_stuff = round (weighted_sum1 / (total_weights+1e-6))
             weighted_command = round (weighted_sum2 / (total_weights+1e-6))
