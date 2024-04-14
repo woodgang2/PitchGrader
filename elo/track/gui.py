@@ -145,17 +145,17 @@ with col2:
         # st.write (team_flag)
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
-    show_changes = st.button ("Show changes", key = 'show_changes', disabled=st.session_state.get("enabled", True))
+    show_changes = st.button ("Show changes", key = 'show_changes', disabled=st.session_state.get("disabled", False))
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 
 year = year_selected
 if (year_selected == 'Combined'):
     year = ''
-    st.session_state["enabled"] = True
+    st.session_state["disabled"] = True
 elif (year_selected == 2023):
-    st.session_state["enabled"] = True
+    st.session_state["disabled"] = True
 else:
-    st.session_state["enabled"] = False
+    st.session_state["disabled"] = False
 driver = database_driver.DatabaseDriver(year=year)
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (team_toggle):
