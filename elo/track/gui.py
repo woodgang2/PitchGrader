@@ -339,7 +339,7 @@ if not st.session_state.team_flag:
                 # st.dataframe (merged_df)
                 def calculate_and_format(row, col):
                     original = row[f"{col}_df2"]
-                    if pd.isna(row[f"{col}_df1"]):
+                    if pd.isna(row[f"{col}_df1"]) or pd.isna(row[f"{col}_df2"]):
                         if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
                             return str(round (original))
                         else:
