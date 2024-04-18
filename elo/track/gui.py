@@ -641,6 +641,12 @@ else:
             stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
             stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
             stuff_df = stuff_df.round(0)
+            weighted_sum1 = np.sum(stuff_df['PitchCount'] * stuff_df['Stuff'])
+            weighted_sum2= np.sum(stuff_df['PitchCount'] * stuff_df['Command'])
+            unweighted_stuff = round (np.mean (stuff_df ['Stuff']))
+            total_weights = np.sum(stuff_df['PitchCount'])
+            weighted_stuff = round (weighted_sum1 / (total_weights+1e-6))
+            weighted_command = round (weighted_sum2 / (total_weights+1e-6))
             if (show_changes):
                 location_df = driver2.retrieve_location (team_name)
                 location_df = location_df [['Pitcher', 'Overall']]
@@ -710,12 +716,6 @@ else:
             container.dataframe(stuff_df)
             container.markdown("</div>", unsafe_allow_html=True)
 
-            weighted_sum1 = np.sum(stuff_df['PitchCount'] * stuff_df['Stuff'])
-            weighted_sum2= np.sum(stuff_df['PitchCount'] * stuff_df['Command'])
-            unweighted_stuff = round (np.mean (stuff_df ['Stuff']))
-            total_weights = np.sum(stuff_df['PitchCount'])
-            weighted_stuff = round (weighted_sum1 / (total_weights+1e-6))
-            weighted_command = round (weighted_sum2 / (total_weights+1e-6))
             # weighted_command = round (np.sum(stuff_df['PitchCount'] * stuff_df['Command']) / (np.sum(stuff_df['PitchCount']+1e-6)))
 
             display_name.success (f"Team: {team_name}. Average Command: {weighted_command}, Average Stuff: {weighted_stuff} ({unweighted_stuff} unweighted)")
