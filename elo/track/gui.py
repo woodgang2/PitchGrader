@@ -659,7 +659,7 @@ else:
                 stuff_df1 = stuff_df1.round(0)
                 # st.dataframe (stuff_df2)
                 merged_df = stuff_df.merge(stuff_df1, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
-                st.dataframe (merged_df)
+                # st.dataframe (merged_df)
                 # st.dataframe (merged_df)
                 def calculate_and_format(row, col):
                     original = row[f"{col}_df2"]
