@@ -740,8 +740,8 @@ else:
                             return f"{round (original)} ({sign}{round (difference)})"
                         else:
                             return str(original)
-                for col in stuff_df1.columns:
-                    if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
+                for col in df2.columns:
+                    if col != 'Pitcher' and col in stuff_df.columns:
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                 # stuff_df.update(merged_df[stuff_df2.columns])
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
