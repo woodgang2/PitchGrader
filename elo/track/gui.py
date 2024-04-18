@@ -657,6 +657,21 @@ else:
                 stuff_df1 = stuff_df1.rename(columns={'Overall': 'Stuff'})
                 stuff_df1 = stuff_df1.merge (location_df, on = 'Pitcher')
                 stuff_df1 = stuff_df1.round(0)
+                weighted_sum1_2 = np.sum(stuff_df1['PitchCount'] * stuff_df1['Stuff'])
+                weighted_sum2_2= np.sum(stuff_df1['PitchCount'] * stuff_df1['Command'])
+                unweighted_stuff_2 = round (np.mean (stuff_df1 ['Stuff']))
+                total_weights_2 = np.sum(stuff_df1['PitchCount'])
+                weighted_stuff_2 = round (weighted_sum1_2 / (total_weights_2+1e-6))
+                weighted_command_2 = round (weighted_sum2_2 / (total_weights_2+1e-6))
+                difference = weighted_command - weighted_command_2
+                sign = '+' if difference >= 0 else ''
+                weighted_command = f"{weighted_command} ({sign}{round (difference)})"
+                difference = weighted_stuff - weighted_stuff_2
+                sign = '+' if difference >= 0 else ''
+                weighted_stuff = f"{weighted_stuff} ({sign}{round (difference)})"
+                difference = unweighted_stuff - unweighted_stuff_2
+                sign = '+' if difference >= 0 else ''
+                unweighted_stuff = f"{unweighted_stuff} ({sign}{round (difference)})"
                 # st.dataframe (stuff_df2)
                 merged_df = stuff_df.merge(stuff_df1, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
                 # st.dataframe (merged_df)
