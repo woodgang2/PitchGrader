@@ -733,7 +733,7 @@ else:
 
             # weighted_command = round (np.sum(stuff_df['PitchCount'] * stuff_df['Command']) / (np.sum(stuff_df['PitchCount']+1e-6)))
 
-            display_name.success (f"Team: {team_name}. Average Command: {weighted_command}, Average Stuff: {weighted_stuff} ({unweighted_stuff} unweighted)")
+            display_name.success (f"Team: {team_name}. Average Command: {weighted_command}, Average Stuff: {weighted_stuff} | {unweighted_stuff} unweighted")
             if (show_changes):
                 df2 = driver2.retrieve_percentiles_team (team_name)
                 # st.dataframe (stuff_df2)
