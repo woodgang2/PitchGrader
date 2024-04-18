@@ -729,7 +729,10 @@ else:
                     original = row[f"{col}_df2"]
                     if pd.isna(row[f"{col}_df1"]) or pd.isna(row[f"{col}_df2"]):
                         if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
-                            return str(round (original))
+                            if (col == 'Usage'):
+                                return str(round (original, 2))
+                            else:
+                                return str(round (original))
                         else:
                             return str (original)
                     else:
