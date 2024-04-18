@@ -749,6 +749,7 @@ else:
                 # Drop these columns
                 df = merged_df.drop(columns=columns_to_drop)
                 st.empty ()
+            st.dataframe (df)
             if (team_name == 'All'):
                 df = df.drop (columns = ['Balls', 'Strikes'])
             else:
