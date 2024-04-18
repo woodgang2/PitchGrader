@@ -722,7 +722,9 @@ else:
             if (show_changes):
                 df2 = driver2.retrieve_percentiles_team (team_name)
                 # st.dataframe (stuff_df2)
-                merged_df = df.merge(df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
+                df ['T'] = df ['Pitcher'] + df ['PitchType']
+                df2 ['T'] = df2 ['Pitcher'] + df2 ['PitchType']
+                merged_df = df.merge(df2, on='T', how='left', suffixes=('_df2', '_df1'))
                 # st.dataframe (merged_df)
                 # st.dataframe (merged_df)
                 def calculate_and_format(row, col):
@@ -747,13 +749,13 @@ else:
                         else:
                             return str(original)
                 for col in df2.columns:
-                    if col != 'Pitcher' and col in df.columns:
+                    if col != 'T' and col in df.columns:
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                 # stuff_df.update(merged_df[stuff_df2.columns])
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
                 # Drop these columns
-                df = merged_df.drop(columns=columns_to_drop)
+                df = merged_df.drop(columns=columns_to_drop + ['T'])
                 st.empty ()
             if (team_name == 'All'):
                 df = df.drop (columns = ['Balls', 'Strikes'])
