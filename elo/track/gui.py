@@ -719,7 +719,36 @@ else:
             # weighted_command = round (np.sum(stuff_df['PitchCount'] * stuff_df['Command']) / (np.sum(stuff_df['PitchCount']+1e-6)))
 
             display_name.success (f"Team: {team_name}. Average Command: {weighted_command}, Average Stuff: {weighted_stuff} ({unweighted_stuff} unweighted)")
-
+            if (show_changes):
+                df2 = driver2.retrieve_percentiles_team (team_name)
+                # st.dataframe (stuff_df2)
+                merged_df = df.merge(df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
+                # st.dataframe (merged_df)
+                # st.dataframe (merged_df)
+                def calculate_and_format(row, col):
+                    original = row[f"{col}_df2"]
+                    if pd.isna(row[f"{col}_df1"]) or pd.isna(row[f"{col}_df2"]):
+                        if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
+                            return str(round (original))
+                        else:
+                            return str (original)
+                    else:
+                        # Check if both values are numbers before attempting to calculate difference
+                        if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
+                            difference = original - row[f"{col}_df1"]
+                            sign = '+' if difference >= 0 else ''
+                            return f"{round (original)} ({sign}{round (difference)})"
+                        else:
+                            return str(original)
+                for col in stuff_df1.columns:
+                    if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
+                        merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+                # stuff_df.update(merged_df[stuff_df2.columns])
+                columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
+                # st.empty ()
+                # Drop these columns
+                df = merged_df.drop(columns=columns_to_drop)
+                st.empty ()
             if (team_name == 'All'):
                 df = df.drop (columns = ['Balls', 'Strikes'])
             else:
