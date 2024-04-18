@@ -372,9 +372,15 @@ class Driver:
 
     def normalize_VAA (self):
         # self.radar_df['VAA'] = self.radar_df['VertApprAngle'] / self.radar_df['PlateLocHeight']
-        height_difference = self.radar_df['PlateLocHeight'] - 2.5
-        vaa_adjustment = height_difference * 0.82  # Adjusting by 0.82 degrees for every foot
-        self.radar_df ['VAA'] = self.radar_df['VertApprAngle'] - vaa_adjustment
+        # height_difference = self.radar_df['PlateLocHeight'] - 2.5
+        # vaa_adjustment = height_difference * 0.82  # Adjusting by 0.82 degrees for every foot
+        # self.radar_df ['VAA'] = self.radar_df['VertApprAngle'] - vaa_adjustment
+        plate_loc_height = self.radar_df['PlateLocHeight'].values
+        vert_appr_angle = self.radar_df['VertApprAngle'].values
+        A = np.vstack([plate_loc_height, np.ones(len(plate_loc_height))]).T
+        m, c = np.linalg.lstsq(A, vert_appr_angle, rcond=None)[0]
+        expected_vaa = m * plate_loc_height + c
+        self.radar_df['VAA'] = vert_appr_angle - expected_vaa
     def classify_pitches (self):
         # print (self.input_variables_df)
         # self.input_variables_df = self.input_variables_df.drop (['Cluster1', 'Cluster2'], axis = 1)
@@ -1583,6 +1589,7 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
 # run_model(Focus.Stuff)
 # run_Stuff_model()
 driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
+# train_model(Focus.Stuff)
 # driver.read_predictions(focus=Focus.Stuff)
 # driver.store_probs_LZ4()
 # driver.set_year(2024)
@@ -1660,6 +1667,14 @@ def process_data ():
     driver.calculate_average_fastball('Sinker')
     driver.calculate_average_fastball('Cutter')
     driver.aggregate_fastball_data()
+    driver.calculate_average_fastball('Four-Seam', year = 2023)
+    driver.calculate_average_fastball('Sinker', year = 2023)
+    driver.calculate_average_fastball('Cutter', year = 2023)
+    driver.aggregate_fastball_data(year = 2023)
+    driver.calculate_average_fastball('Four-Seam', year = 2024)
+    driver.calculate_average_fastball('Sinker', year = 2024)
+    driver.calculate_average_fastball('Cutter', year = 2024)
+    driver.aggregate_fastball_data(year = 2024)
     driver.write_radar_data()
     driver.load_relevant_data()
     driver.write_variable_data()

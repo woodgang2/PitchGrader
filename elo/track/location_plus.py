@@ -1854,4 +1854,4 @@ def generate_all ():
     generate_location_ratings(year = 2023)
     generate_location_ratings(year = 2024)
 
-# generate_all()
+ # generate_all()
