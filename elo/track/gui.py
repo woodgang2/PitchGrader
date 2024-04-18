@@ -740,7 +740,10 @@ else:
                         if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
                             difference = original - row[f"{col}_df1"]
                             sign = '+' if difference >= 0 else ''
-                            return f"{round (original)} ({sign}{round (difference)})"
+                            if (col == 'Usage'):
+                                return f"{round (original, 2)} ({sign}{round (difference, 2)})"
+                            else:
+                                return f"{round (original)} ({sign}{round (difference)})"
                         else:
                             return str(original)
                 for col in df2.columns:
