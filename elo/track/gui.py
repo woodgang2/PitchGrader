@@ -648,12 +648,12 @@ else:
             weighted_stuff = round (weighted_sum1 / (total_weights+1e-6))
             weighted_command = round (weighted_sum2 / (total_weights+1e-6))
             if (show_changes):
-                location_df = driver2.retrieve_location (team_name)
+                location_df = driver2.retrieve_location_team (team_name)
                 location_df = location_df [['Pitcher', 'Overall']]
                 location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
                 location_df = location_df.rename(columns={'Overall': 'Command'})
                 # st.dataframe (location_df)
-                stuff_df1 = driver2.retrieve_stuff (team_name)
+                stuff_df1 = driver2.retrieve_stuff_team (team_name)
                 stuff_df1 = stuff_df1.rename(columns={'Overall': 'Stuff'})
                 stuff_df1 = stuff_df1.merge (location_df, on = 'Pitcher')
                 stuff_df1 = stuff_df1.round(0)
