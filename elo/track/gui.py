@@ -647,6 +647,12 @@ else:
             total_weights = np.sum(stuff_df['PitchCount'])
             weighted_stuff = round (weighted_sum1 / (total_weights+1e-6))
             weighted_command = round (weighted_sum2 / (total_weights+1e-6))
+            if min_pitch:  # Check if something was entered
+                try:
+                    min_pitch = int(min_pitch)
+                    stuff_df = stuff_df [stuff_df ['PitchCount'] >= min_pitch]
+                except ValueError:
+                    st.error("Invalid number for the minimum pitch count.")
             if (show_changes):
                 location_df = driver2.retrieve_location_team (team_name)
                 location_df = location_df [['Pitcher', 'Overall']]
@@ -657,6 +663,12 @@ else:
                 stuff_df1 = stuff_df1.rename(columns={'Overall': 'Stuff'})
                 stuff_df1 = stuff_df1.merge (location_df, on = 'Pitcher')
                 stuff_df1 = stuff_df1.round(0)
+                if min_pitch:  # Check if something was entered
+                    try:
+                        min_pitch = int(min_pitch)
+                        stuff_df1 = stuff_df1 [stuff_df1 ['PitchCount'] >= min_pitch]
+                    except ValueError:
+                        print ('hi')
                 weighted_sum1_2 = np.sum(stuff_df1['PitchCount'] * stuff_df1['Stuff'])
                 weighted_sum2_2= np.sum(stuff_df1['PitchCount'] * stuff_df1['Command'])
                 unweighted_stuff_2 = round (np.mean (stuff_df1 ['Stuff']))
@@ -717,12 +729,12 @@ else:
             columns_to_drop = [column for column in stuff_df.columns if column.endswith('Usage')]
             stuff_df = stuff_df.drop(columns=columns_to_drop)
             stuff_df = stuff_df.drop_duplicates ('Pitcher')
-            if min_pitch:  # Check if something was entered
-                try:
-                    min_pitch = int(min_pitch)
-                    stuff_df = stuff_df [stuff_df ['PitchCount'] >= min_pitch]
-                except ValueError:
-                    st.error("Invalid number for the minimum pitch count.")
+            # if min_pitch:  # Check if something was entered
+            #     try:
+            #         min_pitch = int(min_pitch)
+            #         stuff_df = stuff_df [stuff_df ['PitchCount'] >= min_pitch]
+            #     except ValueError:
+            #         st.error("Invalid number for the minimum pitch count.")
             actual_order = [col for col in desired_order if col in stuff_df.columns]
             # st.success (actual_order)
             stuff_df = stuff_df[actual_order]
