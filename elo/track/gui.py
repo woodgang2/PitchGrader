@@ -748,7 +748,9 @@ else:
             stuff_df = driver.retrieve_stuff_team (team_name)
             stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
             stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
-            stuff_df = stuff_df.round(0)
+            stuff_df ['Fastball%'] = stuff_df ['Four-Seam Usage'] + stuff_df ['Sinker Usage']
+            stuff_df = stuff_df.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
+            stuff_df['Fastball%'] = stuff_df['Fastball%'].round(2)
             weighted_sum1 = np.sum(stuff_df['PitchCount'] * stuff_df['Stuff'])
             weighted_sum2= np.sum(stuff_df['PitchCount'] * stuff_df['Command'])
             # location_df1 = driver2.retrieve_location_team (team_name)
@@ -845,7 +847,6 @@ else:
             if team_name != 'All':
                 stuff_df = stuff_df.drop (columns = ['PitcherTeam'])
             # st.dataframe (stuff_df)
-            stuff_df ['Fastball%'] = stuff_df ['Four-Seam Usage'] + stuff_df ['Sinker Usage']
             columns_to_drop = [column for column in stuff_df.columns if column.endswith('Usage')]
             stuff_df = stuff_df.drop(columns=columns_to_drop)
             stuff_df = stuff_df.drop_duplicates ('Pitcher')
