@@ -708,6 +708,7 @@ if not st.session_state.team_flag:
             weights = compute_weights(distances)
             sampled_indices = sample_performance(prob_df, weights)
             simulation_results = monte_carlo_simulation(prob_df, sampled_indices, columns_to_be_compared)
+            st.table (simulation_results)
     # df = pd.read_csv("my_data.csv")
     # st.line_chart(df)
 else:
