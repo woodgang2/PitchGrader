@@ -611,8 +611,8 @@ if not st.session_state.team_flag:
             #TODO: this
 
             def calculate_mahalanobis(df, columns_to_be_compared):
-                df_scaled = df[columns_to_be_compared]#.apply(zscore)
-                st.dataframe (df_scaled)
+                df_scaled = df[columns_to_be_compared].apply(zscore)
+                # st.dataframe (df_scaled)
                 # Calculating the covariance matrix of the standardized metrics
                 covariance_matrix = np.cov(df_scaled, rowvar=False)
                 # Inverting the covariance matrix
@@ -704,10 +704,10 @@ if not st.session_state.team_flag:
             st.dataframe (stuff_df)
             columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # Assuming calculate_mahalanobis is defined
-            distances = calculate_mahalanobis(df, columns_to_be_compared)
+            distances = calculate_mahalanobis(prob_df, columns_to_be_compared)
             weights = compute_weights(distances)
-            sampled_indices = sample_performance(df, weights)
-            simulation_results = monte_carlo_simulation(df, sampled_indices, columns_to_be_compared)
+            sampled_indices = sample_performance(prob_df, weights)
+            simulation_results = monte_carlo_simulation(prob_df, sampled_indices, columns_to_be_compared)
     # df = pd.read_csv("my_data.csv")
     # st.line_chart(df)
 else:
