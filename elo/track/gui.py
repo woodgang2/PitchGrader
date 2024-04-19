@@ -610,105 +610,105 @@ if not st.session_state.team_flag:
 
             #TODO: this
 
-            # def calculate_mahalanobis(df, columns_to_be_compared):
-            #     df_scaled = df[columns_to_be_compared].apply(zscore)
-            #     # st.dataframe (df_scaled)
-            #     # Calculating the covariance matrix of the standardized metrics
-            #     covariance_matrix = np.cov(df_scaled, rowvar=False)
-            #     # Inverting the covariance matrix
-            #     inv_covariance_matrix = np.linalg.inv(covariance_matrix)
-            #     # Initialize a matrix to hold Mahalanobis distances
-            #     distances = np.zeros((df_scaled.shape[0], df_scaled.shape[0]))
-            #
-            #     # Calculate the Mahalanobis distance between each pair of points
-            #     for i in range(len(df_scaled)):
-            #         for j in range(len(df_scaled)):
-            #             row_i = df_scaled.iloc[i]
-            #             row_j = df_scaled.iloc[j]
-            #             # Difference vector between two rows
-            #             diff = row_i - row_j
-            #             # Distance calculation
-            #             dist = np.sqrt(np.dot(np.dot(diff, inv_covariance_matrix), diff.T))
-            #             distances[i, j] = dist
-            #
-            #     return distances
-            #
-            # def compute_weights(distances, epsilon=0.01):
-            #     # Using reciprocal of distance as weight; adding epsilon to avoid division by zero
-            #     weights = 1 / (distances + epsilon)
-            #     # Normalizing weights so they sum to one across each row
-            #     normalized_weights = weights / weights.sum(axis=1)[:, np.newaxis]
-            #     return normalized_weights
-            #
-            # # Function to sample next year's performance using weighted sampling
-            # def sample_performance(df, weights, num_samples=1000):
-            #     # Placeholder for sampled indices
-            #     sampled_indices = np.zeros((df.shape[0], num_samples), dtype=int)
-            #     for i in range(df.shape[0]):
-            #         # Sampling indices based on weights
-            #         sampled_indices[i, :] = np.random.choice(df.index, size=num_samples, p=weights[i])
-            #     return sampled_indices
-            #
-            # def monte_carlo_simulation(df, sampled_indices, performance_metrics):
-            #     # Dictionary to store simulation results
-            #     simulation_results = {metric: [] for metric in performance_metrics}
-            #     # Perform simulations
-            #     for metric in performance_metrics:
-            #         for i in range(df.shape[0]):
-            #             # Sampling performance data based on sampled indices for each metric
-            #             sampled_data = df.loc[sampled_indices[i], 'Stuff_diff']
-            #             # Calculating summary statistics for each player
-            #             simulation_results[metric].append({
-            #                 'mean': np.mean(sampled_data),
-            #                 'std': np.std(sampled_data),
-            #                 '5th_percentile': np.percentile(sampled_data, 5),
-            #                 '95th_percentile': np.percentile(sampled_data, 95)
-            #             })
-            #     return simulation_results
-            # st.success ("test")
-            # location_df = driver.retrieve_location_team ('All')
-            # location_df = location_df [['Pitcher', 'Overall']]
-            # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
-            # location_df = location_df.rename(columns={'Overall': 'Command'})
-            # stuff_df = driver.retrieve_stuff_team ('All')
-            # stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
-            # stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
-            # # stuff_df = stuff_df.round(0)
-            # prob_df = driver2.retrieve_percentages_team ('All')
-            # stuff_df = stuff_df.drop_duplicates(subset=['Pitcher'])
-            # stuff_df = stuff_df.set_index('Pitcher')
-            # stuff_df = stuff_df [stuff_df['PitchCount'] >= 80]
-            #
-            # stuff_df2 = driver2.retrieve_stuff_team ('All')
-            # stuff_df2 = stuff_df2.rename(columns={'Overall': 'Stuff'})
-            # stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
-            # stuff_df2 = stuff_df2.drop_duplicates(subset=['Pitcher'])
-            # stuff_df2 = stuff_df2.set_index('Pitcher')
-            # stuff_df2 = stuff_df2 [stuff_df2['PitchCount'] >= 80]
-            #
-            # def get_stuff(row):
-            #     pitch_type = row['PitchType']
-            #     pitcher = row['Pitcher']
-            #     if pitcher in stuff_df.index:
-            #         return stuff_df.at[pitcher, pitch_type]
-            #     return None
-            # # Apply function to prob_df
-            # prob_df['Stuff_new'] = prob_df.apply(get_stuff, axis=1)
-            # stuff_df = stuff_df2
-            # prob_df['Stuff_old'] = prob_df.apply(get_stuff, axis=1)
-            # prob_df = prob_df.dropna(subset=['Stuff_new', 'Stuff_old'])
-            # prob_df ['Stuff_diff'] = prob_df['Stuff_new'] - prob_df['Stuff_old']
-            # st.empty ()
-            # # prob_df = prob_df [prob_df['PitchCount'] >= 80]
-            # st.dataframe (prob_df)
-            # st.dataframe (stuff_df)
-            # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
-            # # Assuming calculate_mahalanobis is defined
-            # distances = calculate_mahalanobis(prob_df, columns_to_be_compared)
-            # weights = compute_weights(distances)
-            # sampled_indices = sample_performance(prob_df, weights)
-            # simulation_results = monte_carlo_simulation(prob_df, sampled_indices, columns_to_be_compared)
-            # st.table (simulation_results)
+            def calculate_mahalanobis(df, columns_to_be_compared, df_target):
+                df_scaled = df[columns_to_be_compared].apply(zscore)
+                # st.dataframe (df_scaled)
+                # Calculating the covariance matrix of the standardized metrics
+                covariance_matrix = np.cov(df_scaled, rowvar=False)
+                # Inverting the covariance matrix
+                inv_covariance_matrix = np.linalg.inv(covariance_matrix)
+                # Initialize a matrix to hold Mahalanobis distances
+                distances = np.zeros((df_scaled.shape[0], df_scaled.shape[0]))
+
+                # Calculate the Mahalanobis distance between each pair of points
+                for j in range(len(df_scaled)):
+                    row_i = df_target.iloc[0]
+                    row_j = df_scaled.iloc[j]
+                    # Difference vector between two rows
+                    diff = row_i - row_j
+                    # Distance calculation
+                    dist = np.sqrt(np.dot(np.dot(diff, inv_covariance_matrix), diff.T))
+                    distances[j] = dist
+
+                return distances
+
+            def compute_weights(distances, epsilon=0.01):
+                # Using reciprocal of distance as weight; adding epsilon to avoid division by zero
+                weights = 1 / (distances + epsilon)
+                # Normalizing weights so they sum to one across each row
+                normalized_weights = weights / weights.sum(axis=1)[:, np.newaxis]
+                return normalized_weights
+
+            # Function to sample next year's performance using weighted sampling
+            def sample_performance(df, weights, num_samples=1000):
+                # Placeholder for sampled indices
+                sampled_indices = np.zeros((df.shape[0], num_samples), dtype=int)
+                for i in range(df.shape[0]):
+                    # Sampling indices based on weights
+                    sampled_indices[i, :] = np.random.choice(df.index, size=num_samples, p=weights[i])
+                return sampled_indices
+
+            def monte_carlo_simulation(df, sampled_indices, performance_metrics):
+                # Dictionary to store simulation results
+                simulation_results = {metric: [] for metric in performance_metrics}
+                # Perform simulations
+                for metric in performance_metrics:
+                    for i in range(df.shape[0]):
+                        # Sampling performance data based on sampled indices for each metric
+                        sampled_data = df.loc[sampled_indices[i], 'Stuff_diff']
+                        # Calculating summary statistics for each player
+                        simulation_results[metric].append({
+                            'mean': np.mean(sampled_data),
+                            'std': np.std(sampled_data),
+                            '5th_percentile': np.percentile(sampled_data, 5),
+                            '95th_percentile': np.percentile(sampled_data, 95)
+                        })
+                return simulation_results
+            st.success ("test")
+            location_df = driver.retrieve_location_team ('All')
+            location_df = location_df [['Pitcher', 'Overall']]
+            location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+            location_df = location_df.rename(columns={'Overall': 'Command'})
+            stuff_df = driver.retrieve_stuff_team ('All')
+            stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
+            stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
+            # stuff_df = stuff_df.round(0)
+            prob_MC_df = driver2.retrieve_percentages_team ('All')
+            stuff_df = stuff_df.drop_duplicates(subset=['Pitcher'])
+            stuff_df = stuff_df.set_index('Pitcher')
+            stuff_df = stuff_df [stuff_df['PitchCount'] >= 80]
+
+            stuff_df2 = driver2.retrieve_stuff_team ('All')
+            stuff_df2 = stuff_df2.rename(columns={'Overall': 'Stuff'})
+            stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
+            stuff_df2 = stuff_df2.drop_duplicates(subset=['Pitcher'])
+            stuff_df2 = stuff_df2.set_index('Pitcher')
+            stuff_df2 = stuff_df2 [stuff_df2['PitchCount'] >= 80]
+
+            def get_stuff(row):
+                pitch_type = row['PitchType']
+                pitcher = row['Pitcher']
+                if pitcher in stuff_df.index:
+                    return stuff_df.at[pitcher, pitch_type]
+                return None
+            # Apply function to prob_MC_df
+            prob_MC_df['Stuff_new'] = prob_MC_df.apply(get_stuff, axis=1)
+            stuff_df = stuff_df2
+            prob_MC_df['Stuff_old'] = prob_MC_df.apply(get_stuff, axis=1)
+            prob_MC_df = prob_MC_df.dropna(subset=['Stuff_new', 'Stuff_old'])
+            prob_MC_df ['Stuff_diff'] = prob_MC_df['Stuff_new'] - prob_MC_df['Stuff_old']
+            st.empty ()
+            # prob_MC_df = prob_MC_df [prob_MC_df['PitchCount'] >= 80]
+            st.dataframe (prob_MC_df)
+            st.dataframe (stuff_df)
+            columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
+            # Assuming calculate_mahalanobis is defined
+            prob_df = prob_df [prob_df ['PitchType'] == 'FF']
+            distances = calculate_mahalanobis(prob_MC_df, columns_to_be_compared, prob_df)
+            weights = compute_weights(distances)
+            sampled_indices = sample_performance(prob_MC_df, weights)
+            simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, columns_to_be_compared)
+            st.table (simulation_results)
     # df = pd.read_csv("my_data.csv")
     # st.line_chart(df)
 else:
