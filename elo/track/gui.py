@@ -162,10 +162,11 @@ elif (year_selected == 2023):
 else:
     st.session_state['disabled'] = False
 driver = database_driver.DatabaseDriver(year=year)
+driver2 = database_driver.DatabaseDriver(year=(year-1))
 show_changes = show_changes_placeholder.button (f"Compare pitches to previous year", key = 'show_changes', disabled=st.session_state["disabled"])
 # driver = database_driver.DatabaseDriver(year=year)
-if (show_changes):
-    driver2 = database_driver.DatabaseDriver(year=(year-1))
+# if (show_changes):
+#     driver2 = database_driver.DatabaseDriver(year=(year-1))
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 if (team_toggle):
     st.session_state.team_flag = not st.session_state.team_flag
