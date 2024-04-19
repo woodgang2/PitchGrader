@@ -664,6 +664,7 @@ if not st.session_state.team_flag:
                             '95th_percentile': np.percentile(sampled_data, 95)
                         })
                 return simulation_results
+            st.success ("test")
             location_df = driver.retrieve_location_team ('All')
             location_df = location_df [['Pitcher', 'Overall']]
             location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
