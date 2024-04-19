@@ -1,6 +1,8 @@
 import random
 
 import numpy as np
+from scipy.stats import zscore
+from scipy.spatial import distance
 
 import database_driver
 import stuff_plus
@@ -647,6 +649,16 @@ else:
             stuff_df = stuff_df.round(0)
             weighted_sum1 = np.sum(stuff_df['PitchCount'] * stuff_df['Stuff'])
             weighted_sum2= np.sum(stuff_df['PitchCount'] * stuff_df['Command'])
+            # location_df1 = driver2.retrieve_location_team (team_name)
+            # location_df1 = location_df1 [['Pitcher', 'Overall']]
+            # location_df1['Overall'] = location_df1['Overall'].clip(lower=20, upper=80)
+            # location_df1 = location_df1.rename(columns={'Overall': 'Command'})
+            # # st.dataframe (location_df)
+            # stuff_df1 = driver2.retrieve_stuff_team (team_name)
+            # stuff_df1 = stuff_df1.rename(columns={'Overall': 'Stuff'})
+            # stuff_df1 = stuff_df1.merge (location_df1, on = 'Pitcher')
+            # stuff_df1 = stuff_df1.round(0)
+            # MC_merged_df = stuff_df.merge(stuff_df1, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
             unweighted_stuff = round (np.mean (stuff_df ['Stuff']))
             total_weights = np.sum(stuff_df['PitchCount'])
             weighted_stuff = round (weighted_sum1 / (total_weights+1e-6))
@@ -809,5 +821,83 @@ else:
             # index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
             # temp = df['PitchType'].iloc [index]
             # stuff_df = stuff_df.dropna(axis=1)
+
+            def calculate_mahalanobis(df, columns_to_be_compared):
+                # Standardizing the data
+                df_scaled = df[columns_to_be_compared].apply(zscore)
+                # Calculating the covariance matrix of the standardized metrics
+                covariance_matrix = np.cov(df_scaled, rowvar=False)
+                # Inverting the covariance matrix
+                inv_covariance_matrix = np.linalg.inv(covariance_matrix)
+                # Initialize a matrix to hold Mahalanobis distances
+                distances = np.zeros((df_scaled.shape[0], df_scaled.shape[0]))
+
+                # Calculate the Mahalanobis distance between each pair of points
+                for i in range(len(df_scaled)):
+                    for j in range(len(df_scaled)):
+                        row_i = df_scaled.iloc[i]
+                        row_j = df_scaled.iloc[j]
+                        # Difference vector between two rows
+                        diff = row_i - row_j
+                        # Distance calculation
+                        dist = np.sqrt(np.dot(np.dot(diff, inv_covariance_matrix), diff.T))
+                        distances[i, j] = dist
+
+                return distances
+
+            def compute_weights(distances, epsilon=0.01):
+                # Using reciprocal of distance as weight; adding epsilon to avoid division by zero
+                weights = 1 / (distances + epsilon)
+                # Normalizing weights so they sum to one across each row
+                normalized_weights = weights / weights.sum(axis=1)[:, np.newaxis]
+                return normalized_weights
+
+            # Function to sample next year's performance using weighted sampling
+            def sample_performance(df, weights, num_samples=1000):
+                # Placeholder for sampled indices
+                sampled_indices = np.zeros((df.shape[0], num_samples), dtype=int)
+                for i in range(df.shape[0]):
+                    # Sampling indices based on weights
+                    sampled_indices[i, :] = np.random.choice(df.index, size=num_samples, p=weights[i])
+                return sampled_indices
+
+            def monte_carlo_simulation(df, sampled_indices, performance_metrics):
+                # Dictionary to store simulation results
+                simulation_results = {metric: [] for metric in performance_metrics}
+                # Perform simulations
+                for metric in performance_metrics:
+                    for i in range(df.shape[0]):
+                        # Sampling performance data based on sampled indices for each metric
+                        sampled_data = df.loc[sampled_indices[i], metric]
+                        # Calculating summary statistics for each player
+                        simulation_results[metric].append({
+                            'mean': np.mean(sampled_data),
+                            'std': np.std(sampled_data),
+                            '5th_percentile': np.percentile(sampled_data, 5),
+                            '95th_percentile': np.percentile(sampled_data, 95)
+                        })
+                return simulation_results
+            location_df = driver.retrieve_location_team ('All')
+            location_df = location_df [['Pitcher', 'Overall']]
+            location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+            location_df = location_df.rename(columns={'Overall': 'Command'})
+            stuff_df = driver.retrieve_stuff_team (team_name)
+            stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
+            stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
+            # stuff_df = stuff_df.round(0)
+            prob_df = driver2.retrieve_percentages_team ('All')
+            merged_df = prob_df.merge(stuff_df, on='Pitcher')
+            def get_stuff(row):
+                return row[row['PitchType']]
+            merged_df['Stuff'] = merged_df.apply(get_stuff, axis=1)
+            st.dataframe (merged_df)
+            # columns_to_be_compared = ['Metric1', 'Metric2', 'Metric3']
+            # # Assuming calculate_mahalanobis is defined
+            # distances = calculate_mahalanobis(df, columns_to_be_compared)
+            # weights = compute_weights(distances)
+            # sampled_indices = sample_performance(df, weights)
+            # simulation_results = monte_carlo_simulation(df, sampled_indices, columns_to_be_compared)
+
+
 
 
