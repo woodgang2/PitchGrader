@@ -611,7 +611,7 @@ if not st.session_state.team_flag:
             #TODO: this
 
             def calculate_mahalanobis(df, columns_to_be_compared):
-                df_scaled = df[columns_to_be_compared].apply(zscore)
+                df_scaled = df[columns_to_be_compared]#.apply(zscore)
                 st.dataframe (df_scaled)
                 # Calculating the covariance matrix of the standardized metrics
                 covariance_matrix = np.cov(df_scaled, rowvar=False)
