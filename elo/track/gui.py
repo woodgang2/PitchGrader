@@ -684,6 +684,7 @@ if not st.session_state.team_flag:
                 return None
             # Apply function to prob_df
             prob_df['Stuff'] = prob_df.apply(get_stuff, axis=1)
+            st.empty ()
             # prob_df = prob_df [prob_df['PitchCount'] >= 80]
             st.dataframe (prob_df)
             st.dataframe (stuff_df)
