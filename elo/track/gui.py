@@ -701,7 +701,7 @@ if not st.session_state.team_flag:
             # prob_df = prob_df [prob_df['PitchCount'] >= 80]
             st.dataframe (prob_df)
             st.dataframe (stuff_df)
-            columns_to_be_compared = ['RelSpeed']
+            columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # Assuming calculate_mahalanobis is defined
             distances = calculate_mahalanobis(df, columns_to_be_compared)
             weights = compute_weights(distances)
