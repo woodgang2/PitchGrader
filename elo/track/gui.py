@@ -697,12 +697,13 @@ if not st.session_state.team_flag:
             prob_MC_df['Stuff_old'] = prob_MC_df.apply(get_stuff, axis=1)
             prob_MC_df = prob_MC_df.dropna(subset=['Stuff_new', 'Stuff_old'])
             prob_MC_df ['Stuff_diff'] = prob_MC_df['Stuff_new'] - prob_MC_df['Stuff_old']
-            st.empty ()
+            # st.empty ()
             # prob_MC_df = prob_MC_df [prob_MC_df['PitchCount'] >= 80]
             st.dataframe (prob_MC_df)
             st.dataframe (stuff_df)
             columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # Assuming calculate_mahalanobis is defined
+            st.empty ()
             prob_df = prob_df [prob_df ['PitchType'] == 'Four-Seam']
             distances = calculate_mahalanobis(prob_MC_df, columns_to_be_compared, prob_df)
             weights = compute_weights(distances)
