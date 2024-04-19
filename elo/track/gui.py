@@ -664,26 +664,26 @@ if not st.session_state.team_flag:
                             '95th_percentile': np.percentile(sampled_data, 95)
                         })
                 return simulation_results
-            location_df = driver.retrieve_location_team ('All')
-            location_df = location_df [['Pitcher', 'Overall']]
-            location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
-            location_df = location_df.rename(columns={'Overall': 'Command'})
-            stuff_df = driver.retrieve_stuff_team ('All')
-            stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
-            stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
-            # stuff_df = stuff_df.round(0)
-            prob_df = driver2.retrieve_percentages_team ('All')
-            stuff_df = stuff_df.set_index('Pitcher')
-            def get_stuff(row):
-                pitch_type = row['PitchType']
-                pitcher = row['Pitcher']
-                if pitcher in stuff_df.index:
-                    return stuff_df.at[pitcher, pitch_type]
-                return None
-            # Apply function to prob_df
-            prob_df['Stuff'] = prob_df.apply(get_stuff, axis=1)
-            st.dataframe (prob_df)
-            st.dataframe (stuff_df)
+            # location_df = driver.retrieve_location_team ('All')
+            # location_df = location_df [['Pitcher', 'Overall']]
+            # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+            # location_df = location_df.rename(columns={'Overall': 'Command'})
+            # stuff_df = driver.retrieve_stuff_team ('All')
+            # stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
+            # stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
+            # # stuff_df = stuff_df.round(0)
+            # prob_df = driver2.retrieve_percentages_team ('All')
+            # stuff_df = stuff_df.set_index('Pitcher')
+            # def get_stuff(row):
+            #     pitch_type = row['PitchType']
+            #     pitcher = row['Pitcher']
+            #     if pitcher in stuff_df.index:
+            #         return stuff_df.at[pitcher, pitch_type]
+            #     return None
+            # # Apply function to prob_df
+            # prob_df['Stuff'] = prob_df.apply(get_stuff, axis=1)
+            # st.dataframe (prob_df)
+            # st.dataframe (stuff_df)
             # columns_to_be_compared = ['Metric1', 'Metric2', 'Metric3']
             # # Assuming calculate_mahalanobis is defined
             # distances = calculate_mahalanobis(df, columns_to_be_compared)
