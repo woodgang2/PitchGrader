@@ -676,7 +676,7 @@ if not st.session_state.team_flag:
             def get_stuff(row):
                 pitch_type = row['PitchType']
                 pitcher = row['Pitcher']
-                if pitcher in stuff_df.index:
+                if pitcher in stuff_df ['Pitcher']:
                     return stuff_df.loc[pitcher, pitch_type]
                 return None
             # Apply function to prob_df
