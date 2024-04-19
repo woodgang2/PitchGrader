@@ -684,7 +684,7 @@ if not st.session_state.team_flag:
                 return None
             # Apply function to prob_df
             prob_df['Stuff'] = prob_df.apply(get_stuff, axis=1)
-            prob_df = prob_df [prob_df['PitchCount'] >= 80]
+            # prob_df = prob_df [prob_df['PitchCount'] >= 80]
             st.dataframe (prob_df)
             st.dataframe (stuff_df)
             columns_to_be_compared = ['Metric1', 'Metric2', 'Metric3']
