@@ -917,7 +917,7 @@ else:
                 except ValueError:
                     print ('hey')
             cols = [col for col in df.columns if col != 'xRV']
-            cols.insert(4, 'xRV')
+            cols.insert(5, 'xRV')
             df = df[cols]
             # df = df.sort_values(by='Usage', ascending = False)
             st.dataframe(df)
