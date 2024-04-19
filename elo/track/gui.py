@@ -703,7 +703,7 @@ if not st.session_state.team_flag:
             st.dataframe (stuff_df)
             columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # Assuming calculate_mahalanobis is defined
-            prob_df = prob_df [prob_df ['PitchType'] == 'FF']
+            prob_df = prob_df [prob_df ['PitchType'] == 'Four-Seam']
             distances = calculate_mahalanobis(prob_MC_df, columns_to_be_compared, prob_df)
             weights = compute_weights(distances)
             sampled_indices = sample_performance(prob_MC_df, weights)
