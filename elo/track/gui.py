@@ -844,6 +844,7 @@ else:
             # stuff_df = pitching_stuff_df [pitching_stuff_df ['PitchingTeam'] == team_name]
             if team_name != 'All':
                 stuff_df = stuff_df.drop (columns = ['PitcherTeam'])
+            st.dataframe (stuff_df)
             stuff_df ['Fastball%'] = stuff_df ['Four-Seam_Usage'] + stuff_df ['Sinker_Usage']
             columns_to_drop = [column for column in stuff_df.columns if column.endswith('Usage')]
             stuff_df = stuff_df.drop(columns=columns_to_drop)
