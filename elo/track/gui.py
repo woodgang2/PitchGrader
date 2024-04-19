@@ -674,14 +674,14 @@ if not st.session_state.team_flag:
             stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
             # stuff_df = stuff_df.round(0)
             prob_df = driver2.retrieve_percentages_team ('All')
-            stuff_df = stuff_df.drop_duplicates(subset=['Pitcher', 'PitchType'])
+            stuff_df = stuff_df.drop_duplicates(subset=['Pitcher'])
             stuff_df = stuff_df.set_index('Pitcher')
             stuff_df = stuff_df [stuff_df['PitchCount'] >= 80]
 
             stuff_df2 = driver2.retrieve_stuff_team ('All')
             stuff_df2 = stuff_df2.rename(columns={'Overall': 'Stuff'})
             stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
-            stuff_df2 = stuff_df2.drop_duplicates(subset=['Pitcher', 'PitchType'])
+            stuff_df2 = stuff_df2.drop_duplicates(subset=['Pitcher'])
             stuff_df2 = stuff_df2.set_index('Pitcher')
             stuff_df2 = stuff_df2 [stuff_df2['PitchCount'] >= 80]
 
