@@ -748,7 +748,7 @@ else:
             stuff_df = driver.retrieve_stuff_team (team_name)
             stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
             stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
-            stuff_df ['Fastball%'] = stuff_df ['Four-Seam Usage'] + stuff_df ['Sinker Usage']
+            stuff_df['Fastball%'] = stuff_df['Four-Seam Usage'].fillna(0) + stuff_df['Sinker Usage'].fillna(0)
             stuff_df = stuff_df.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
             stuff_df['Fastball%'] = stuff_df['Fastball%'].round(2)
             weighted_sum1 = np.sum(stuff_df['PitchCount'] * stuff_df['Stuff'])
