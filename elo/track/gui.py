@@ -673,11 +673,12 @@ if not st.session_state.team_flag:
             stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
             # stuff_df = stuff_df.round(0)
             prob_df = driver2.retrieve_percentages_team ('All')
+            stuff_df = stuff_df.set_index('Pitcher')
             def get_stuff(row):
                 pitch_type = row['PitchType']
                 pitcher = row['Pitcher']
                 if pitcher in stuff_df ['Pitcher']:
-                    return stuff_df.loc[pitcher, pitch_type]
+                    return stuff_df.at[pitcher, pitch_type]
                 return None
             # Apply function to prob_df
             prob_df['Stuff'] = prob_df.apply(get_stuff, axis=1)
