@@ -655,7 +655,7 @@ if not st.session_state.team_flag:
                 for metric in performance_metrics:
                     for i in range(df.shape[0]):
                         # Sampling performance data based on sampled indices for each metric
-                        sampled_data = df.loc[sampled_indices[i], metric]
+                        sampled_data = df.loc[sampled_indices[i], 'Stuff_diff']
                         # Calculating summary statistics for each player
                         simulation_results[metric].append({
                             'mean': np.mean(sampled_data),
@@ -695,11 +695,13 @@ if not st.session_state.team_flag:
             prob_df['Stuff_new'] = prob_df.apply(get_stuff, axis=1)
             stuff_df = stuff_df2
             prob_df['Stuff_old'] = prob_df.apply(get_stuff, axis=1)
+            prob_df = prob_df.dropna(subset=['Stuff_new', 'Stuff_old'])
+            prob_df ['Stuff_diff'] = prob_df['Stuff_new'] - prob_df['Stuff_old']
             st.empty ()
             # prob_df = prob_df [prob_df['PitchCount'] >= 80]
             st.dataframe (prob_df)
             st.dataframe (stuff_df)
-            columns_to_be_compared = ['Metric1', 'Metric2', 'Metric3']
+            columns_to_be_compared = ['RelSpeed']
             # Assuming calculate_mahalanobis is defined
             distances = calculate_mahalanobis(df, columns_to_be_compared)
             weights = compute_weights(distances)
