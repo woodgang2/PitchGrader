@@ -786,12 +786,12 @@ else:
                 stuff_df1 = stuff_df1.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
                 stuff_df1['Fastball%'] = stuff_df1['Fastball%'].round(2)
                 # stuff_df1 = stuff_df1.round(0)
-                if min_pitch:  # Check if something was entered
-                    try:
-                        min_pitch = int(min_pitch)
-                        stuff_df1 = stuff_df1 [stuff_df1 ['PitchCount'] >= min_pitch]
-                    except ValueError:
-                        print ('hi')
+                # if min_pitch:  # Check if something was entered
+                #     try:
+                #         min_pitch = int(min_pitch)
+                #         stuff_df1 = stuff_df1 [stuff_df1 ['PitchCount'] >= min_pitch]
+                #     except ValueError:
+                #         print ('hi')
                 weighted_sum1_2 = np.sum(stuff_df1['PitchCount'] * stuff_df1['Stuff'])
                 weighted_sum2_2= np.sum(stuff_df1['PitchCount'] * stuff_df1['Command'])
                 unweighted_stuff_2 = round (np.mean (stuff_df1 ['Stuff']))
