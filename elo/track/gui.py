@@ -928,8 +928,24 @@ else:
             cols = [col for col in df.columns if col != 'xRV']
             cols.insert(5, 'xRV')
             df = df[cols]
+            prob_df_final = driver.retrieve_percentages_team (team_name)
+            if (team_name == 'All'):
+                prob_df_final = prob_df_final.drop (columns = ['Balls', 'Strikes'])
+            else:
+                prob_df_final = prob_df_final.drop (columns = ['PitcherTeam', 'Balls', 'Strikes'])
+            if min_pitch:  # Check if something was entered
+                try:
+                    valid_pitchers = stuff_df['Pitcher']
+                    prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
+                except ValueError:
+                    print ('hey')
+            cols = [col for col in prob_df_final.columns if col != 'xRV']
+            cols.insert(5, 'xRV')
+            prob_df_final = prob_df_final[cols]
+            prob_df_final = round (prob_df_final, 4)
             # df = df.sort_values(by='Usage', ascending = False)
             st.dataframe(df)
+            st.dataframe (prob_df_final)
             st.dataframe (df_bat)
             # pitch_types = df['PitchType'].unique().tolist()
             # index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
