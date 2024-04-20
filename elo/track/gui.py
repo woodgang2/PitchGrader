@@ -950,7 +950,7 @@ else:
             pitch_categories = {
                 'Fastball': ['Four-Seam', 'Sinker'],
                 'Breaking Ball': ['Cutter', 'Slider', 'Curveball'],
-                'OffSpeed': ['ChangeUp', 'Splitter']
+                'Offspeed': ['ChangeUp', 'Splitter']
             }
             if pitch_selected in pitch_categories:
                 prob_df_final = prob_df_final[prob_df_final['PitchType'].isin(pitch_categories[pitch_selected])]
