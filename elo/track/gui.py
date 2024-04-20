@@ -943,6 +943,7 @@ else:
             cols.insert(5, 'xRV')
             prob_df_final = prob_df_final[cols]
             prob_df_final = round (prob_df_final, 4)
+            prob_df_final = prob_df_final.drop (['PitcherId'])
             # df = df.sort_values(by='Usage', ascending = False)
             st.dataframe(df)
             st.dataframe (prob_df_final)
