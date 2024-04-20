@@ -782,7 +782,10 @@ else:
                 stuff_df1 = driver2.retrieve_stuff_team (team_name)
                 stuff_df1 = stuff_df1.rename(columns={'Overall': 'Stuff'})
                 stuff_df1 = stuff_df1.merge (location_df, on = 'Pitcher')
-                stuff_df1 = stuff_df1.round(0)
+                stuff_df1['Fastball%'] = stuff_df1['Four-Seam Usage'].fillna(0) + stuff_df1['Sinker Usage'].fillna(0)
+                stuff_df1 = stuff_df1.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
+                stuff_df1['Fastball%'] = stuff_df1['Fastball%'].round(2)
+                # stuff_df1 = stuff_df1.round(0)
                 if min_pitch:  # Check if something was entered
                     try:
                         min_pitch = int(min_pitch)
