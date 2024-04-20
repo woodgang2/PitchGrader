@@ -945,12 +945,20 @@ else:
             prob_df_final = round (prob_df_final, 4)
             prob_df_final = prob_df_final.drop (['PitcherId'], axis = 1)
             # df = df.sort_values(by='Usage', ascending = False)
-            options = [''] + list(prob_df_final['PitchType'].unique())
+            options = ['All', 'Fastball', 'Breaking Ball', 'Offspeed'] + list(prob_df_final['PitchType'].unique())
             pitch_selected = st.selectbox ("Pitch Type", options = options, key = 'pitch_selected')
-            if (pitch_selected != ''):
-                prob_df_final = prob_df_final [prob_df_final ['PitchType'] == pitch_selected]
-                df = df [df ['PitchType'] == pitch_selected]
-            st.dataframe(df)
+            pitch_categories = {
+                'Fastball': ['Four-Seam', 'Sinker'],
+                'Breaking Ball': ['Cutter', 'Slider', 'Curveball'],
+                'OffSpeed': ['Changeup', 'Splitter']
+            }
+            if pitch_selected in pitch_categories:
+                prob_df_final = prob_df_final[prob_df_final['PitchType'].isin(pitch_categories[pitch_selected])]
+                df = df[df['PitchType'].isin(pitch_categories[pitch_selected])]
+            elif pitch_selected != 'All':
+                prob_df_final = prob_df_final[prob_df_final['PitchType'] == pitch_selected]
+                df = df[df['PitchType'] == pitch_selected]
+            st.dataframe (df)
             st.dataframe (prob_df_final)
             st.dataframe (df_bat)
             # pitch_types = df['PitchType'].unique().tolist()
