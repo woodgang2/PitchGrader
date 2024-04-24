@@ -736,12 +736,17 @@ if not st.session_state.team_flag:
                     }
                 return simulation_results
 
-            prob_MC_df = calculate_mahalanobis(prob_df, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
             performance_metrics = ['Stuff_diff']
-            sampled_indices = sample_performance(prob_MC_df, 100)
-            simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, performance_metrics)
-            prob_df['Upside'] = simulation_results['Stuff_diff']['75th_percentile']
-            st.dataframe (prob_df)
+            simulation_results_per_row = []
+
+            for index, row in prob_df.iterrows():
+                modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
+                sampled_indices = sample_performance(modified_prob_MC_df, 1000)
+                simulation_results = monte_carlo_simulation(modified_prob_MC_df, sampled_indices, performance_metrics)
+                simulation_results_per_row.append(simulation_results['Stuff_diff']['75th_percentile'])
+
+            prob_df['Upside'] = simulation_results_per_row
+            st.dataframe(prob_df)
             # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # # Assuming calculate_mahalanobis is defined
