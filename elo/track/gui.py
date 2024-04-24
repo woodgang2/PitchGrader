@@ -710,7 +710,10 @@ if not st.session_state.team_flag:
                     prob_df['Outlook'] = simulation_results_per_row_pos
                     st.dataframe(prob_df)
                 # prob_df.reset_index(inplace=True)
-                pivot_df = prob_df [['Upside']]
+                bins = [0, 5, 6.5, 7.5]
+                labels = ['-', ' ', '+', '++']
+                df['Category'] = pd.cut(df['Values'], bins=bins, labels=labels, right=False)
+                pivot_df = prob_df [['Category', 'Upside']]
                 pivot_df = pivot_df.T
                 rename_columns = {
                     'ChangeUp': 'CH',
