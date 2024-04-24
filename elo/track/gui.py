@@ -705,15 +705,15 @@ if not st.session_state.team_flag:
                         simulation_results_per_row_pos.append(simulation_results['Stuff_diff']['pos'])
                         st.success (simulation_results)
 
-                    prob_df['Upside'] = simulation_results_per_row
+                    prob_df['Raw'] = simulation_results_per_row
                     prob_df['Vol'] = simulation_results_per_row_std
                     prob_df['Outlook'] = simulation_results_per_row_pos
                     st.dataframe(prob_df)
                 # prob_df.reset_index(inplace=True)
                 bins = [0, 5, 6.5, 7.5, 15]
                 labels = ['-', ' ', '+', '++']
-                prob_df['Category'] = pd.cut(prob_df['Upside'], bins=bins, labels=labels, right=False)
-                pivot_df = prob_df [['Category', 'Upside']]
+                prob_df['Upside'] = pd.cut(prob_df['Raw'], bins=bins, labels=labels, right=False)
+                pivot_df = prob_df [['Upside', 'Raw']]
                 pivot_df = pivot_df.round (2)
                 pivot_df = pivot_df.T
                 rename_columns = {
