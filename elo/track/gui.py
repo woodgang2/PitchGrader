@@ -616,7 +616,7 @@ if not st.session_state.team_flag:
 
             #TODO: this
             if (not show_changes):
-                st.success ("test")
+                # st.success ("test")
                 location_df = driver.retrieve_location_team ('All')
                 location_df = location_df [['Pitcher', 'Overall']]
                 location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
@@ -655,7 +655,7 @@ if not st.session_state.team_flag:
                 prob_MC_df ['Stuff_diff'] = prob_MC_df['Stuff_new'] - prob_MC_df['Stuff_old']
                 # st.empty ()
                 # prob_MC_df = prob_MC_df [prob_MC_df['PitchCount'] >= 80]
-                st.dataframe (prob_MC_df)
+                # st.dataframe (prob_MC_df)
                 # st.dataframe (prob_df)
                 def calculate_mahalanobis(df_single, df_multi, columns):
                     scaler = StandardScaler()
