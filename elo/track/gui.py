@@ -706,12 +706,11 @@ if not st.session_state.team_flag:
             st.dataframe (prob_df)
             def calculate_mahalanobis(df_single, df_multi, columns):
                 scaler = StandardScaler()
-                # Fit the scaler on df_multi and transform both df_single and df_multi
                 scaled_multi_values = scaler.fit_transform(df_multi[columns].values)
-                scaled_single_values = scaler.transform(df_single[columns].values)  # transform all rows in df_single
+                scaled_single_value = scaler.transform(df_single[columns].values[0].reshape(1, -1))
                 cov_matrix = np.cov(scaled_multi_values, rowvar=False)
                 cov_matrix_inv = inv(cov_matrix)
-                df_multi['Mahalanobis'] = [mahalanobis(row, scaled_single_values[i], cov_matrix_inv) for i, row in enumerate(scaled_multi_values)]
+                df_multi['Mahalanobis'] = [mahalanobis(row, scaled_single_value[0], cov_matrix_inv) for row in scaled_multi_values]
                 return df_multi
 
             def compute_weights(df, epsilon=0.01):
@@ -737,15 +736,11 @@ if not st.session_state.team_flag:
                     }
                 return simulation_results
 
-            upside_results = []
-            for index, row in prob_df.iterrows():
-                mahalanobis_distances = calculate_mahalanobis(row, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
-                weights = compute_weights(mahalanobis_distances)
-                sampled_indices = sample_performance(prob_MC_df, weights)
-                simulation_result = monte_carlo_simulation(prob_MC_df, sampled_indices, 'Stuff_diff')
-                upside_results.append(simulation_result['75th_percentile'])
-
-            prob_df['Upside'] = upside_results
+            prob_MC_df = calculate_mahalanobis(prob_df, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
+            performance_metrics = ['Stuff_diff']
+            sampled_indices = sample_performance(prob_MC_df, 1000)
+            simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, performance_metrics)
+            prob_df['Upside'] = simulation_results['Stuff_diff']['75th_percentile']
             st.dataframe (prob_df)
             # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
