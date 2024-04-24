@@ -666,8 +666,9 @@ if not st.session_state.team_flag:
                     df_multi['Mahalanobis'] = [mahalanobis(row, scaled_single_value[0], cov_matrix_inv) for row in scaled_multi_values]
                     return df_multi
 
-                def compute_weights(df, decay_factor=0.1, epsilon=0.01):
-                    weights = np.exp(-decay_factor * df['Mahalanobis'] + epsilon)
+                def compute_weights(df, epsilon=0.01):
+                    # inverse_distances = 1 / (df['Mahalanobis'] + epsilon)
+                    weights = np.exp(-1* df['Mahalanobis'])
                     normalized_weights = weights / weights.sum()
                     return normalized_weights
 
@@ -690,7 +691,7 @@ if not st.session_state.team_flag:
                         }
                     return simulation_results
 
-                performance_metrics = ['Stuff_new']
+                performance_metrics = ['Stuff_diff']
                 simulation_results_per_row = []
                 simulation_results_per_row_std = []
                 simulation_results_per_row_pos = []
@@ -700,9 +701,9 @@ if not st.session_state.team_flag:
                         modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak', 'VAA', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'RelHeight', "RelSide", 'Extension', 'VertRelAngle', 'HorzRelAngle'])
                         sampled_indices = sample_performance(modified_prob_MC_df, 1000000)
                         simulation_results = monte_carlo_simulation(modified_prob_MC_df, sampled_indices, performance_metrics)
-                        simulation_results_per_row.append(simulation_results['Stuff_new']['75th_percentile'])
-                        simulation_results_per_row_std.append(simulation_results['Stuff_new']['std'])
-                        simulation_results_per_row_pos.append(simulation_results['Stuff_new']['pos'])
+                        simulation_results_per_row.append(simulation_results['Stuff_diff']['75th_percentile'])
+                        simulation_results_per_row_std.append(simulation_results['Stuff_diff']['std'])
+                        simulation_results_per_row_pos.append(simulation_results['Stuff_diff']['pos'])
                         st.success (simulation_results)
 
                     prob_df2['Raw'] = simulation_results_per_row
