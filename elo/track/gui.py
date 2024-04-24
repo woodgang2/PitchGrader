@@ -666,7 +666,7 @@ if not st.session_state.team_flag:
                     df_multi['Mahalanobis'] = [mahalanobis(row, scaled_single_value[0], cov_matrix_inv) for row in scaled_multi_values]
                     return df_multi
 
-                def compute_weights(df, decay_factor=10, epsilon=0.01):
+                def compute_weights(df, decay_factor=100, epsilon=0.01):
                     weights = np.exp(-decay_factor * df['Mahalanobis'] + epsilon)
                     normalized_weights = weights / weights.sum()
                     return normalized_weights
