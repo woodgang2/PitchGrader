@@ -1,6 +1,8 @@
 import random
 
 import numpy as np
+from scipy.linalg import inv
+from scipy.spatial.distance import mahalanobis
 from scipy.stats import zscore
 from scipy.spatial import distance
 
@@ -701,6 +703,23 @@ if not st.session_state.team_flag:
             # prob_MC_df = prob_MC_df [prob_MC_df['PitchCount'] >= 80]
             st.dataframe (prob_MC_df)
             st.dataframe (prob_df)
+            def calculate_mahalanobis(df_single, df_multi, columns):
+                single_value = df_single[columns].values[0]
+                multi_values = df_multi[columns].values
+
+                # Compute the covariance matrix of the selected columns in df_multi
+                cov_matrix = np.cov(multi_values, rowvar=False)
+                # Compute the inverse of the covariance matrix
+                cov_matrix_inv = inv(cov_matrix)
+
+                # Calculate Mahalanobis distance for each row in df_multi
+                df_multi['Mahalanobis'] = [
+                    mahalanobis(row, single_value, cov_matrix_inv) for row in multi_values
+                ]
+
+                return df_multi
+            prob_MC_df = calculate_mahalanobis(prob_df, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
+            st.dataframe (prob_MC_df)
             # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # # Assuming calculate_mahalanobis is defined
