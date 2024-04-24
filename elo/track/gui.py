@@ -706,11 +706,12 @@ if not st.session_state.team_flag:
             st.dataframe (prob_df)
             def calculate_mahalanobis(df_single, df_multi, columns):
                 scaler = StandardScaler()
+                # Fit the scaler on df_multi and transform both df_single and df_multi
                 scaled_multi_values = scaler.fit_transform(df_multi[columns].values)
-                scaled_single_value = scaler.transform(df_single[columns].values[0].reshape(1, -1))
+                scaled_single_values = scaler.transform(df_single[columns].values)  # transform all rows in df_single
                 cov_matrix = np.cov(scaled_multi_values, rowvar=False)
                 cov_matrix_inv = inv(cov_matrix)
-                df_multi['Mahalanobis'] = [mahalanobis(row, scaled_single_value[0], cov_matrix_inv) for row in scaled_multi_values]
+                df_multi['Mahalanobis'] = [mahalanobis(row, scaled_single_values[i], cov_matrix_inv) for i, row in enumerate(scaled_multi_values)]
                 return df_multi
 
             def compute_weights(df, epsilon=0.01):
