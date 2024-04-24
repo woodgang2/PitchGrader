@@ -684,7 +684,7 @@ if not st.session_state.team_flag:
                         'std': np.std(sampled_data),
                         '5th_percentile': np.percentile(sampled_data, 5),
                         '75th_percentile': np.percentile(sampled_data, 75),  # Add percentile value
-                        '95th_percentile': np.percentile(sampled_data, 95)
+                        '95th_percentile': np.percentile(sampled_data, 95),
                         'pos': (sampled_data > 0).mean() * 100
                     }
                 return simulation_results
