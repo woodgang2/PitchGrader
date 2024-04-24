@@ -691,7 +691,7 @@ if not st.session_state.team_flag:
                         }
                     return simulation_results
 
-                performance_metrics = ['Stuff_diff']
+                performance_metrics = ['Stuff_new']
                 simulation_results_per_row = []
                 simulation_results_per_row_std = []
                 simulation_results_per_row_pos = []
