@@ -709,8 +709,8 @@ if not st.session_state.team_flag:
                     prob_df['Vol'] = simulation_results_per_row_std
                     prob_df['Outlook'] = simulation_results_per_row_pos
                     st.dataframe(prob_df)
-                prob_df.reset_index(inplace=True)
-                pivot_df = prob_df.pivot(columns='PitchType', values='Upside')
+                # prob_df.reset_index(inplace=True)
+                pivot_df = prob_df.pivot(index='PitchType', values='Upside')
                 st.dataframe (pivot_df)
                 # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
