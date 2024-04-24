@@ -714,6 +714,7 @@ if not st.session_state.team_flag:
                 labels = ['-', ' ', '+', '++']
                 prob_df['Category'] = pd.cut(prob_df['Upside'], bins=bins, labels=labels, right=False)
                 pivot_df = prob_df [['Category', 'Upside']]
+                pivot_df = pivot_df.round (2)
                 pivot_df = pivot_df.T
                 rename_columns = {
                     'ChangeUp': 'CH',
