@@ -705,30 +705,24 @@ if not st.session_state.team_flag:
             st.dataframe (prob_MC_df)
             st.dataframe (prob_df)
             def calculate_mahalanobis(df_single, df_multi, columns):
-                combined = pd.concat([df_single, df_multi])[columns]
-
-                # Initialize the StandardScaler
                 scaler = StandardScaler()
 
-                # Fit and transform the data
-                scaled_data = scaler.fit_transform(combined)
+                # Fit the scaler on the data from df_multi and transform both df_single and df_multi
+                scaled_multi_values = scaler.fit_transform(df_multi[columns].values)
+                scaled_single_value = scaler.transform(df_single[columns].values[0].reshape(1, -1))
 
-                # Extract scaled data for single and multi dataframes
-                scaled_single = scaled_data[0:1]
-                scaled_multi = scaled_data[1:]
+                # Compute the covariance matrix of the normalized multi_values
+                cov_matrix = np.cov(scaled_multi_values, rowvar=False)
 
-                # Compute the covariance matrix of the scaled multi dataframe
-                cov_matrix = np.cov(scaled_multi, rowvar=False)
                 # Compute the inverse of the covariance matrix
                 cov_matrix_inv = inv(cov_matrix)
 
-                # Calculate Mahalanobis distance for each row in scaled_multi
+                # Calculate Mahalanobis distance for each row in df_multi
                 df_multi['Mahalanobis'] = [
-                    mahalanobis(row, scaled_single[0], cov_matrix_inv) for row in scaled_multi
+                    mahalanobis(row, scaled_single_value[0], cov_matrix_inv) for row in scaled_multi_values
                 ]
 
                 return df_multi
-
             prob_MC_df = calculate_mahalanobis(prob_df, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
             st.dataframe (prob_MC_df)
             # st.dataframe (stuff_df)
