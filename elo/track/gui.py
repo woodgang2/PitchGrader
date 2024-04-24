@@ -762,7 +762,7 @@ if not st.session_state.team_flag:
             performance_metrics = ['Stuff_diff']  # Example metric column in df
             sampled_indices = sample_performance(prob_MC_df, 10)
             simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, performance_metrics)
-            st.sucess (simulation_results)
+            st.success (simulation_results)
 
             # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
