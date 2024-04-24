@@ -701,9 +701,9 @@ if not st.session_state.team_flag:
                         modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak', 'VAA', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'RelHeight', "RelSide", 'Extension', 'VertRelAngle', 'HorzRelAngle'])
                         sampled_indices = sample_performance(modified_prob_MC_df, 1000000)
                         simulation_results = monte_carlo_simulation(modified_prob_MC_df, sampled_indices, performance_metrics)
-                        simulation_results_per_row.append(simulation_results['Stuff_diff']['75th_percentile'])
-                        simulation_results_per_row_std.append(simulation_results['Stuff_diff']['std'])
-                        simulation_results_per_row_pos.append(simulation_results['Stuff_diff']['pos'])
+                        simulation_results_per_row.append(simulation_results['Stuff_new']['75th_percentile'])
+                        simulation_results_per_row_std.append(simulation_results['Stuff_new']['std'])
+                        simulation_results_per_row_pos.append(simulation_results['Stuff_new']['pos'])
                         st.success (simulation_results)
 
                     prob_df2['Raw'] = simulation_results_per_row
