@@ -5,6 +5,7 @@ from scipy.linalg import inv
 from scipy.spatial.distance import mahalanobis
 from scipy.stats import zscore
 from scipy.spatial import distance
+from sklearn.preprocessing import StandardScaler
 
 import database_driver
 import stuff_plus
@@ -704,20 +705,30 @@ if not st.session_state.team_flag:
             st.dataframe (prob_MC_df)
             st.dataframe (prob_df)
             def calculate_mahalanobis(df_single, df_multi, columns):
-                single_value = df_single[columns].values[0]
-                multi_values = df_multi[columns].values
+                combined = pd.concat([df_single, df_multi])[columns]
 
-                # Compute the covariance matrix of the selected columns in df_multi
-                cov_matrix = np.cov(multi_values, rowvar=False)
+                # Initialize the StandardScaler
+                scaler = StandardScaler()
+
+                # Fit and transform the data
+                scaled_data = scaler.fit_transform(combined)
+
+                # Extract scaled data for single and multi dataframes
+                scaled_single = scaled_data[0:1]
+                scaled_multi = scaled_data[1:]
+
+                # Compute the covariance matrix of the scaled multi dataframe
+                cov_matrix = np.cov(scaled_multi, rowvar=False)
                 # Compute the inverse of the covariance matrix
                 cov_matrix_inv = inv(cov_matrix)
 
-                # Calculate Mahalanobis distance for each row in df_multi
+                # Calculate Mahalanobis distance for each row in scaled_multi
                 df_multi['Mahalanobis'] = [
-                    mahalanobis(row, single_value, cov_matrix_inv) for row in multi_values
+                    mahalanobis(row, scaled_single[0], cov_matrix_inv) for row in scaled_multi
                 ]
 
                 return df_multi
+
             prob_MC_df = calculate_mahalanobis(prob_df, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
             st.dataframe (prob_MC_df)
             # st.dataframe (stuff_df)
