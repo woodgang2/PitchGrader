@@ -712,7 +712,7 @@ if not st.session_state.team_flag:
                 # prob_df.reset_index(inplace=True)
                 bins = [0, 5, 6.5, 7.5]
                 labels = ['-', ' ', '+', '++']
-                df['Category'] = pd.cut(df['Upside'], bins=bins, labels=labels, right=False)
+                prob_df['Category'] = pd.cut(prob_df['Upside'], bins=bins, labels=labels, right=False)
                 pivot_df = prob_df [['Category', 'Upside']]
                 pivot_df = pivot_df.T
                 rename_columns = {
