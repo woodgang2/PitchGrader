@@ -700,7 +700,8 @@ if not st.session_state.team_flag:
             # st.empty ()
             # prob_MC_df = prob_MC_df [prob_MC_df['PitchCount'] >= 80]
             st.dataframe (prob_MC_df)
-            st.dataframe (stuff_df)
+            st.dataframe (prob_df)
+            # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # # Assuming calculate_mahalanobis is defined
             # st.empty ()
