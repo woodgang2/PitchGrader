@@ -695,8 +695,9 @@ if not st.session_state.team_flag:
                 simulation_results_per_row = []
                 simulation_results_per_row_std = []
                 simulation_results_per_row_pos = []
+                prob_df2 = prob_df [prob_df ['Usage'] > 0.01]
                 with st.expander(f"Upside Details"):
-                    for index, row in prob_df.iterrows():
+                    for index, row in prob_df2.iterrows():
                         modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak', 'VAA', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'RelHeight', "RelSide", 'Extension', 'VertRelAngle', 'HorzRelAngle'])
                         sampled_indices = sample_performance(modified_prob_MC_df, 1000000)
                         simulation_results = monte_carlo_simulation(modified_prob_MC_df, sampled_indices, performance_metrics)
@@ -705,15 +706,15 @@ if not st.session_state.team_flag:
                         simulation_results_per_row_pos.append(simulation_results['Stuff_diff']['pos'])
                         st.success (simulation_results)
 
-                    prob_df['Raw'] = simulation_results_per_row
-                    prob_df['Vol'] = simulation_results_per_row_std
-                    prob_df['Outlook'] = simulation_results_per_row_pos
-                    st.dataframe(prob_df)
-                # prob_df.reset_index(inplace=True)
+                    prob_df2['Raw'] = simulation_results_per_row
+                    prob_df2['Vol'] = simulation_results_per_row_std
+                    prob_df2['Outlook'] = simulation_results_per_row_pos
+                    st.dataframe(prob_df2)
+                # prob_df2.reset_index(inplace=True)
                 bins = [0, 5, 6.5, 7.5, 15]
                 labels = ['-', ' ', '+', '++']
-                prob_df['Upside'] = pd.cut(prob_df['Raw'], bins=bins, labels=labels, right=False)
-                pivot_df = prob_df [['Upside', 'Raw']]
+                prob_df2['Upside'] = pd.cut(prob_df2['Raw'], bins=bins, labels=labels, right=False)
+                pivot_df = prob_df2 [['Upside', 'Raw']]
                 pivot_df = pivot_df.round (2)
                 pivot_df = pivot_df.T
                 rename_columns = {
