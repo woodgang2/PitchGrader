@@ -706,65 +706,42 @@ if not st.session_state.team_flag:
             st.dataframe (prob_df)
             def calculate_mahalanobis(df_single, df_multi, columns):
                 scaler = StandardScaler()
-
-                # Fit the scaler on the data from df_multi and transform both df_single and df_multi
                 scaled_multi_values = scaler.fit_transform(df_multi[columns].values)
                 scaled_single_value = scaler.transform(df_single[columns].values[0].reshape(1, -1))
-
-                # Compute the covariance matrix of the normalized multi_values
                 cov_matrix = np.cov(scaled_multi_values, rowvar=False)
-
-                # Compute the inverse of the covariance matrix
                 cov_matrix_inv = inv(cov_matrix)
-
-                # Calculate Mahalanobis distance for each row in df_multi
-                df_multi['Mahalanobis'] = [
-                    mahalanobis(row, scaled_single_value[0], cov_matrix_inv) for row in scaled_multi_values
-                ]
-
+                df_multi['Mahalanobis'] = [mahalanobis(row, scaled_single_value[0], cov_matrix_inv) for row in scaled_multi_values]
                 return df_multi
-            prob_MC_df = calculate_mahalanobis(prob_df, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
-            st.dataframe (prob_MC_df)
 
             def compute_weights(df, epsilon=0.01):
-                # Using reciprocal of Mahalanobis distance as weight; adding epsilon to avoid division by zero
                 weights = 1 / (df['Mahalanobis'] + epsilon)
-                # Normalizing weights so they sum to one
                 normalized_weights = weights / weights.sum()
                 return normalized_weights
 
             def sample_performance(df, num_samples=1000):
-                # Computing weights within the function using Mahalanobis distances
                 weights = compute_weights(df)
-                # Placeholder for sampled indices
-                sampled_indices = np.zeros(num_samples, dtype=int)
-                # Sampling indices based on weights
                 sampled_indices = np.random.choice(df.index, size=num_samples, p=weights)
                 return sampled_indices
 
             def monte_carlo_simulation(df, sampled_indices, performance_metrics):
-                # Dictionary to store simulation results
                 simulation_results = {metric: [] for metric in performance_metrics}
-                # Perform simulations
                 for metric in performance_metrics:
-                    # Sampling performance data based on sampled indices for each metric
                     sampled_data = df.loc[sampled_indices, metric]
-                    # Calculating summary statistics for each metric
                     simulation_results[metric] = {
                         'mean': np.mean(sampled_data),
                         'std': np.std(sampled_data),
                         '5th_percentile': np.percentile(sampled_data, 5),
-                        '75th' : np.percentile(sampled_data, 75),
+                        '75th_percentile': np.percentile(sampled_data, 75),  # Add percentile value
                         '95th_percentile': np.percentile(sampled_data, 95)
                     }
                 return simulation_results
 
-            # Example usage
-            performance_metrics = ['Stuff_diff']  # Example metric column in df
+            prob_MC_df = calculate_mahalanobis(prob_df, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
+            performance_metrics = ['Stuff_diff']
             sampled_indices = sample_performance(prob_MC_df, 1000)
             simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, performance_metrics)
-            st.success (simulation_results)
-
+            prob_df['Upside'] = simulation_results['Stuff_diff']['75th_percentile']
+            st.dataframe (prob_df)
             # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # # Assuming calculate_mahalanobis is defined
