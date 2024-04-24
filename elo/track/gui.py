@@ -685,12 +685,14 @@ if not st.session_state.team_flag:
                         '5th_percentile': np.percentile(sampled_data, 5),
                         '75th_percentile': np.percentile(sampled_data, 75),  # Add percentile value
                         '95th_percentile': np.percentile(sampled_data, 95)
+                        'pos': (sampled_data > 0).mean() * 100
                     }
                 return simulation_results
 
             performance_metrics = ['Stuff_diff']
             simulation_results_per_row = []
             simulation_results_per_row_std = []
+            simulation_results_per_row_pos = []
 
             for index, row in prob_df.iterrows():
                 modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak', 'VAA', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'RelHeight', "RelSide", 'Extension', 'VertRelAngle', 'HorzRelAngle'])
@@ -698,9 +700,11 @@ if not st.session_state.team_flag:
                 simulation_results = monte_carlo_simulation(modified_prob_MC_df, sampled_indices, performance_metrics)
                 simulation_results_per_row.append(simulation_results['Stuff_diff']['75th_percentile'])
                 simulation_results_per_row_std.append(simulation_results['Stuff_diff']['std'])
+                simulation_results_per_row_pos.append(simulation_results['Stuff_diff']['pos'])
 
             prob_df['Upside'] = simulation_results_per_row
             prob_df['Vol'] = simulation_results_per_row_std
+            prob_df['Outlook'] = simulation_results_per_row_pos
             st.dataframe(prob_df)
             # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
