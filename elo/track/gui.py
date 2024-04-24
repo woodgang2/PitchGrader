@@ -662,7 +662,8 @@ if not st.session_state.team_flag:
                 return df_multi
 
             def compute_weights(df, epsilon=0.01):
-                weights = 1 / (df['Mahalanobis'] + epsilon)
+                inverse_distances = 1 / (df['Mahalanobis'] + epsilon)
+                weights = np.exp(-1* df['Mahalanobis'])
                 normalized_weights = weights / weights.sum()
                 return normalized_weights
 
