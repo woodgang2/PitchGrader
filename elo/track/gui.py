@@ -711,7 +711,7 @@ if not st.session_state.team_flag:
                     prob_df2['Outlook'] = simulation_results_per_row_pos
                     st.dataframe(prob_df2)
                 # prob_df2.reset_index(inplace=True)
-                bins = [0, 5, 6.5, 7.5, 15]
+                bins = [0, 5.8, 6.5, 7.5, 15]
                 labels = ['-', ' ', '+', '++']
                 prob_df2['Upside'] = pd.cut(prob_df2['Raw'], bins=bins, labels=labels, right=False)
                 pivot_df = prob_df2 [['Upside', 'Raw']]
