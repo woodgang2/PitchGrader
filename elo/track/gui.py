@@ -665,7 +665,7 @@ if not st.session_state.team_flag:
                 return df_multi
 
             def compute_weights(df, epsilon=0.01):
-                inverse_distances = 1 / (df['Mahalanobis'] + epsilon)
+                # inverse_distances = 1 / (df['Mahalanobis'] + epsilon)
                 weights = np.exp(-1* df['Mahalanobis'])
                 normalized_weights = weights / weights.sum()
                 return normalized_weights
@@ -701,6 +701,7 @@ if not st.session_state.team_flag:
                 simulation_results_per_row.append(simulation_results['Stuff_diff']['75th_percentile'])
                 simulation_results_per_row_std.append(simulation_results['Stuff_diff']['std'])
                 simulation_results_per_row_pos.append(simulation_results['Stuff_diff']['pos'])
+                st.success (simulation_results)
 
             prob_df['Upside'] = simulation_results_per_row
             prob_df['Vol'] = simulation_results_per_row_std
