@@ -628,6 +628,7 @@ if not st.session_state.team_flag:
             stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
             # stuff_df = stuff_df.round(0)
             prob_MC_df = driver12.retrieve_percentages_team ('All')
+            prob_MC_df = prob_MC_df [prob_MC_df ['Pitcher'] != name]
             stuff_df = stuff_df.drop_duplicates(subset=['Pitcher'])
             stuff_df = stuff_df.set_index('Pitcher')
             stuff_df = stuff_df [stuff_df['PitchCount'] >= 80]
@@ -654,7 +655,7 @@ if not st.session_state.team_flag:
             # st.empty ()
             # prob_MC_df = prob_MC_df [prob_MC_df['PitchCount'] >= 80]
             st.dataframe (prob_MC_df)
-            st.dataframe (prob_df)
+            # st.dataframe (prob_df)
             def calculate_mahalanobis(df_single, df_multi, columns):
                 scaler = StandardScaler()
                 scaled_multi_values = scaler.fit_transform(df_multi[columns].values)
