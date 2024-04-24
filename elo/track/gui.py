@@ -738,7 +738,7 @@ if not st.session_state.team_flag:
 
             prob_MC_df = calculate_mahalanobis(prob_df, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
             performance_metrics = ['Stuff_diff']
-            sampled_indices = sample_performance(prob_MC_df, 1000)
+            sampled_indices = sample_performance(prob_MC_df, 100)
             simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, performance_metrics)
             prob_df['Upside'] = simulation_results['Stuff_diff']['75th_percentile']
             st.dataframe (prob_df)
