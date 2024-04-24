@@ -693,7 +693,7 @@ if not st.session_state.team_flag:
             simulation_results_per_row_std = []
 
             for index, row in prob_df.iterrows():
-                modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak'])
+                modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak', 'VAA', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'RelHeight', "RelSide", 'Extension', 'VertRelAngle', 'HorzRelAngle'])
                 sampled_indices = sample_performance(modified_prob_MC_df, 1000)
                 simulation_results = monte_carlo_simulation(modified_prob_MC_df, sampled_indices, performance_metrics)
                 simulation_results_per_row.append(simulation_results['Stuff_diff']['75th_percentile'])
