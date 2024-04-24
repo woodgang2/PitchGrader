@@ -712,6 +712,16 @@ if not st.session_state.team_flag:
                 # prob_df.reset_index(inplace=True)
                 pivot_df = prob_df [['Upside']]
                 pivot_df = pivot_df.T
+                rename_columns = {
+                    'ChangeUp': 'CH',
+                    'Curveball': 'CU',
+                    'Cutter' : 'FC',
+                    'Four-Seam' : 'FF',
+                    'Sinker' : 'SI',
+                    'Slider' : 'SL',
+                    'Splitter' : 'FS'
+                }
+                pivot_df = pivot_df.rename(columns=rename_columns)
                 st.dataframe (pivot_df)
                 # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
