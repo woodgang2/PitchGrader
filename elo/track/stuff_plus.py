@@ -1600,6 +1600,9 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
 # run_model(Focus.Stuff)
 # run_Stuff_model()
 driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
+driver.read_radar_data()
+driver.load_relevant_data()
+driver.write_variable_data()
 # driver.read_radar_data()
 # driver.normalize_VAA()
 # driver.write_radar_data()
@@ -1711,7 +1714,7 @@ def process_data ():
 # driver.normalize_VAA()
 # driver.write_radar_data()
 def generate_all ():
-    process_data()
+    # process_data()
     run_model(Focus.Stuff)
     generate_stuff_ratings()
     run_model(Focus.Stuff, year = 2023)
