@@ -522,7 +522,7 @@ if not st.session_state.team_flag:
                     display_static_slider('xHH%', 100 - df ['xHH%'].iloc [index])
                     display_static_slider('xHHFB%', 100 - df ['Prob_HardFB'].iloc [index])
 
-            st.write ("View/Edit Raws")
+            st.write ("Attributes")
             prob_df = driver.retrieve_percentages(name)
             prob_df = prob_df.drop_duplicates ('PitchType')
             # prob_df = pitching_percentages_df [pitching_percentages_df ['Pitcher'] == name]
