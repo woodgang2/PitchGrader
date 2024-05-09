@@ -1592,8 +1592,10 @@ class Driver:
     def add_command_to_game_logs (self):
         db_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), f'game_logs.parquet')
         df = pd.read_parquet(db_filename)
-        self.players_df = self.players_df.rename(columns={'Overall': 'Command'})
-        df = df.merge(self.players_df[['Pitcher', 'Date', 'Command']], on=['Pitcher', 'Date'], how='left')
+        self.read_radar_data()
+        df = df.merge(self.radar_df[['Pitcher', 'Date', 'BatterTeam']], on=['Pitcher', 'Date'], how='left')
+        # self.players_df = self.players_df.rename(columns={'Overall': 'Command'})
+        # df = df.merge(self.players_df[['Pitcher', 'Date', 'Command']], on=['Pitcher', 'Date'], how='left')
         # print (df.head().to_string ())
         # exit (0)
         df.to_parquet(f'game_logs.parquet', engine='pyarrow', compression='ZSTD')
@@ -1881,4 +1883,4 @@ def generate_all ():
 # generate_all()
 # driver.read_predictions(Focus.Location)
 # driver.calculate_average_xRVs_by_game()
-# driver.add_command_to_game_logs()
+driver.add_command_to_game_logs()

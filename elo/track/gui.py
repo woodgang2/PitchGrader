@@ -632,8 +632,9 @@ if not st.session_state.team_flag:
                 log_df = log_df.iloc[::-1].reset_index(drop=True)
                 log_df = log_df.set_index ('Date')
                 log_df = log_df.rename(columns={'Overall': 'Stuff'})
+                log_df = log_df.rename(columns={'BatterTeam': 'Opposing Team'})
                 st.empty ()
-                desired_order = ['PitchCount', 'Command', 'Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
+                desired_order = ['Opposing Team', 'PitchCount', 'Command', 'Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
                 actual_order = [col for col in desired_order if col in log_df.columns]
                 log_df = log_df [actual_order]
                 st.dataframe (log_df)

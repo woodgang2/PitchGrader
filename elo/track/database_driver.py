@@ -55,6 +55,9 @@ class DatabaseDriver:
         # Close the database connection
         conn.close()
 
+    def write_data_parquet (self):
+        self.df.to_parquet(f'radar2.parquet', engine='pyarrow', compression='LZ4')
+
     def retrieve_percentiles (self, player, team = None):
         db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
 
