@@ -419,6 +419,7 @@ if not st.session_state.team_flag:
             # st.success (stuff_df.columns)
             stuff_df = stuff_df.set_index('PitchCount')
             stuff_df.index.name = 'Pitch Count'
+            st.empty ()
             # stuff_df = stuff_df[desired_order]
             # st.markdown("""
             #     <style>
