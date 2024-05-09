@@ -628,7 +628,7 @@ if not st.session_state.team_flag:
                 }
                 log_df = log_df.rename(columns=rename_columns)
                 log_df = log_df.round({col: 0 for col in log_df.columns if not col.endswith('%')})
-                log_df.drop (columns = ['PitcherTeam', 'PitcherThrows', 'Pitcher'])
+                log_df = log_df.drop (columns = ['PitcherTeam', 'PitcherThrows', 'Pitcher'])
                 st.dataframe (log_df)
             # actual_order = [col for col in desired_order if col in stuff_history_df.columns]
             # stuff_history_df = stuff_history_df[actual_order]
