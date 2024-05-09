@@ -191,7 +191,7 @@ class Driver:
         # self.radar_df.to_sql ('radar_data', conn, if_exists='replace', index=False)
         conn.close()
 
-    def read_predictions (self, focus):
+    def read_predictions (self, focus = Focus.Stuff):
         print ("Reading predictions")
         year = self.year
         if (self.year is None):
@@ -1199,8 +1199,11 @@ class Driver:
         predictions_df['average_xRV'] = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].transform('mean')
         self.predictions_df = predictions_df
 
-    def calculate_average_xRVs (self):
+    def calculate_average_xRVs_wrapped (self, game_log = 0):
         predictions_df = self.predictions_df
+        predictions_df ["OldPitcher"] = predictions_df ["Pitcher"]
+        if (game_log == 1):
+            predictions_df ["Pitcher"] = predictions_df ["Pitcher"] + "/" + predictions_df ['Date']
         # predictions_df['average_xRV'] = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].transform('mean')
         # pitch_stats_df = predictions_df.groupby('PitchType')['xRV'].agg(['mean', 'std']).reset_index()
         # pitch_stats_df.columns = ['PitchType', 'Average_xRV', 'StDev_xRV']
@@ -1267,7 +1270,7 @@ class Driver:
 
         # Rename columns appropriately and handle NaNs for pitchers who do not use certain pitch types
         players_df = players_df.rename(columns={'Overall_z_score': 'Overall'}).fillna(np.nan)
-        pitcher_team_mapping = predictions_df[['Pitcher', 'PitcherTeam', 'PitcherThrows']].drop_duplicates()
+        pitcher_team_mapping = predictions_df[['Pitcher', 'PitcherTeam', 'PitcherThrows', 'OldPitcher', 'Date']].drop_duplicates()
         players_df = players_df.merge(pitcher_team_mapping, on='Pitcher', how='left')
 
         pitch_counts = predictions_df.groupby('Pitcher').size().reset_index(name='TotalPitches')
@@ -1279,13 +1282,25 @@ class Driver:
         usage_2d_df.columns = [f"{col} Usage" for col in usage_2d_df.columns]
         usage_2d_df_reset = usage_2d_df.reset_index()
         players_df = players_df.merge(usage_2d_df_reset, on='Pitcher', how='left')
-        base_columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Overall']#, 'Four-Seam', 'Four-Seam Usage', 'Sinker', 'Sinker Usage', 'Cutter', 'Cutter Usage', 'Cutter_S', 'Cutter_S Usage', 'Curveball', 'Curveball Usage', 'Slider', 'Slider Usage', 'ChangeUp', 'ChangeUp Usage', 'Splitter', 'Splitter Usage']
-        usage_columns1 = [col for col in players_df.columns if (not col.endswith('Usage')) and (col not in ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Overall'])]
+        players_df ['Pitcher'] = players_df ['OldPitcher']
+        players_df.drop (columns = ['OldPitcher'])
+        base_columns = ['Pitcher', 'Date', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Overall']#, 'Four-Seam', 'Four-Seam Usage', 'Sinker', 'Sinker Usage', 'Cutter', 'Cutter Usage', 'Cutter_S', 'Cutter_S Usage', 'Curveball', 'Curveball Usage', 'Slider', 'Slider Usage', 'ChangeUp', 'ChangeUp Usage', 'Splitter', 'Splitter Usage']
+        usage_columns1 = [col for col in players_df.columns if (not col.endswith('Usage')) and (col not in base_columns)]
         usage_columns2 = [col for col in players_df.columns if col.endswith('Usage')]
         final_columns = base_columns + usage_columns1 + usage_columns2
+        if game_log == 0:
+            final_columns.remove ('Date')
         players_df = players_df[final_columns]
+        # print (players_df.head ().to_string ())
+        # exit (0)
         # exit (0)
         self.players_df = players_df
+    def calculate_average_xRVs (self):
+        self.calculate_average_xRVs_wrapped (0)
+    def calculate_average_xRVs_by_game (self):
+        self.calculate_average_xRVs_wrapped (game_log = 1)
+    def write_players_df_to_parquet (self, name = 'players_df'):
+        self.players_df.to_parquet(f'{name}.parquet', engine='pyarrow', compression='ZSTD')
 
     def calculate_percentiles (self, focus=Focus.Stuff):
         year = self.year
@@ -1588,6 +1603,9 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
     driver.read_predictions(Focus.Stuff)
     driver.write_predictions_players()
     driver.write_players()
+    driver.read_predictions(Focus.Stuff)
+    driver.calculate_average_xRVs_by_game()
+    driver.write_players_df_to_parquet('game_logs')
 
     driver.calculate_percentiles()
     driver.write_percentiles()
@@ -1714,7 +1732,7 @@ def process_data ():
 # driver.normalize_VAA()
 # driver.write_radar_data()
 def generate_all ():
-    # process_data()
+    process_data()
     run_model(Focus.Stuff)
     generate_stuff_ratings()
     run_model(Focus.Stuff, year = 2023)

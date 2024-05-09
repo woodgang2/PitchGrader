@@ -608,6 +608,9 @@ if not st.session_state.team_flag:
             # stuff_history_df.update(stuff_history_df.filter(like='%').apply(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x))
             stuff_history_df.loc[:, stuff_history_df.columns.str.contains('%')] = stuff_history_df.filter(like='%').applymap(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x)
             st.dataframe (stuff_history_df)
+            with st.expander(f"Game Log"):
+                log_df = driver.retrieve_game_logs(name)
+                st.dataframe (log_df)
             # actual_order = [col for col in desired_order if col in stuff_history_df.columns]
             # stuff_history_df = stuff_history_df[actual_order]
             # st.dataframe (stuff_history_df)

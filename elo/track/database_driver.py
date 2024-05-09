@@ -529,6 +529,11 @@ class DatabaseDriver:
         self.read_data()
         self.write_data()
 
+    def retrieve_game_logs (self, player):
+        df = pd.read_parquet('game_logs.parquet')
+        df = df [df['Pitcher'] == player]
+        return df
+
 
 
 driver = DatabaseDriver ()
