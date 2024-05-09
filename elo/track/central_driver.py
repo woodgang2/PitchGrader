@@ -9,6 +9,6 @@ def calculate_grades ():
     driver = database_driver.DatabaseDriver ()
     driver.update_GUI()
     driver = database_driver.DatabaseDriver (2023)
-    driver.update_GUI(2023)
+    driver.update_GUI()
     driver = database_driver.DatabaseDriver (2024)
-    driver.update_GUI(2024)
+    driver.update_GUI()
