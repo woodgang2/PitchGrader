@@ -631,7 +631,7 @@ if not st.session_state.team_flag:
                 log_df = log_df.drop (columns = ['PitcherTeam', 'PitcherThrows', 'Pitcher'])
                 log_df = log_df.set_index ('Date')
                 st.empty ()
-                desired_order = ['PitchCount', 'Overall', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH', 'FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
+                desired_order = ['PitchCount', 'Overall', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
                 actual_order = [col for col in desired_order if col in log_df.columns]
                 log_df = log_df [actual_order]
                 st.dataframe (log_df)
