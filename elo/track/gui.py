@@ -740,24 +740,24 @@ if not st.session_state.team_flag:
                     prob_df2['Vol'] = simulation_results_per_row_std
                     prob_df2['Outlook'] = simulation_results_per_row_pos
                     st.dataframe(prob_df2)
-                # prob_df2.reset_index(inplace=True)
-                bins = [0, 6, 6.5, 7.5, 15]
-                labels = ['-', ' ', '+', '++']
-                prob_df2['Upside'] = pd.cut(prob_df2['Raw'], bins=bins, labels=labels, right=False)
-                pivot_df = prob_df2 [['Upside', 'Raw']]
-                pivot_df = pivot_df.round (2)
-                pivot_df = pivot_df.T
-                rename_columns = {
-                    'ChangeUp': 'CH',
-                    'Curveball': 'CU',
-                    'Cutter' : 'FC',
-                    'Four-Seam' : 'FF',
-                    'Sinker' : 'SI',
-                    'Slider' : 'SL',
-                    'Splitter' : 'FS'
-                }
-                pivot_df = pivot_df.rename(columns=rename_columns)
-                st.dataframe (pivot_df)
+                    # prob_df2.reset_index(inplace=True)
+                    bins = [0, 6, 6.5, 7.5, 15]
+                    labels = ['-', ' ', '+', '++']
+                    prob_df2['Upside'] = pd.cut(prob_df2['Raw'], bins=bins, labels=labels, right=False)
+                    pivot_df = prob_df2 [['Upside', 'Raw']]
+                    pivot_df = pivot_df.round (2)
+                    pivot_df = pivot_df.T
+                    rename_columns = {
+                        'ChangeUp': 'CH',
+                        'Curveball': 'CU',
+                        'Cutter' : 'FC',
+                        'Four-Seam' : 'FF',
+                        'Sinker' : 'SI',
+                        'Slider' : 'SL',
+                        'Splitter' : 'FS'
+                    }
+                    pivot_df = pivot_df.rename(columns=rename_columns)
+                    st.dataframe (pivot_df)
                 # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # # Assuming calculate_mahalanobis is defined

@@ -1311,6 +1311,8 @@ class Driver:
         self.calculate_average_xRVs_wrapped (game_log = 1)
     def write_players_df_to_parquet (self, name = 'players_df'):
         self.players_df.to_parquet(f'{name}.parquet', engine='pyarrow', compression='ZSTD')
+        self.read_radar_data()
+        self.radar_df.to_parquet(f'radar_data.parquet', engine='pyarrow', compression='LZ4')
 
     def calculate_percentiles (self, focus=Focus.Stuff):
         year = self.year
