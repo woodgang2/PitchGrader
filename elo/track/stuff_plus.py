@@ -1751,6 +1751,6 @@ def generate_all ():
     generate_stuff_ratings(year = 2024)
 
 # generate_all()
-driver.read_predictions(Focus.Stuff)
-driver.calculate_average_xRVs_by_game()
-driver.write_players_df_to_parquet('game_logs')
+# driver.read_predictions(Focus.Stuff)
+# driver.calculate_average_xRVs_by_game()
+# driver.write_players_df_to_parquet('game_logs')
