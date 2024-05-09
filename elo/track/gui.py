@@ -629,6 +629,7 @@ if not st.session_state.team_flag:
                 log_df = log_df.rename(columns=rename_columns)
                 log_df = log_df.round({col: 0 for col in log_df.columns if not col.endswith('%')})
                 log_df = log_df.drop (columns = ['PitcherTeam', 'PitcherThrows', 'Pitcher'])
+                log_df = log_df.iloc[::-1].reset_index(drop=True)
                 log_df = log_df.set_index ('Date')
                 log_df = log_df.rename(columns={'Overall': 'Stuff'})
                 st.empty ()
