@@ -610,6 +610,23 @@ if not st.session_state.team_flag:
             st.dataframe (stuff_history_df)
             with st.expander(f"Game Log"):
                 log_df = driver.retrieve_game_logs(name)
+                rename_columns = {
+                    'ChangeUp': 'CH',
+                    'Curveball': 'CU',
+                    'Cutter' : 'FC',
+                    'Four-Seam' : 'FF',
+                    'Sinker' : 'SI',
+                    'Slider' : 'SL',
+                    'Splitter' : 'FS',
+                    'ChangeUp Usage': 'CH%',
+                    'Curveball Usage': 'CU%',
+                    'Cutter Usage' : 'FC%',
+                    'Four-Seam Usage' : 'FF%',
+                    'Sinker Usage' : 'SI%',
+                    'Slider Usage' : 'SL%',
+                    'Splitter Usage' : 'FS%'
+                }
+                log_df = log_df.rename(columns=rename_columns)
                 st.dataframe (log_df)
             # actual_order = [col for col in desired_order if col in stuff_history_df.columns]
             # stuff_history_df = stuff_history_df[actual_order]

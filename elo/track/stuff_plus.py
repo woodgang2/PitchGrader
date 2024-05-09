@@ -1169,7 +1169,7 @@ class Driver:
         self.predictions_df = predictions_df
         conn.close ()
     #TODO: find average foul/strike value
-    def calculate_run_values_swing (self):
+    def calculate_run_values_swing_wrapped (self, game_log = 0):
         expected_run_values = {
             "SwingingStrike": 0.085,
             "Foul": 0.015,
@@ -1198,6 +1198,10 @@ class Driver:
         predictions_df ['xRV'] = predictions_df ['EV'] - ev
         predictions_df['average_xRV'] = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].transform('mean')
         self.predictions_df = predictions_df
+    # def calculate_run_values_swing (self):
+    #     self.calculate_run_values_swing_wrapped (0)
+    # def calculate_run_values_swing_game_log (self):
+    #     self.calculate_run_values_swing_wrapped (1)
 
     def calculate_average_xRVs_wrapped (self, game_log = 0):
         predictions_df = self.predictions_df
@@ -1233,11 +1237,18 @@ class Driver:
         overall_stats.insert(0, 'PitchType', 'Overall')
         overall_stats.columns = ['PitchType', 'Average_xRV', 'StDev_xRV']
 
-
         xRV_df = pd.concat([pitch_stats_df, overall_stats], ignore_index=True)
         self.xRV_df = xRV_df
         print (xRV_df.to_string ())
-        avg_xRV = predictions_df.groupby(['Pitcher', 'PitchType'])['average_xRV'].mean().reset_index()
+        avg_xRV = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].mean().reset_index()
+        avg_xRV = avg_xRV.rename(columns={'xRV': 'average_xRV'})
+        # predictions_df = predictions_df [['Pitcher', 'PitchType', 'OldPitcher', 'average_xRV']]
+        # predictions_df = predictions_df[predictions_df['OldPitcher'] == 'Moore, Bryson']
+        # print (predictions_df)
+        # grouped = (predictions_df.groupby(['Pitcher', 'PitchType']))
+        # print (grouped.head ())
+        # print (avg_xRV.head (20).to_string ())
+        # exit (0)
         # avg_xRV = avg_xRV [avg_xRV ['Pitcher'] == 'Hungate, Chase']
         # print (avg_xRV.to_string ())
         # exit (0)
@@ -1272,7 +1283,6 @@ class Driver:
         players_df = players_df.rename(columns={'Overall_z_score': 'Overall'}).fillna(np.nan)
         pitcher_team_mapping = predictions_df[['Pitcher', 'PitcherTeam', 'PitcherThrows', 'OldPitcher', 'Date']].drop_duplicates()
         players_df = players_df.merge(pitcher_team_mapping, on='Pitcher', how='left')
-
         pitch_counts = predictions_df.groupby('Pitcher').size().reset_index(name='TotalPitches')
         pitch_type_counts = predictions_df.groupby(['Pitcher', 'PitchType']).size().reset_index(name='PitchTypeCount')
         usage_df = pitch_type_counts.merge(pitch_counts, on='Pitcher')
@@ -1283,7 +1293,7 @@ class Driver:
         usage_2d_df_reset = usage_2d_df.reset_index()
         players_df = players_df.merge(usage_2d_df_reset, on='Pitcher', how='left')
         players_df ['Pitcher'] = players_df ['OldPitcher']
-        players_df.drop (columns = ['OldPitcher'])
+        players_df = players_df.drop (columns = ['OldPitcher'])
         base_columns = ['Pitcher', 'Date', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Overall']#, 'Four-Seam', 'Four-Seam Usage', 'Sinker', 'Sinker Usage', 'Cutter', 'Cutter Usage', 'Cutter_S', 'Cutter_S Usage', 'Curveball', 'Curveball Usage', 'Slider', 'Slider Usage', 'ChangeUp', 'ChangeUp Usage', 'Splitter', 'Splitter Usage']
         usage_columns1 = [col for col in players_df.columns if (not col.endswith('Usage')) and (col not in base_columns)]
         usage_columns2 = [col for col in players_df.columns if col.endswith('Usage')]
@@ -1741,3 +1751,6 @@ def generate_all ():
     generate_stuff_ratings(year = 2024)
 
 # generate_all()
+driver.read_predictions(Focus.Stuff)
+driver.calculate_average_xRVs_by_game()
+driver.write_players_df_to_parquet('game_logs')
