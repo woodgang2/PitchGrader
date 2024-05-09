@@ -518,7 +518,16 @@ class DatabaseDriver:
         df ['NeutralExitSpeed'] = df ['NeutralExitSpeed'].round(2)
         self.write_data_table(df, 'Probabilities_Batters')
         return df
-
+    def update_GUI (self):
+        self.write_percentages_batter()
+        self.write_percentages()
+        self.write_percentiles_bat()
+        self.write_percentiles()
+        self.write_stuff()
+        self.write_locations ()
+    def update_DB (self):
+        self.read_data()
+        self.write_data()
 
 
 
