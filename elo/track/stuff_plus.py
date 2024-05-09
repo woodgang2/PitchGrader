@@ -1169,7 +1169,7 @@ class Driver:
         self.predictions_df = predictions_df
         conn.close ()
     #TODO: find average foul/strike value
-    def calculate_run_values_swing_wrapped (self, game_log = 0):
+    def calculate_run_values_swing (self, game_log = 0):
         expected_run_values = {
             "SwingingStrike": 0.085,
             "Foul": 0.015,
