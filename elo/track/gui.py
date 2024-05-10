@@ -721,12 +721,20 @@ if not st.session_state.team_flag:
                             'pos': (sampled_data > 0).mean() * 100
                         }
                     return simulation_results
+                def find_comps(df):
+                    df_sorted = df.sort_values('Mahalanobis')
+                    most_similar = df_sorted.head(3)
+                    least_similar = df_sorted.tail(3)
+                    mean_squared_distance = np.mean(df_sorted['Mahalanobis']**2)
+                    return most_similar, least_similar, mean_squared_distance
 
                 performance_metrics = ['Stuff_diff']
                 simulation_results_per_row = []
                 simulation_results_per_row_std = []
                 simulation_results_per_row_pos = []
                 prob_df2 = prob_df [prob_df ['Usage'] > 0.01]
+                running_average = 0
+                count = 0
                 with st.expander(f"Upside Details"):
                     for index, row in prob_df2.iterrows():
                         modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak', 'VAA', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'RelHeight', "RelSide", 'Extension', 'VertRelAngle', 'HorzRelAngle'])
@@ -735,6 +743,9 @@ if not st.session_state.team_flag:
                         simulation_results_per_row.append(simulation_results['Stuff_diff']['75th_percentile'])
                         simulation_results_per_row_std.append(simulation_results['Stuff_diff']['std'])
                         simulation_results_per_row_pos.append(simulation_results['Stuff_diff']['pos'])
+                        most_similar, least_similar, mean_squared_distance = find_comps(modified_prob_MC_df)
+                        count += 1
+                        running_average = (running_average * (count - 1) + mean_squared_distance) / count
                         st.success (simulation_results)
 
                     prob_df2['Raw'] = simulation_results_per_row
@@ -769,6 +780,8 @@ if not st.session_state.team_flag:
             # sampled_indices = sample_performance(prob_MC_df, weights)
             # simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, columns_to_be_compared)
             # st.table (simulation_results)
+            with st.expander(f"Player Comps"):
+                st.success (f"Unicorn Score: {running_average}")
     # df = pd.read_csv("my_data.csv")
     # st.line_chart(df)
 else:
