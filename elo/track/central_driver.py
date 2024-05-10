@@ -12,3 +12,5 @@ def calculate_grades ():
     driver.update_GUI()
     driver = database_driver.DatabaseDriver (2024)
     driver.update_GUI()
+
+# calculate_grades()
