@@ -994,7 +994,7 @@ else:
                 df_bat = df_bat.drop (columns = ['BatterTeam'])
             if min_pitch:  # Check if something was entered
                 try:
-                    valid_pitchers = stuff_df['Pitcher']
+                    valid_pitchers = stuff_df.index
                     df = df[df['Pitcher'].isin(valid_pitchers)]
                 except ValueError:
                     print ('hey')
@@ -1008,7 +1008,7 @@ else:
                 prob_df_final = prob_df_final.drop (columns = ['PitcherTeam', 'Balls', 'Strikes'])
             if min_pitch:  # Check if something was entered
                 try:
-                    valid_pitchers = stuff_df['Pitcher']
+                    valid_pitchers = stuff_df.index
                     prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
                 except ValueError:
                     print ('hey')
