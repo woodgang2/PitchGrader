@@ -940,6 +940,7 @@ else:
             actual_order = [col for col in desired_order if col in stuff_df.columns]
             # st.success (actual_order)
             stuff_df = stuff_df[actual_order]
+            stuff_df = stuff_df.set_index ('Pitcher')
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
