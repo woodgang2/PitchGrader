@@ -1031,6 +1031,9 @@ else:
             elif pitch_selected != 'All':
                 prob_df_final = prob_df_final[prob_df_final['PitchType'] == pitch_selected]
                 df = df[df['PitchType'] == pitch_selected]
+            df = df.set_index ('Pitcher')
+            prob_df_final = prob_df_final.set_index ('Pitcher')
+            df_bat = df_bat.set_index ('Batter')
             st.dataframe (df)
             st.dataframe (prob_df_final)
             st.dataframe (df_bat)
