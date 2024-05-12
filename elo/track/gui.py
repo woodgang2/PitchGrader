@@ -232,7 +232,7 @@ def color_values (value):
     # Return color style
     rgba = cmap(norm(value))
     color = mcolors.rgb2hex(rgba)
-    if show_color:
+    if show_color and not show_changes:
         return f'background-color: {color}'
     return f'background-color: #ffffff'
 
