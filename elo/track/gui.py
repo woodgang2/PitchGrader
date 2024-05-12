@@ -451,8 +451,8 @@ if not st.session_state.team_flag:
             #     </style>
             #     """, unsafe_allow_html=True)
             # container = st.empty ()
-
-            stuff_df = stuff_df.style.applymap(color_values).format("{:.0f}")
+            if not show_changes:
+                stuff_df = stuff_df.style.applymap(color_values).format("{:.0f}")
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
