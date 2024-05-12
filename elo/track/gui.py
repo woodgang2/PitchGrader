@@ -31,7 +31,7 @@ def interpolate_color(minval, maxval, val, color_palette):
     return int(r1 + f*(r2-r1)), int(g1 + f*(g2-g1)), int(b1 + f*(b2-b1))
 def color_values (value):
     # Create a color map with specific hex values
-    cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#e60000", "#ffff00", "#1b3427"])
+    cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#e60000", "#ffff00", "#00ff00"])
     norm = mcolors.Normalize(vmin=20, vmax=80)
 
     # Return color style
