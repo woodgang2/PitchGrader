@@ -662,7 +662,8 @@ if not st.session_state.team_flag:
                 actual_order = [col for col in desired_order if col in log_df.columns]
                 log_df = log_df [actual_order]
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                usage = {col for col in log_df.columns if col.endswith('%')}
+                # usage = {col for col in log_df.columns if col.endswith('%')}
+                usage = ['FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
                 log_df = log_df.style.applymap(color_values, subset = colored_columns).format ("{:.2f}", subset = usage).format("{:.0f}", subset = colored_columns)
                 st.dataframe (log_df)
             # actual_order = [col for col in desired_order if col in stuff_history_df.columns]
