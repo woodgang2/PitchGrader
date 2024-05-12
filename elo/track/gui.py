@@ -988,11 +988,11 @@ else:
 
                 # Calculate the weighted averages
                 weighted_averages = pd.DataFrame({
-                    'Team': weighted_sums.index,
+                    'PitcherTeam': weighted_sums.index,
                     'Stuff': (weighted_sums['Weighted_Stuff'] / weighted_sums['Total_PitchCount']).round(),
                     'Command': (weighted_sums['Weighted_Command'] / weighted_sums['Total_PitchCount']).round()
                 })
-                weighted_averages.set_index('Team', inplace=True)
+                weighted_averages.set_index('PitcherTeam', inplace=True)
                 st.dataframe (weighted_averages)
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns]
