@@ -228,7 +228,7 @@ def color_values (value):
     if not show_color or show_changes or pd.isna(value):
         return f'background-color: #ffffff'
     # Create a color map with specific hex values
-    cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#e60000", "#ffff00", "#00ff00"])
+    cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#ff0000", "#ffff00", "#00ff00"])
     norm = mcolors.Normalize(vmin=20, vmax=80)
 
     # Return color style
