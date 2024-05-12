@@ -225,7 +225,7 @@ if random_player:
     st.session_state['player_name'] = random_option
 
 def color_values (value):
-    if not show_color or show_changes:
+    if not show_color or show_changes or pd.isna(value):
         return f'background-color: #ffffff'
     # Create a color map with specific hex values
     cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#e60000", "#ffff00", "#00ff00"])
