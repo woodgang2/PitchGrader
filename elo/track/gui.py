@@ -229,8 +229,8 @@ def color_values (value):
         return f'background-color: #ffffff'
     # Create a color map with specific hex values
     cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#ff0000", "#ffff00", "#00ff00"])
-    norm = mcolors.Normalize(vmin=10, vmax=90)
-    # norm = mcolors.TwoSlopeNorm(vmin=20, vcenter=50, vmax=90)
+    # norm = mcolors.Normalize(vmin=10, vmax=90)
+    norm = mcolors.TwoSlopeNorm(vmin=20, vcenter=50, vmax=90)
     # Return color style
     rgba = cmap(norm(value))
     color = mcolors.rgb2hex(rgba)
