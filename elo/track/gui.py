@@ -109,7 +109,7 @@ col1, col2, col3 = st.columns([4, 2, 4])
 with col1:
     st.write('Database last updated 5/7/2024')
 with col3:
-    color_option = st.toggle("Show Color", value = False)
+    show_color = st.toggle("Show Color", value = False)
 st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
 # Create two text input boxes for the first and last name
 if 'team_flag' not in st.session_state:
@@ -232,7 +232,8 @@ def color_values (value):
     # Return color style
     rgba = cmap(norm(value))
     color = mcolors.rgb2hex(rgba)
-    # return f'background-color: {color}'
+    if show_color:
+        return f'background-color: {color}'
     return f'background-color: #ffffff'
 
 # batting_percentages_df = driver.retrieve_percentages_bat_team ('All')
