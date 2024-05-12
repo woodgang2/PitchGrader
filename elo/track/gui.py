@@ -29,16 +29,6 @@ def interpolate_color(minval, maxval, val, color_palette):
     r2, g2, b2 = color_palette[i2]
     f = v - i1
     return int(r1 + f*(r2-r1)), int(g1 + f*(g2-g1)), int(b1 + f*(b2-b1))
-def color_values (value):
-    # Create a color map with specific hex values
-    cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#e60000", "#ffff00", "#00ff00"])
-    norm = mcolors.Normalize(vmin=20, vmax=80)
-
-    # Return color style
-    rgba = cmap(norm(value))
-    color = mcolors.rgb2hex(rgba)
-    # return f'background-color: {color}'
-    return f'background-color: #ffffff'
 def color_for_value(value):
     # Define the color transition [0%, 50%, 100%]
     colors = [(26, 28, 244), (128, 128, 128), (255, 25, 25)]  # Blue, Grey, Red
@@ -114,7 +104,11 @@ st.title('PitchGrader')
 st.caption ('Stuff, Command, and Swing Mechanics models for collegiate players')
 # st.title('Stuff+ Model (also a swing mechanics model now)')
 st.write('Database last updated 5/7/2024')
-st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
+col1, col2, col3 = st.columns([4, 2, 4])
+with col1:
+    st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
+with col3:
+    color_option = st.radio("Show Color", ('On', 'Off'), index=0)
 # Create two text input boxes for the first and last name
 if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
@@ -227,6 +221,17 @@ options = [''] + list(combined_names)
 if random_player:
     random_option = random.choice(options)
     st.session_state['player_name'] = random_option
+
+def color_values (value):
+    # Create a color map with specific hex values
+    cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#e60000", "#ffff00", "#00ff00"])
+    norm = mcolors.Normalize(vmin=20, vmax=80)
+
+    # Return color style
+    rgba = cmap(norm(value))
+    color = mcolors.rgb2hex(rgba)
+    # return f'background-color: {color}'
+    return f'background-color: #ffffff'
 
 # batting_percentages_df = driver.retrieve_percentages_bat_team ('All')
 # pitching_percentages_df = driver.retrieve_percentages_team ('All')
