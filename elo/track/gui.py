@@ -978,6 +978,24 @@ else:
             # st.success (actual_order)
             stuff_df = stuff_df[actual_order]
             stuff_df = stuff_df.set_index ('Pitcher')
+            if (team_name == 'All'):
+                grouped = stuff_df.groupby('Team')
+                weighted_sums = grouped.apply(lambda x: pd.Series({
+                    'Weighted_Stuff': np.sum(x['PitchCount'] * x['Stuff']),
+                    'Weighted_Command': np.sum(x['PitchCount'] * x['Command']),
+                    'Total_PitchCount': np.sum(x['PitchCount'])
+                }))
+
+                # Calculate the weighted averages
+                weighted_averages = pd.DataFrame({
+                    'Team': weighted_sums.index,
+                    'Stuff': (weighted_sums['Weighted_Stuff'] / weighted_sums['Total_PitchCount']).round(),
+                    'Command': (weighted_sums['Weighted_Command'] / weighted_sums['Total_PitchCount']).round()
+                })
+
+            # Keep 'Team' as the index
+            weighted_averages.set_index('Team', inplace=True)
+            st.dataframe (weighted_averages)
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns]
             if not show_changes:
