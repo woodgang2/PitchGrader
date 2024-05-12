@@ -980,12 +980,11 @@ else:
             stuff_df = stuff_df.set_index ('Pitcher')
             if (team_name == 'All'):
                 grouped = stuff_df.groupby('PitcherTeam')
-                weighted_sums = grouped.apply(lambda x: pd.Series({
-                    'Weighted_Stuff': np.sum(x['PitchCount'] * x['Stuff']),
-                    'Weighted_Command': np.sum(x['PitchCount'] * x['Command']),
-                    'Total_PitchCount': np.sum(x['PitchCount'])
-                }))
-
+                desired_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                weighted_sums = grouped.apply(lambda x: pd.Series(
+                    {f'Weighted_{col}': np.sum(x['PitchCount'] * x[col]) for col in desired_columns} |
+                    {'Total_PitchCount': np.sum(x['PitchCount'])}
+                ))
                 # Calculate the weighted averages
                 weighted_averages = pd.DataFrame({
                     'PitcherTeam': weighted_sums.index,
