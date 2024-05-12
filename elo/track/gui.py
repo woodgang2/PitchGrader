@@ -402,6 +402,7 @@ if not st.session_state.team_flag:
             }
             desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             stuff_df = stuff_df.rename(columns=rename_columns)
+            st.empty ()
 
             # stuff_df = pitching_stuff_df [pitching_stuff_df ['Pitcher'] == name]
             stuff_df = stuff_df.drop_duplicates ('Pitcher')
