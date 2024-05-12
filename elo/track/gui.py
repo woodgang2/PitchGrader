@@ -982,6 +982,7 @@ else:
             colored_columns = [col for col in colored_columns if col in stuff_df.columns]
             if not show_changes:
                 stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}", subset = colored_columns)
+                stuff_df = stuff_df.format("{:.2f}", subset = ['Fastball%'])
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
