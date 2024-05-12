@@ -989,6 +989,7 @@ else:
                 # Calculate the weighted averages
                 weighted_averages = pd.DataFrame({
                     'PitcherTeam': weighted_sums.index,
+                    'PitchCount': weighted_sums ['Total_PitchCount'],
                     'Stuff': (weighted_sums['Weighted_Stuff'] / weighted_sums['Total_PitchCount']).round(),
                     'Command': (weighted_sums['Weighted_Command'] / weighted_sums['Total_PitchCount']).round()
                 })
