@@ -103,12 +103,14 @@ st.title('PitchGrader')
 # st.markdown("""---""")
 st.caption ('Stuff, Command, and Swing Mechanics models for collegiate players')
 # st.title('Stuff+ Model (also a swing mechanics model now)')
-st.write('Database last updated 5/7/2024')
+col1, col2, col3 = st.columns([4, 2, 4])
+# st.write('Database last updated 5/7/2024')
 col1, col2, col3 = st.columns([4, 2, 4])
 with col1:
-    st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
+    st.write('Database last updated 5/7/2024')
 with col3:
     color_option = st.toggle("Show Color", value = False)
+st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
 # Create two text input boxes for the first and last name
 if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
