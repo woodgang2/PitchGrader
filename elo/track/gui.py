@@ -1001,7 +1001,7 @@ else:
                 weighted_averages = weighted_averages [order]
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 if not show_changes:
-                    stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}")
+                    weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:.0f}")
                 st.dataframe (weighted_averages)
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns]
