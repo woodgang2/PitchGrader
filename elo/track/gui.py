@@ -631,11 +631,13 @@ if not st.session_state.team_flag:
             stuff_history_df = stuff_history_df.dropna(axis=1, how = 'all')
             # stuff_history_df.update(stuff_history_df.filter(like='%').apply(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x))
             stuff_history_df.loc[:, stuff_history_df.columns.str.contains('%')] = stuff_history_df.filter(like='%').applymap(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x)
-            # colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-            # usage = ['FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
-            # colored_columns = [col for col in colored_columns if col in stuff_history_df.columns]
-            # usage = [col for col in usage if col in stuff_history_df.columns]
-            # stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format ("{:.2f}", subset = usage).format("{:.0f}", subset = colored_columns)
+            colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+            usage = ['FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
+            colored_columns = [col for col in colored_columns if col in stuff_history_df.columns]
+            usage = [col for col in usage if col in stuff_history_df.columns]
+            st.success (colored_columns)
+            st.success (usage)
+            stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns)#.format ("{:.2f}", subset = usage).format("{:.0f}", subset = colored_columns)
             st.dataframe (stuff_history_df)
             with st.expander(f"Game Log"):
                 log_df = driver.retrieve_game_logs(name)
