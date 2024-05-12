@@ -383,6 +383,11 @@ if not st.session_state.team_flag:
                 # st.dataframe (location_df)
                 stuff_df = driver.retrieve_stuff (name)
                 stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
+                def color_values(value):
+                    color = 'red' if value < 50 else 'green'
+                    return f'color: {color}'
+
+                stuff_df = stuff_df.style.applymap(color_values, subset=['Overall Stuff'])#.format("{:.0f}", subset=['Value'])
                 stuff_df = stuff_df.round(0)
             rename_columns = {
                 'ChangeUp': 'CH',
@@ -431,11 +436,11 @@ if not st.session_state.team_flag:
             #     </style>
             #     """, unsafe_allow_html=True)
             # container = st.empty ()
-            def color_values(value):
-                color = 'red' if value < 50 else 'green'
-                return f'color: {color}'
-
-            stuff_df = stuff_df.style.applymap(color_values, subset=['Overall Stuff']).format("{:.0f}", subset=['Value'])
+            # def color_values(value):
+            #     color = 'red' if value < 50 else 'green'
+            #     return f'color: {color}'
+            #
+            # stuff_df = stuff_df.style.applymap(color_values, subset=['Overall Stuff'])#.format("{:.0f}", subset=['Value'])
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
