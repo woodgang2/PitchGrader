@@ -993,7 +993,7 @@ else:
                 })
                 weighted_averages.set_index('PitcherTeam', inplace=True)
                 max_pitch_count = weighted_averages['PitchCount'].max()
-                eligible_teams = weighted_averages[weighted_averages['PitchCount'] >= max_pitch_count - 1000]
+                eligible_teams = weighted_averages[weighted_averages['PitchCount'] >= max_pitch_count/2]
                 eligible_teams['Stuff Rank'] = eligible_teams['Stuff'].rank(ascending=False, method='min')
                 eligible_teams['Command Rank'] = eligible_teams['Command'].rank(ascending=False, method='min')
                 weighted_averages = weighted_averages.join(eligible_teams[['Stuff Rank', 'Command Rank']], how='left')
