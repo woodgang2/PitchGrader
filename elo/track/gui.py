@@ -105,7 +105,7 @@ st.caption ('Stuff, Command, and Swing Mechanics models for collegiate players')
 # st.title('Stuff+ Model (also a swing mechanics model now)')
 # col1, col2, col3 = st.columns([4, 2, 4])
 # st.write('Database last updated 5/7/2024')
-col1, col2, col3 = st.columns([4, 8, 4])
+col1, col2, col3 = st.columns([4, 12, 4])
 with col1:
     st.write('Database last updated 5/7/2024')
 with col3:
