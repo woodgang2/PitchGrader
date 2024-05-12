@@ -992,10 +992,8 @@ else:
                     'Stuff': (weighted_sums['Weighted_Stuff'] / weighted_sums['Total_PitchCount']).round(),
                     'Command': (weighted_sums['Weighted_Command'] / weighted_sums['Total_PitchCount']).round()
                 })
-
-            # Keep 'Team' as the index
-            weighted_averages.set_index('Team', inplace=True)
-            st.dataframe (weighted_averages)
+                weighted_averages.set_index('Team', inplace=True)
+                st.dataframe (weighted_averages)
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns]
             if not show_changes:
