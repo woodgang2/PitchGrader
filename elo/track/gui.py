@@ -636,8 +636,8 @@ if not st.session_state.team_flag:
             usage = ['FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
             colored_columns = [col for col in colored_columns if col in stuff_history_df.columns]
             usage = [col for col in usage if col in stuff_history_df.columns]
-            st.success (colored_columns)
-            st.success (usage)
+            # st.success (colored_columns)
+            # st.success (usage)
             stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}", subset = colored_columns)
             st.dataframe (stuff_history_df)
             with st.expander(f"Game Log"):
