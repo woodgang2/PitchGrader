@@ -981,15 +981,27 @@ else:
             if (team_name == 'All'):
                 grouped = stuff_df.groupby('PitcherTeam')
                 desired_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                # weighted_sums = grouped.apply(lambda x: pd.Series(
+                #     {f'Weighted_{col}': np.sum(x['PitchCount'] * x[col]) for col in desired_columns} |
+                #     {'Total_PitchCount': np.sum(x['PitchCount'])}
+                # ))
+                # # Calculate the weighted averages
+                # weighted_averages = pd.DataFrame({
+                #     'PitcherTeam': weighted_sums.index,
+                #     'PitchCount': weighted_sums['Total_PitchCount'],
+                #     **{col: (weighted_sums[f'Weighted_{col}'] / weighted_sums['Total_PitchCount']).round() for col in desired_columns}
+                # })
                 weighted_sums = grouped.apply(lambda x: pd.Series(
-                    {f'Weighted_{col}': np.sum(x['PitchCount'] * x[col]) for col in desired_columns} |
+                    {f'Weighted_{col}': np.sum(x['PitchCount'][x[col].notna()] * x[col].dropna()) for col in desired_columns} |
+                    {f'Total_{col}_PitchCount': np.sum(x['PitchCount'][x[col].notna()]) for col in desired_columns} |
                     {'Total_PitchCount': np.sum(x['PitchCount'])}
                 ))
+
                 # Calculate the weighted averages
                 weighted_averages = pd.DataFrame({
                     'PitcherTeam': weighted_sums.index,
                     'PitchCount': weighted_sums['Total_PitchCount'],
-                    **{col: (weighted_sums[f'Weighted_{col}'] / weighted_sums['Total_PitchCount']).round() for col in desired_columns}
+                    **{col: (weighted_sums[f'Weighted_{col}'] / weighted_sums[f'Total_{col}_PitchCount']).round() for col in desired_columns}
                 })
                 weighted_averages.set_index('PitcherTeam', inplace=True)
                 max_pitch_count = weighted_averages['PitchCount'].max()
