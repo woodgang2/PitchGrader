@@ -108,7 +108,7 @@ col1, col2, col3 = st.columns([4, 2, 4])
 with col1:
     st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
 with col3:
-    color_option = st.radio("Show Color", ('On', 'Off'), index=0)
+    color_option = st.toggle("Show Color", ('On', 'Off'), index=0)
 # Create two text input boxes for the first and last name
 if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
