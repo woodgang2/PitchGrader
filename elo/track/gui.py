@@ -420,7 +420,7 @@ if not st.session_state.team_flag:
                 'Slider Usage' : 'SL%',
                 'Splitter Usage' : 'FS%'
             }
-            desired_order = ['PitchCount', 'Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+            desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             stuff_df = stuff_df.rename(columns=rename_columns)
             st.empty ()
 
@@ -428,7 +428,7 @@ if not st.session_state.team_flag:
             stuff_df = stuff_df.drop_duplicates ('Pitcher')
             stuff_df = stuff_df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows'])
             # stuff_df = stuff_df.drop_duplicates ('Pitcher')
-            stuff_df.rename(columns={'Overall': 'Stuff'}, inplace=True)
+            stuff_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
             columns_to_drop = [column for column in stuff_df.columns if column.endswith('Usage')]
             stuff_df = stuff_df.drop(columns=columns_to_drop)
             stuff_df = stuff_df.dropna(axis=1)
@@ -622,16 +622,16 @@ if not st.session_state.team_flag:
             stuff_history_df ['Year'] = stuff_history_df ['Year'].astype(str)
             stuff_history_df = stuff_history_df.set_index('Year')
             stuff_history_df.index.name = 'Year'
-            stuff_history_df.rename(columns={'Overall': 'Stuff', 'PitcherTeam' : 'Team'}, inplace=True)
+            stuff_history_df.rename(columns={'Overall': 'Overall Stuff', 'PitcherTeam' : 'Team'}, inplace=True)
             stuff_history_df [desired_order] = stuff_history_df [desired_order].round(0)
-            desired_order = ['Team', 'PitchCount', 'Command', 'Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
+            desired_order = ['Team', 'PitchCount', 'Command', 'Overall Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
             stuff_history_df = stuff_history_df[desired_order]
             # columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
             # stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
             stuff_history_df = stuff_history_df.dropna(axis=1, how = 'all')
             # stuff_history_df.update(stuff_history_df.filter(like='%').apply(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x))
             stuff_history_df.loc[:, stuff_history_df.columns.str.contains('%')] = stuff_history_df.filter(like='%').applymap(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x)
-            colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+            colored_columns = ['Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             usage = ['FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
             colored_columns = [col for col in colored_columns if col in stuff_history_df.columns]
             usage = [col for col in usage if col in stuff_history_df.columns]
