@@ -979,7 +979,7 @@ else:
             stuff_df = stuff_df[actual_order]
             stuff_df = stuff_df.set_index ('Pitcher')
             if (team_name == 'All'):
-                grouped = stuff_df.groupby('Team')
+                grouped = stuff_df.groupby('PitcherTeam')
                 weighted_sums = grouped.apply(lambda x: pd.Series({
                     'Weighted_Stuff': np.sum(x['PitchCount'] * x['Stuff']),
                     'Weighted_Command': np.sum(x['PitchCount'] * x['Command']),
