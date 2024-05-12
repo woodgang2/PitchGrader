@@ -37,7 +37,8 @@ def color_values (value):
     # Return color style
     rgba = cmap(norm(value))
     color = mcolors.rgb2hex(rgba)
-    return f'background-color: {color}'
+    # return f'background-color: {color}'
+    return f'background-color: #ffffff'
 def color_for_value(value):
     # Define the color transition [0%, 50%, 100%]
     colors = [(26, 28, 244), (128, 128, 128), (255, 25, 25)]  # Blue, Grey, Red
