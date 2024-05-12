@@ -431,6 +431,11 @@ if not st.session_state.team_flag:
             #     </style>
             #     """, unsafe_allow_html=True)
             # container = st.empty ()
+            def color_values(value):
+                color = 'red' if value < 50 else 'green'
+                return f'color: {color}'
+
+            stuff_df = stuff_df.style.applymap(color_values, subset=['Stuff'])
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
