@@ -6,6 +6,7 @@ from scipy.spatial.distance import mahalanobis
 from scipy.stats import zscore
 from scipy.spatial import distance
 from sklearn.preprocessing import StandardScaler
+import matplotlib.colors as mcolors
 
 import database_driver
 import stuff_plus
@@ -28,7 +29,15 @@ def interpolate_color(minval, maxval, val, color_palette):
     r2, g2, b2 = color_palette[i2]
     f = v - i1
     return int(r1 + f*(r2-r1)), int(g1 + f*(g2-g1)), int(b1 + f*(b2-b1))
+def color_values (value):
+    # Create a color map with specific hex values
+    cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#ff0000", "#ffff00", "#00ff00"])
+    norm = mcolors.Normalize(vmin=20, vmax=80)
 
+    # Return color style
+    rgba = cmap(norm(value))
+    color = mcolors.rgb2hex(rgba)
+    return f'background-color: {color}'
 def color_for_value(value):
     # Define the color transition [0%, 50%, 100%]
     colors = [(26, 28, 244), (128, 128, 128), (255, 25, 25)]  # Blue, Grey, Red
@@ -431,11 +440,8 @@ if not st.session_state.team_flag:
             #     </style>
             #     """, unsafe_allow_html=True)
             # container = st.empty ()
-            def color_values(value):
-                color = 'red' if value < 50 else 'green'
-                return f'color: {color}'
 
-            stuff_df = stuff_df.style.applymap(color_values, subset=['Overall Stuff']).format("{:.0f}")
+            stuff_df = stuff_df.style.applymap(color_values).format("{:.0f}")
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
