@@ -225,6 +225,8 @@ if random_player:
     st.session_state['player_name'] = random_option
 
 def color_values (value):
+    if not show_color or show_changes:
+        return f'background-color: #ffffff'
     # Create a color map with specific hex values
     cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#e60000", "#ffff00", "#00ff00"])
     norm = mcolors.Normalize(vmin=20, vmax=80)
@@ -232,9 +234,9 @@ def color_values (value):
     # Return color style
     rgba = cmap(norm(value))
     color = mcolors.rgb2hex(rgba)
-    if show_color and not show_changes:
-        return f'background-color: {color}'
-    return f'background-color: #ffffff'
+    # if show_color:
+    return f'background-color: {color}'
+    # return f'background-color: #ffffff'
 
 # batting_percentages_df = driver.retrieve_percentages_bat_team ('All')
 # pitching_percentages_df = driver.retrieve_percentages_team ('All')
