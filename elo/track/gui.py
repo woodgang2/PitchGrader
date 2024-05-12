@@ -821,6 +821,7 @@ if not st.session_state.team_flag:
     # df = pd.read_csv("my_data.csv")
     # st.line_chart(df)
 else:
+    #Here: Team
     # st.success (st.session_state['team_name'])
     # team_name = st.text_input('Team ID (from trackman)', '', placeholder='Team ID (UVA is VIR_CAV) - Enter "All" to see all players', key='team_name')
     # team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, key='team_name')
@@ -860,7 +861,7 @@ else:
             stuff_df = stuff_df.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
             stuff_df['Fastball%'] = stuff_df['Fastball%'].round(2)
             weighted_sum1 = np.sum(stuff_df['PitchCount'] * stuff_df['Stuff'])
-            weighted_sum2= np.sum(stuff_df['PitchCount'] * stuff_df['Command'])
+            weighted_sum2 = np.sum(stuff_df['PitchCount'] * stuff_df['Command'])
             # location_df1 = driver2.retrieve_location_team (team_name)
             # location_df1 = location_df1 [['Pitcher', 'Overall']]
             # location_df1['Overall'] = location_df1['Overall'].clip(lower=20, upper=80)
@@ -977,6 +978,10 @@ else:
             # st.success (actual_order)
             stuff_df = stuff_df[actual_order]
             stuff_df = stuff_df.set_index ('Pitcher')
+            colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+            colored_columns = [col for col in colored_columns if col in stuff_df.columns]
+            if not show_changes:
+                stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}", subset = colored_columns)
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
