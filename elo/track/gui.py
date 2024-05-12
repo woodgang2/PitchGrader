@@ -781,8 +781,9 @@ if not st.session_state.team_flag:
             # sampled_indices = sample_performance(prob_MC_df, weights)
             # simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, columns_to_be_compared)
             # st.table (simulation_results)
-            with st.expander(f"Player Comps"):
-                st.success (f"Unicorn Score: {round (running_average, 2)}")
+            if not show_changes:
+                with st.expander(f"Player Comps"):
+                    st.success (f"Unicorn Score: {round (running_average, 2)}")
     # df = pd.read_csv("my_data.csv")
     # st.line_chart(df)
 else:
