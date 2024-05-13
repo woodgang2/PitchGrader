@@ -554,6 +554,7 @@ if not st.session_state.team_flag:
                 # st.empty ()
                 # Drop these columns
                 df = merged_df.drop(columns=columns_to_drop)
+                st.dataframe (merged_df)
                 # df = merged_df [[df.columns]]
                 # st.dataframe (df)
 
