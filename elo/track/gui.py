@@ -515,10 +515,12 @@ if not st.session_state.team_flag:
                 # st.dataframe (df)
 
             df = df.sort_values(by='Usage', ascending = False)
+            st.empty ()
             # df = stuff_df.set_index('PitchType')
             df_display = df
             df_display = df_display.set_index('PitchType')
             df_display.index.name = "Pitch Type"
+            st.empty ()
             st.write ("Percentiles")
             st.dataframe(df_display)
             pitch_types = df['PitchType'].unique().tolist()
