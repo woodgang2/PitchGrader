@@ -349,6 +349,19 @@ if not st.session_state.team_flag:
             # stuff_df = stuff_df.round(0)
 
             if (show_changes):
+                if (show_location):
+                    location_df = driver.retrieve_location (name)
+                    stuff_df = driver.retrieve_stuff (name)
+                    stuff_df['Type'] = 'Stuff'
+                    location_df['Type'] = 'Command'
+                    stuff_df1 = pd.concat([stuff_df, location_df], ignore_index=True)
+                    stuff_df1 = stuff_df.round(0)
+                    location_df = driver2.retrieve_location (name)
+                    stuff_df = driver2.retrieve_stuff (name)
+                    stuff_df['Type'] = 'Stuff'
+                    location_df['Type'] = 'Command'
+                    stuff_df2 = pd.concat([stuff_df, location_df], ignore_index=True)
+                    stuff_df2 = stuff_df.round(0)
                 location_df = driver.retrieve_location (name)
                 location_df = location_df [['Pitcher', 'Overall']]
                 # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
