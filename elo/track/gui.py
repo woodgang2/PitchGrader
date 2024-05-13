@@ -109,8 +109,12 @@ col1, col2, col3 = st.columns([8, 4, 4])
 with col1:
     st.write('Database last updated 5/7/2024')
 with col3:
-    show_color = st.toggle("Show Color", value = True, help='By default, grades on the 20-80 scale are colored (they are, however, disabled for very large dataframes)')
-st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
+    show_color = st.toggle("Show Color", value = True, help='By default, grades on the 20-80 scale are colored (they are, however, black and white for very large dataframes)')
+col1, col2, col3 = st.columns([8, 4, 4])
+with col1:
+    st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
+with col3:
+    show_location = st.toggle("Show Location Grades", value = False, help='By default, location grades for individual pitches are disabled')
 # Create two text input boxes for the first and last name
 if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
