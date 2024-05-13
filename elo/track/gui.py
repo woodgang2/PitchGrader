@@ -471,7 +471,7 @@ if not st.session_state.team_flag:
             # stuff_df = stuff_df.drop_duplicates ('Pitcher')
             if not show_location:
                 stuff_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
-            st.empty ()
+                st.empty ()
             columns_to_drop = [column for column in stuff_df.columns if column.endswith('Usage')]
             stuff_df = stuff_df.drop(columns=columns_to_drop)
             stuff_df = stuff_df.dropna(axis=1)
