@@ -362,27 +362,28 @@ if not st.session_state.team_flag:
                     location_df['Type'] = 'Command'
                     stuff_df2 = pd.concat([stuff_df, location_df], ignore_index=True)
                     stuff_df2 = stuff_df.round(0)
-                location_df = driver.retrieve_location (name)
-                location_df = location_df [['Pitcher', 'Overall']]
-                # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
-                location_df = location_df.rename(columns={'Overall': 'Command'})
-                # st.dataframe (location_df)
-                stuff_df1 = driver.retrieve_stuff (name)
-                stuff_df1 = stuff_df1.merge (location_df, on = 'Pitcher')
-                stuff_df1 = stuff_df1.round(0)
-                location_df = driver2.retrieve_location (name)
-                location_df = location_df [['Pitcher', 'Overall']]
-                # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
-                location_df = location_df.rename(columns={'Overall': 'Command'})
-                # st.dataframe (location_df)
-                stuff_df2 = driver2.retrieve_stuff (name)
-                # st.dataframe (stuff_df2)
-                stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
-                stuff_df2 = stuff_df2.round(0)
-                # st.dataframe (stuff_df2)
-                merged_df = stuff_df1.merge(stuff_df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
-                # st.dataframe (merged_df)
-                # st.dataframe (merged_df)
+                else:
+                    location_df = driver.retrieve_location (name)
+                    location_df = location_df [['Pitcher', 'Overall']]
+                    # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                    location_df = location_df.rename(columns={'Overall': 'Command'})
+                    # st.dataframe (location_df)
+                    stuff_df1 = driver.retrieve_stuff (name)
+                    stuff_df1 = stuff_df1.merge (location_df, on = 'Pitcher')
+                    stuff_df1 = stuff_df1.round(0)
+                    location_df = driver2.retrieve_location (name)
+                    location_df = location_df [['Pitcher', 'Overall']]
+                    # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                    location_df = location_df.rename(columns={'Overall': 'Command'})
+                    # st.dataframe (location_df)
+                    stuff_df2 = driver2.retrieve_stuff (name)
+                    # st.dataframe (stuff_df2)
+                    stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
+                    stuff_df2 = stuff_df2.round(0)
+                    # st.dataframe (stuff_df2)
+                    merged_df = stuff_df1.merge(stuff_df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
+                    # st.dataframe (merged_df)
+                    # st.dataframe (merged_df)
                 def calculate_and_format(row, col):
                     original = row[f"{col}_df2"]
                     if pd.isna(row[f"{col}_df1"]) or pd.isna(row[f"{col}_df2"]):
