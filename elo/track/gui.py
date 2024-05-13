@@ -351,7 +351,7 @@ if not st.session_state.team_flag:
             if (show_changes):
                 location_df = driver.retrieve_location (name)
                 location_df = location_df [['Pitcher', 'Overall']]
-                location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
                 location_df = location_df.rename(columns={'Overall': 'Command'})
                 # st.dataframe (location_df)
                 stuff_df1 = driver.retrieve_stuff (name)
@@ -359,7 +359,7 @@ if not st.session_state.team_flag:
                 stuff_df1 = stuff_df1.round(0)
                 location_df = driver2.retrieve_location (name)
                 location_df = location_df [['Pitcher', 'Overall']]
-                location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
                 location_df = location_df.rename(columns={'Overall': 'Command'})
                 # st.dataframe (location_df)
                 stuff_df2 = driver2.retrieve_stuff (name)
@@ -400,14 +400,25 @@ if not st.session_state.team_flag:
                 # st.table (stuff_df)
                 # st.dataframe (stuff_df)
             else:
-                location_df = driver.retrieve_location (name)
-                location_df = location_df [['Pitcher', 'Overall']]
-                location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
-                location_df = location_df.rename(columns={'Overall': 'Command'})
-                # st.dataframe (location_df)
-                stuff_df = driver.retrieve_stuff (name)
-                stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
-                stuff_df = stuff_df.round(0)
+                if (show_location):
+                    location_df = driver.retrieve_location (name)
+                    # location_df = location_df [['Pitcher', 'Overall']]
+                    # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                    # st.dataframe (location_df)
+                    stuff_df = driver.retrieve_stuff (name)
+                    stuff_df['Type'] = 'Stuff'
+                    location_df['Type'] = 'Command'
+                    stuff_df = pd.concat([stuff_df, location_df], ignore_index=True)
+                    stuff_df = stuff_df.round(0)
+                else:
+                    location_df = driver.retrieve_location (name)
+                    location_df = location_df [['Pitcher', 'Overall']]
+                    # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                    location_df = location_df.rename(columns={'Overall': 'Command'})
+                    # st.dataframe (location_df)
+                    stuff_df = driver.retrieve_stuff (name)
+                    stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
+                    stuff_df = stuff_df.round(0)
             rename_columns = {
                 'ChangeUp': 'CH',
                 'Curveball': 'CU',
@@ -425,6 +436,8 @@ if not st.session_state.team_flag:
                 'Splitter Usage' : 'FS%'
             }
             desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+            if (show_location):
+                desired_order = ['Type', 'PitchCount', 'Overall', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             stuff_df = stuff_df.rename(columns=rename_columns)
             st.empty ()
 
@@ -432,7 +445,8 @@ if not st.session_state.team_flag:
             stuff_df = stuff_df.drop_duplicates ('Pitcher')
             stuff_df = stuff_df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows'])
             # stuff_df = stuff_df.drop_duplicates ('Pitcher')
-            stuff_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
+            if not show_location:
+                stuff_df.rename(columns={'Overall': 'Overall Stuff'}, inplace=True)
             st.empty ()
             columns_to_drop = [column for column in stuff_df.columns if column.endswith('Usage')]
             stuff_df = stuff_df.drop(columns=columns_to_drop)
@@ -693,7 +707,7 @@ if not st.session_state.team_flag:
                 # st.success ("test")
                 location_df = driver.retrieve_location_team ('All')
                 location_df = location_df [['Pitcher', 'Overall']]
-                location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
                 location_df = location_df.rename(columns={'Overall': 'Command'})
                 #legacy: manual specified year
                 driver1 = database_driver.DatabaseDriver(year=2024)
@@ -860,7 +874,7 @@ else:
         else:
             location_df = driver.retrieve_location_team (team_name)
             location_df = location_df [['Pitcher', 'Overall']]
-            location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+            # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
             location_df = location_df.rename(columns={'Overall': 'Command'})
             stuff_df = driver.retrieve_stuff_team (team_name)
             stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
@@ -893,7 +907,7 @@ else:
             if (show_changes):
                 location_df = driver2.retrieve_location_team (team_name)
                 location_df = location_df [['Pitcher', 'Overall']]
-                location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
                 location_df = location_df.rename(columns={'Overall': 'Command'})
                 # st.dataframe (location_df)
                 stuff_df1 = driver2.retrieve_stuff_team (team_name)
