@@ -114,7 +114,7 @@ col1, col3 = st.columns([11, 5])
 with col1:
     st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
 with col3:
-    show_location = st.toggle("Location Grades", value = False, help='By default, location grades for individual pitches are not shown')
+    show_location = st.toggle("Location Grades", value = False, help='By default, location grades for individual pitches are not displayed')
 # Create two text input boxes for the first and last name
 if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
