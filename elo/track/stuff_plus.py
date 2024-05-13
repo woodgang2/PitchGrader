@@ -1776,7 +1776,7 @@ def generate_all ():
     run_model(Focus.Stuff, year = 2024)
     generate_stuff_ratings(year = 2024)
 
-generate_all()
+# generate_all()
 # driver.read_predictions(Focus.Stuff)
 # driver.calculate_average_xRVs ()
 # driver.calculate_average_xRVs_by_game()
