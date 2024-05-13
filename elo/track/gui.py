@@ -385,6 +385,7 @@ if not st.session_state.team_flag:
                     stuff_df2 = stuff_df2.round(0)
                     # st.dataframe (stuff_df2)
                     merged_df = stuff_df1.merge(stuff_df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
+                    st.dataframe (merged_df)
                     # st.dataframe (merged_df)
                     # st.dataframe (merged_df)
                 def calculate_and_format(row, col):
