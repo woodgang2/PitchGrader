@@ -356,16 +356,16 @@ if not st.session_state.team_flag:
                     location_df['Type'] = 'Command'
                     stuff_df1 = pd.concat([stuff_df, location_df], ignore_index=True)
                     stuff_df1 = stuff_df1.round(0)
-                    st.dataframe (stuff_df1)
+                    # st.dataframe (stuff_df1)
                     location_df = driver2.retrieve_location (name)
                     stuff_df = driver2.retrieve_stuff (name)
                     stuff_df['Type'] = 'Stuff'
                     location_df['Type'] = 'Command'
                     stuff_df2 = pd.concat([stuff_df, location_df], ignore_index=True)
                     stuff_df2 = stuff_df2.round(0)
-                    st.dataframe (stuff_df2)
+                    # st.dataframe (stuff_df2)
                     merged_df = stuff_df1.merge(stuff_df2, on='Type', how='left', suffixes=('_df2', '_df1'))
-                    st.dataframe (merged_df)
+                    # st.dataframe (merged_df)
                 else:
                     location_df = driver.retrieve_location (name)
                     location_df = location_df [['Pitcher', 'Overall']]
@@ -404,7 +404,7 @@ if not st.session_state.team_flag:
                         else:
                             return str(original)
                 for col in stuff_df1.columns:
-                    if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
+                    if col != 'Pitcher' and col != 'Type' and col in stuff_df1.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                 # st.dataframe (merged_df)
                 # stuff_df.update(merged_df[stuff_df2.columns])
