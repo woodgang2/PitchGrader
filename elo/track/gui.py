@@ -1058,10 +1058,10 @@ else:
                     weighted_averages = weighted_averages.join(eligible_teams[['Stuff Rank', 'Command Rank']], how='left')
                     order = ['PitchCount', 'Command', 'Command Rank', 'Stuff', 'Stuff Rank', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                     weighted_averages = weighted_averages [order]
-                    colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                    if not show_changes:
-                        weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:.0f}")
-                    st.dataframe (weighted_averages)
+                    # colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                    # if not show_changes:
+                    #     weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:.0f}")
+                    # st.dataframe (weighted_averages)
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns]
             if not show_changes and show_color and stuff_df.shape[0] < 1000:
@@ -1163,6 +1163,11 @@ else:
             st.dataframe (df)
             st.dataframe (prob_df_final)
             st.dataframe (df_bat)
+            with st.expander(f"Team List", expanded=True):
+                colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                if not show_changes:
+                    weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:.0f}")
+                st.dataframe(weighted_averages)
             # pitch_types = df['PitchType'].unique().tolist()
             # index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
             # temp = df['PitchType'].iloc [index]
