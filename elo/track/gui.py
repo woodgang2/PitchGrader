@@ -466,8 +466,8 @@ if not st.session_state.team_flag:
             df = df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
             cols = [col for col in df.columns if col != 'xRV']
             cols.insert(2, 'xRV')
-            st.empty ()
             df = df[cols]
+            st.empty ()
             if (show_changes):
                 df2 = driver2.retrieve_percentiles (name, team_name)
                 df2 = df2.drop(columns=['ExitSpeed', 'PitcherId'])
