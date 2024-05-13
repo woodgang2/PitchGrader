@@ -503,7 +503,7 @@ if not st.session_state.team_flag:
             # container = st.empty ()
             colored_columns = [col for col in actual_order if col != 'PitchCount' and col != 'Type']
             if not show_changes:
-                stuff_df = stuff_df.style.applymap(color_values, subset=colored_columns).format("{:.0f}")
+                stuff_df = stuff_df.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                 st.empty ()
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
@@ -696,7 +696,7 @@ if not st.session_state.team_flag:
             usage = [col for col in usage if col in stuff_history_df.columns]
             # st.success (colored_columns)
             # st.success (usage)
-            stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}", subset = colored_columns)
+            stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:,.0f}", subset = colored_columns)
             st.empty ()
             st.dataframe (stuff_history_df)
             with st.expander(f"Game Log"):
@@ -731,7 +731,7 @@ if not st.session_state.team_flag:
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 # usage = {col for col in log_df.columns if col.endswith('%')}
                 usage = ['FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
-                log_df = log_df.style.applymap(color_values, subset = colored_columns).format ("{:.2f}", subset = usage).format("{:.0f}", subset = colored_columns)
+                log_df = log_df.style.applymap(color_values, subset = colored_columns).format ("{:.2f}", subset = usage).format("{:,.0f}", subset = colored_columns)
                 st.dataframe (log_df)
             # actual_order = [col for col in desired_order if col in stuff_history_df.columns]
             # stuff_history_df = stuff_history_df[actual_order]
@@ -1042,13 +1042,13 @@ else:
                 with st.expander(f"Team List"):
                     # colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                     # if not show_changes:
-                    #     weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:.0f}")
+                    #     weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:,.0f}")
                     # st.dataframe (weighted_averages)
                     container_wa = st.container()
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns]
             if not show_changes and show_color and stuff_df.shape[0] < 1000:
-                stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}", subset = colored_columns)
+                stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns).format("{:,.0f}", subset = colored_columns)
                 stuff_df = stuff_df.format("{:.2f}", subset = ['Fastball%'])
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
@@ -1172,7 +1172,7 @@ else:
                 weighted_averages = weighted_averages [order]
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 if not show_changes:
-                    weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:.0f}")
+                    weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                 container_wa.dataframe(weighted_averages)
             # pitch_types = df['PitchType'].unique().tolist()
             # index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
