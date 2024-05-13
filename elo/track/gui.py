@@ -1036,28 +1036,6 @@ else:
             stuff_df = stuff_df.set_index ('Pitcher')
             if (team_name == 'All' and not show_changes):
                 with st.expander(f"Team List"):
-                    grouped = stuff_df.groupby('PitcherTeam')
-                    desired_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                    weighted_sums = grouped.apply(lambda x: pd.Series(
-                        {f'Weighted_{col}': np.sum(x['PitchCount'][x[col].notna()] * x[col].dropna()) for col in desired_columns} |
-                        {f'Total_{col}_PitchCount': np.sum(x['PitchCount'][x[col].notna()]) for col in desired_columns} |
-                        {'Total_PitchCount': np.sum(x['PitchCount'])}
-                    ))
-
-                    # Calculate the weighted averages
-                    weighted_averages = pd.DataFrame({
-                        'PitcherTeam': weighted_sums.index,
-                        'PitchCount': weighted_sums['Total_PitchCount'],
-                        **{col: (weighted_sums[f'Weighted_{col}'] / weighted_sums[f'Total_{col}_PitchCount']).round() for col in desired_columns}
-                    })
-                    weighted_averages.set_index('PitcherTeam', inplace=True)
-                    max_pitch_count = weighted_averages['PitchCount'].max()
-                    eligible_teams = weighted_averages[weighted_averages['PitchCount'] >= max_pitch_count/2]
-                    eligible_teams['Stuff Rank'] = eligible_teams['Stuff'].rank(ascending=False, method='min')
-                    eligible_teams['Command Rank'] = eligible_teams['Command'].rank(ascending=False, method='min')
-                    weighted_averages = weighted_averages.join(eligible_teams[['Stuff Rank', 'Command Rank']], how='left')
-                    order = ['PitchCount', 'Command', 'Command Rank', 'Stuff', 'Stuff Rank', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                    weighted_averages = weighted_averages [order]
                     # colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                     # if not show_changes:
                     #     weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:.0f}")
@@ -1164,7 +1142,29 @@ else:
             st.dataframe (df)
             st.dataframe (prob_df_final)
             st.dataframe (df_bat)
-            if (team_name == 'All'):
+            if (team_name == 'All' and not show_changes):
+                grouped = stuff_df.groupby('PitcherTeam')
+                desired_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                weighted_sums = grouped.apply(lambda x: pd.Series(
+                    {f'Weighted_{col}': np.sum(x['PitchCount'][x[col].notna()] * x[col].dropna()) for col in desired_columns} |
+                    {f'Total_{col}_PitchCount': np.sum(x['PitchCount'][x[col].notna()]) for col in desired_columns} |
+                    {'Total_PitchCount': np.sum(x['PitchCount'])}
+                ))
+
+                # Calculate the weighted averages
+                weighted_averages = pd.DataFrame({
+                    'PitcherTeam': weighted_sums.index,
+                    'PitchCount': weighted_sums['Total_PitchCount'],
+                    **{col: (weighted_sums[f'Weighted_{col}'] / weighted_sums[f'Total_{col}_PitchCount']).round() for col in desired_columns}
+                })
+                weighted_averages.set_index('PitcherTeam', inplace=True)
+                max_pitch_count = weighted_averages['PitchCount'].max()
+                eligible_teams = weighted_averages[weighted_averages['PitchCount'] >= max_pitch_count/2]
+                eligible_teams['Stuff Rank'] = eligible_teams['Stuff'].rank(ascending=False, method='min')
+                eligible_teams['Command Rank'] = eligible_teams['Command'].rank(ascending=False, method='min')
+                weighted_averages = weighted_averages.join(eligible_teams[['Stuff Rank', 'Command Rank']], how='left')
+                order = ['PitchCount', 'Command', 'Command Rank', 'Stuff', 'Stuff Rank', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                weighted_averages = weighted_averages [order]
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 if not show_changes:
                     weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:.0f}")
