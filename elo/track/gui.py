@@ -443,7 +443,7 @@ if not st.session_state.team_flag:
 
             # stuff_df = pitching_stuff_df [pitching_stuff_df ['Pitcher'] == name]
             if (show_location):
-                stuff_df = stuff_df.drop_duplicates ('Pitcher', 'Type')
+                stuff_df = stuff_df.drop_duplicates (['Pitcher', 'Type'])
             else:
                 stuff_df = stuff_df.drop_duplicates ('Pitcher')
             stuff_df = stuff_df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows'])
