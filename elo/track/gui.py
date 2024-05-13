@@ -404,9 +404,7 @@ if not st.session_state.team_flag:
                         else:
                             return str(original)
                 for col in stuff_df1.columns:
-                    keyword = 'Pitcher'
-                    if (show_location):
-                        keyword = 'Type'
+                    keyword = 'Type' if show_location else 'Pitcher'
                     if col != keyword and col in stuff_df1.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                 # st.dataframe (merged_df)
