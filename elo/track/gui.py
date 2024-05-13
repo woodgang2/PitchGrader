@@ -109,7 +109,7 @@ col1, col3 = st.columns([11, 5])
 with col1:
     st.write('Database last updated 5/7/2024')
 with col3:
-    show_color = st.toggle("Colored Grades", value = True, help='By default, grades on the 20-80 scale are colored (coloring is disabled for large dataframes)')
+    show_color = st.toggle("Colored Grades ", value = True, help='By default, grades on the 20-80 scale are colored (coloring is disabled for large dataframes)')
 col1, col3 = st.columns([11, 5])
 with col1:
     st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
