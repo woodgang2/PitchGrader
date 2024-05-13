@@ -498,6 +498,7 @@ if not st.session_state.team_flag:
             colored_columns = [col for col in actual_order if col != 'PitchCount' and col != 'Type']
             if not show_changes:
                 stuff_df = stuff_df.style.applymap(color_values, subset=colored_columns).format("{:.0f}")
+                st.empty ()
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
