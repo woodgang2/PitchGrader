@@ -440,6 +440,7 @@ if not st.session_state.team_flag:
                     stuff_df = driver.retrieve_stuff (name)
                     stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
                     stuff_df = stuff_df.round(0)
+                    st.empty ()
             rename_columns = {
                 'ChangeUp': 'CH',
                 'Curveball': 'CU',
