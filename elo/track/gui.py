@@ -473,9 +473,9 @@ if not st.session_state.team_flag:
             #     </style>
             #     """, unsafe_allow_html=True)
             # container = st.empty ()
-            colored_columns = [col for col in actual_order if col != 'Type' and col != 'PitchCount']
             if not show_changes:
-                stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}")
+                numeric_cols = stuff_df.select_dtypes(include=[np.number]).columns.tolist()
+                styled_df = stuff_df.style.applymap(color_values, subset=numeric_cols).format("{:.0f}", subset=numeric_cols)
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
