@@ -1300,13 +1300,15 @@ class Driver:
         final_columns = base_columns + usage_columns1 + usage_columns2
         if game_log == 0:
             final_columns.remove ('Date')
+            players_df = players_df.drop_duplicates(subset=['Pitcher'], keep='first')
         players_df = players_df[final_columns]
+        # players_df = players_df[players_df['Pitcher'] == 'Skenes, Paul']
         # print (players_df.head ().to_string ())
         # exit (0)
         # exit (0)
         self.players_df = players_df
     def calculate_average_xRVs (self):
-        self.calculate_average_xRVs_wrapped (0)
+        self.calculate_average_xRVs_wrapped (game_log = 0)
     def calculate_average_xRVs_by_game (self):
         self.calculate_average_xRVs_wrapped (game_log = 1)
     def write_players_df_to_parquet (self, name = 'players_df'):
@@ -1488,6 +1490,27 @@ class Driver:
         self.input_variables_df = self.input_variables_df.drop ('NewDate', axis = 1)
     def store_probs_LZ4 (self):
         self.predictions_df.to_parquet (f'{self.focus}_Probs.parquet', engine='pyarrow', compression='zstd')
+
+    def read_and_write_pitch_log (self):
+        print ("Reading Stuff_Probabilities")
+        table_name = f'Stuff_Probabilities'
+        conn = sqlite3.connect(f'{self.db_file}')
+        total_rows = pd.read_sql_query(f'SELECT COUNT(*) FROM {table_name}', conn).iloc[0, 0]
+        chunksize = 10000
+        pbar = tqdm(total=total_rows)
+        df_list = []
+        for chunk in pd.read_sql_query(f'SELECT * FROM {table_name}', conn, chunksize=chunksize):
+            df_list.append(chunk)
+            pbar.update(chunk.shape[0])
+        predictions_df = pd.concat(df_list, ignore_index=True)
+        predictions_df = predictions_df.drop_duplicates(subset='PitchUID')
+        # self.predictions_df['Date'] = pd.to_datetime(self.predictions_df['Date'])
+        # if (self.year is not None):
+        #     self.predictions_df = self.predictions_df[self.predictions_df['Date'].dt.year == self.year]
+        pbar.close()
+        conn.close()
+        predictions_df.to_parquet(f'pitch_log.parquet', engine='pyarrow', compression='ZSTD')
+
 # xgb_clf = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
         # xgb.set_config(verbosity=1)
         # xgb_clf.fit(X_train, y_train)
@@ -1616,8 +1639,9 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
     driver.write_predictions_players()
     driver.write_players()
     driver.read_predictions(Focus.Stuff)
-    driver.calculate_average_xRVs_by_game()
-    driver.write_players_df_to_parquet('game_logs')
+    if (year is None):
+        driver.calculate_average_xRVs_by_game()
+        driver.write_players_df_to_parquet('game_logs')
 
     driver.calculate_percentiles()
     driver.write_percentiles()
@@ -1754,5 +1778,7 @@ def generate_all ():
 
 # generate_all()
 # driver.read_predictions(Focus.Stuff)
+# driver.calculate_average_xRVs ()
 # driver.calculate_average_xRVs_by_game()
 # driver.write_players_df_to_parquet('game_logs')
+# driver.read_and_write_pitch_log()
