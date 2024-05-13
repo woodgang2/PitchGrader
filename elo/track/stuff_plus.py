@@ -1043,7 +1043,7 @@ class Driver:
                 # 'objective': 'binary:logistic',
                 # 'eval_metric': 'logloss',
                 'n_estimators': estimators,
-                'learning_rate': trial.suggest_float('learning_rate', 1e-8, 0.1, log=True),
+                'learning_rate': trial.suggest_float('learning_rate', 1e-12, 0.01, log=True),
                 'max_depth': trial.suggest_int('max_depth', 3, 8),
                 'subsample': trial.suggest_float('subsample', 0.4, 1.0),
                 'colsample_bytree': trial.suggest_float('colsample_bytree', 0.4, 1.0),
@@ -1060,40 +1060,40 @@ class Driver:
                 preds = clf.predict_proba(X_test)
             else:
                 preds = clf.predict_proba(X_test)[:, 1]
-            trial.set_user_attr("model", clf)
+            # trial.set_user_attr("model", clf)
+            trial.set_user_attr("model_params", clf.get_params())
             binary_preds = np.where(preds > 0.5, 1, 0)
             # score = f1_score(y_test, binary_preds)
             # score = roc_auc_score(y_test, preds)
             # class_preds = np.argmax(preds, axis=1)
             score = log_loss(y_test, preds)
             return score
-
-        study = optuna.create_study(direction='minimize')
-        study.optimize(objective, n_trials=80)
-        best_model = study.best_trial.user_attrs["model"]
-        best_params = study.best_trial.params
-        model_directory = "Full_Model"
-        if not os.path.exists(model_directory):
-            os.makedirs(model_directory)
-
-        # Save the best model to a file within the 'Model' directory
-        model_filename = os.path.join(model_directory, f'joblib_model_{self.focus.name}_{self.currently_modeling}--{self.current_pitch_class}.json')
-        # model_filename = f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}.json' # or use .bin for binary format
-        best_model.save_model(model_filename)
-
+        storage_url = "sqlite:///optuna.db"
+        study_name = f"{self.focus.name}_{self.currently_modeling}--{self.current_pitch_class}optimization"
+        study = optuna.create_study(direction='minimize', storage=storage_url, study_name=study_name, load_if_exists=True)
+        study.optimize(objective, n_trials=400)
+        best_params = study.best_trial.params  # Get the best hyperparameters
         model_directory = "JobLib_Model_Stuff"
         if not os.path.exists(model_directory):
             os.makedirs(model_directory)
+        best_model = xgb.XGBClassifier(**best_params, enable_categorical=True)
+        best_model.fit(X_train, y_train)
         model_filename = os.path.join(model_directory, f'joblib_model_{self.focus.name}_{self.currently_modeling}--{self.current_pitch_class}.joblib')
-        # Save the best model to a file
         joblib.dump(best_model, model_filename)
+        # model_directory = "JobLib_Model_Stuff"
+        # if not os.path.exists(model_directory):
+        #     os.makedirs(model_directory)
+        # model_filename = os.path.join(model_directory, f'joblib_model_{self.focus.name}_{self.currently_modeling}--{self.current_pitch_class}.joblib')
+        # # Save the best model to a file
+        # joblib.dump(best_model, model_filename)
         # Optionally, save the best parameters to a file as well
         with open(f'best_params_{self.focus.name}_{self.currently_modeling}.txt', 'w') as f:
             f.write(str(best_params))
         print('Number of finished trials:', len(study.trials))
         print('Best trial:', study.best_trial.params)
         print ('Result:', study.best_value)
-        clf = study.best_trial.user_attrs["model"]
+        # clf = study.best_trial.user_attrs["model"]
+        clf = best_model
         feature_importances = clf.get_booster().get_score(importance_type='weight')
         print("Feature Importances:")
         for feature, importance in feature_importances.items():
@@ -1768,7 +1768,7 @@ def process_data ():
 # driver.normalize_VAA()
 # driver.write_radar_data()
 def generate_all ():
-    process_data()
+    # process_data()
     run_model(Focus.Stuff)
     generate_stuff_ratings()
     run_model(Focus.Stuff, year = 2023)
@@ -1776,7 +1776,7 @@ def generate_all ():
     run_model(Focus.Stuff, year = 2024)
     generate_stuff_ratings(year = 2024)
 
-# generate_all()
+generate_all()
 # driver.read_predictions(Focus.Stuff)
 # driver.calculate_average_xRVs ()
 # driver.calculate_average_xRVs_by_game()
