@@ -409,7 +409,6 @@ if not st.session_state.team_flag:
                     stuff_df['Type'] = 'Stuff'
                     location_df['Type'] = 'Command'
                     stuff_df = pd.concat([stuff_df, location_df], ignore_index=True)
-                    st.dataframe (stuff_df)
                     stuff_df = stuff_df.round(0)
                 else:
                     location_df = driver.retrieve_location (name)
@@ -443,7 +442,10 @@ if not st.session_state.team_flag:
             st.empty ()
 
             # stuff_df = pitching_stuff_df [pitching_stuff_df ['Pitcher'] == name]
-            stuff_df = stuff_df.drop_duplicates ('Pitcher')
+            if (show_location):
+                stuff_df = stuff_df.drop_duplicates ('Pitcher', 'Type')
+            else:
+                stuff_df = stuff_df.drop_duplicates ('Pitcher')
             stuff_df = stuff_df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows'])
             # stuff_df = stuff_df.drop_duplicates ('Pitcher')
             if not show_location:
@@ -471,8 +473,9 @@ if not st.session_state.team_flag:
             #     </style>
             #     """, unsafe_allow_html=True)
             # container = st.empty ()
-            # if not show_changes:
-                # stuff_df = stuff_df.style.applymap(color_values).format("{:.0f}")
+            colored_columns = [col for col in actual_order if col != 'Type']
+            if not show_changes:
+                stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}")
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
