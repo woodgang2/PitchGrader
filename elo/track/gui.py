@@ -409,6 +409,7 @@ if not st.session_state.team_flag:
                     stuff_df['Type'] = 'Stuff'
                     location_df['Type'] = 'Command'
                     stuff_df = pd.concat([stuff_df, location_df], ignore_index=True)
+                    st.dataframe (stuff_df)
                     stuff_df = stuff_df.round(0)
                 else:
                     location_df = driver.retrieve_location (name)
