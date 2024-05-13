@@ -680,9 +680,11 @@ if not st.session_state.team_flag:
             stuff_history_df = stuff_history_df.set_index('Year')
             stuff_history_df.index.name = 'Year'
             stuff_history_df.rename(columns={'Overall': 'Overall Stuff', 'PitcherTeam' : 'Team'}, inplace=True)
+            st.empty ()
             stuff_history_df [desired_order] = stuff_history_df [desired_order].round(0)
             desired_order = ['Team', 'PitchCount', 'Command', 'Overall Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
             stuff_history_df = stuff_history_df[desired_order]
+            st.empty ()
             # columns_to_drop = [column for column in stuff_history_df.columns if column.endswith('Usage')]
             # stuff_history_df = stuff_history_df.drop(columns=columns_to_drop)
             stuff_history_df = stuff_history_df.dropna(axis=1, how = 'all')
@@ -695,6 +697,7 @@ if not st.session_state.team_flag:
             # st.success (colored_columns)
             # st.success (usage)
             stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}", subset = colored_columns)
+            st.empty ()
             st.dataframe (stuff_history_df)
             with st.expander(f"Game Log"):
                 log_df = driver.retrieve_game_logs(name)
