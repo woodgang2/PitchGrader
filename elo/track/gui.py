@@ -1164,11 +1164,11 @@ else:
             st.dataframe (df)
             st.dataframe (prob_df_final)
             st.dataframe (df_bat)
-
-            colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-            if not show_changes:
-                weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:.0f}")
-            container_wa.dataframe(weighted_averages)
+            if (team_name == 'All'):
+                colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                if not show_changes:
+                    weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:.0f}")
+                container_wa.dataframe(weighted_averages)
             # pitch_types = df['PitchType'].unique().tolist()
             # index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
             # temp = df['PitchType'].iloc [index]
