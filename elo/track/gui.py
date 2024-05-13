@@ -1010,7 +1010,7 @@ else:
                     st.dataframe (weighted_averages)
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns]
-            if not show_changes:
+            if not show_changes and show_color:
                 stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns).format("{:.0f}", subset = colored_columns)
                 stuff_df = stuff_df.format("{:.2f}", subset = ['Fastball%'])
             container = st.container()
