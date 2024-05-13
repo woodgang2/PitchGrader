@@ -460,8 +460,12 @@ if not st.session_state.team_flag:
             # st.success (actual_order)
             stuff_df = stuff_df[actual_order]
             # st.success (stuff_df.columns)
-            stuff_df = stuff_df.set_index('PitchCount')
-            stuff_df.index.name = 'Pitch Count'
+            if (show_location):
+                stuff_df = stuff_df.set_index('Type')
+                stuff_df.index.name = 'Type'
+            else:
+                stuff_df = stuff_df.set_index('PitchCount')
+                stuff_df.index.name = 'Pitch Count'
             st.empty ()
             # stuff_df = stuff_df[desired_order]
             # st.markdown("""
@@ -473,9 +477,9 @@ if not st.session_state.team_flag:
             #     </style>
             #     """, unsafe_allow_html=True)
             # container = st.empty ()
+            colored_columns = [col for col in actual_order if col != 'PitchCount']
             if not show_changes:
-                numeric_cols = stuff_df.select_dtypes(include=[np.number]).columns.tolist()
-                stuff_df = stuff_df.style.applymap(color_values, subset=numeric_cols).format("{:.0f}", subset=numeric_cols)
+                stuff_df = stuff_df.style.applymap(color_values, subset=colored_columns).format("{:.0f}", subset=numeric_cols)
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
