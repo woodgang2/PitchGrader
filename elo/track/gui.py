@@ -463,7 +463,7 @@ if not st.session_state.team_flag:
             if (show_location):
                 stuff_df = stuff_df.set_index('Type')
                 stuff_df.index.name = 'Type'
-                stuff_df.at[1, 'PitchCount'] = None
+                stuff_df.at['Command', 'PitchCount'] = None
             else:
                 stuff_df = stuff_df.set_index('PitchCount')
                 stuff_df.index.name = 'Pitch Count'
