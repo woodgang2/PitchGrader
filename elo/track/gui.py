@@ -105,11 +105,11 @@ st.caption ('Stuff, Command, and Swing Mechanics models for collegiate players')
 # st.title('Stuff+ Model (also a swing mechanics model now)')
 # col1, col2, col3 = st.columns([4, 2, 4])
 # st.write('Database last updated 5/7/2024')
-col1, col2, col3 = st.columns([8, 6, 4])
+col1, col2, col3 = st.columns([8, 4, 4])
 with col1:
     st.write('Database last updated 5/7/2024')
 with col3:
-    show_color = st.toggle("Show Color", value = True, help='By default, grades on the 20-80 scale are colored, except for very large dataframes')
+    show_color = st.toggle("Show Color", value = True, help='By default, grades on the 20-80 scale are colored (they are, however, disabled for very large dataframes)')
 st.write('Please send any questions or bug reports to wsg9mf@virginia.edu')
 # Create two text input boxes for the first and last name
 if 'team_flag' not in st.session_state:
