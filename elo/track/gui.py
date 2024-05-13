@@ -1034,6 +1034,7 @@ else:
             # st.success (actual_order)
             stuff_df = stuff_df[actual_order]
             stuff_df = stuff_df.set_index ('Pitcher')
+            stuff_df_old = stuff_df
             if (team_name == 'All' and not show_changes):
                 with st.expander(f"Team List"):
                     # colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
@@ -1143,6 +1144,7 @@ else:
             st.dataframe (prob_df_final)
             st.dataframe (df_bat)
             if (team_name == 'All' and not show_changes):
+                stuff_df = stuff_df_old
                 grouped = stuff_df.groupby('PitcherTeam')
                 desired_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 weighted_sums = grouped.apply(lambda x: pd.Series(
