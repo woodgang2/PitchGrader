@@ -475,7 +475,7 @@ if not st.session_state.team_flag:
             # container = st.empty ()
             if not show_changes:
                 numeric_cols = stuff_df.select_dtypes(include=[np.number]).columns.tolist()
-                styled_df = stuff_df.style.applymap(color_values, subset=numeric_cols).format("{:.0f}", subset=numeric_cols)
+                stuff_df = stuff_df.style.applymap(color_values, subset=numeric_cols).format("{:.0f}", subset=numeric_cols)
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
