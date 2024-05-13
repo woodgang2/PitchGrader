@@ -362,6 +362,7 @@ if not st.session_state.team_flag:
                     location_df['Type'] = 'Command'
                     stuff_df2 = pd.concat([stuff_df, location_df], ignore_index=True)
                     stuff_df2 = stuff_df.round(0)
+                    merged_df = stuff_df1.merge(stuff_df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
                 else:
                     location_df = driver.retrieve_location (name)
                     location_df = location_df [['Pitcher', 'Overall']]
