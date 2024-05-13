@@ -356,14 +356,14 @@ if not st.session_state.team_flag:
                     location_df['Type'] = 'Command'
                     stuff_df1 = pd.concat([stuff_df, location_df], ignore_index=True)
                     stuff_df1 = stuff_df1.round(0)
-                    # st.dataframe (stuff_df1)
+                    st.dataframe (stuff_df1)
                     location_df = driver2.retrieve_location (name)
                     stuff_df = driver2.retrieve_stuff (name)
                     stuff_df['Type'] = 'Stuff'
                     location_df['Type'] = 'Command'
                     stuff_df2 = pd.concat([stuff_df, location_df], ignore_index=True)
                     stuff_df2 = stuff_df2.round(0)
-                    # st.dataframe (stuff_df2)
+                    st.dataframe (stuff_df2)
                     merged_df = stuff_df1.merge(stuff_df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
                     st.dataframe (merged_df)
                 else:
