@@ -105,7 +105,7 @@ st.caption ('Stuff, Command, and Swing Mechanics models for collegiate players')
 # st.title('Stuff+ Model (also a swing mechanics model now)')
 # col1, col2, col3 = st.columns([4, 2, 4])
 # st.write('Database last updated 5/7/2024')
-col1, col3 = st.columns([12, 5])
+col1, col3 = st.columns([14, 5])
 with col1:
     st.write('Database last updated: 5/7/2024')
     st.write('Please send any questions or bug reports to gangmu.liu@email.virginia.edu')
