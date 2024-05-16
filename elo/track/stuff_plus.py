@@ -1696,7 +1696,7 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
     # driver.set_year(year)
     driver.read_predictions(Focus.Stuff)
     driver.calculate_average_xRVs()
-    driver.read_predictions(Focus.Stuff)
+    # driver.read_predictions(Focus.Stuff)
     driver.write_predictions_players()
     driver.write_players()
     driver.read_predictions(Focus.Stuff)

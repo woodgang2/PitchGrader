@@ -285,7 +285,8 @@ if not st.session_state.team_flag:
         # name = name_parts.split(' ')[1] + ", " + name_parts.split(' ')[0]
         name = combined_dict.get(selected_name, '')
         # st.success (team_name)
-        df = driver.retrieve_percentiles (name, team_name)
+        # df = driver.retrieve_percentiles (name, team_name)
+        df = driver.retrieve_percentiles_team ("All")
         # df = pitching_percentiles_df [pitching_percentages_df ['Pitcher'] == name]
         if (df.empty) or (selected_name.split(', ')[1] == 'Batter'):
             df = driver.retrieve_percentiles_batter(name, team_name)
