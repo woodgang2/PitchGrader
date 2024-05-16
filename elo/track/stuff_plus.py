@@ -1559,6 +1559,9 @@ class Driver:
         conn.close()
         predictions_df.to_parquet(f'pitch_log.parquet', engine='pyarrow', compression='ZSTD')
 
+    def set_variable_data (self, df):
+        self.input_variables_df = df
+
 # xgb_clf = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
         # xgb.set_config(verbosity=1)
         # xgb_clf.fit(X_train, y_train)
@@ -1608,6 +1611,10 @@ def train_model (focus=Focus.Stuff):
     driver.clean_data_for_in_play_model()
     driver.clean_data_for_offspeed()
     driver.train_classifier()
+
+def run_model_for_player (df):
+    driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
+    driver.set_variable_data (df)
 
 def run_model (focus=Focus.Stuff, year = None):
     driver = Driver ('radar2.db', 'radar_data', focus)
