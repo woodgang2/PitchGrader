@@ -709,7 +709,7 @@ if not st.session_state.team_flag:
             usage = [col for col in usage if col in stuff_history_df.columns]
             # st.success (colored_columns)
             # st.success (usage)
-            st.dataframe (stuff_history_df)
+            # st.dataframe (stuff_history_df)
             stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:,.0f}", subset = colored_columns + ['PitchCount'])
             st.empty ()
             st.dataframe (stuff_history_df)
