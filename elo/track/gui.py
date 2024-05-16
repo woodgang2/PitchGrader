@@ -1166,6 +1166,7 @@ else:
                     'PitchCount': weighted_sums['Total_PitchCount'],
                     **{col: (weighted_sums[f'Weighted_{col}'] / weighted_sums[f'Total_{col}_PitchCount']).round() for col in desired_columns}
                 })
+                container_wa.dataframe(weighted_averages)
                 weighted_averages.set_index('PitcherTeam', inplace=True)
                 max_pitch_count = weighted_averages['PitchCount'].max()
                 eligible_teams = weighted_averages[weighted_averages['PitchCount'] >= max_pitch_count/2]
