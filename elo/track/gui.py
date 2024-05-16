@@ -1053,6 +1053,9 @@ else:
                 stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns)#
                 stuff_df = stuff_df.format("{:,.0f}", subset = colored_columns + ['PitchCount'])#.format("{:.2f}", subset=['Fastball%'])
                 stuff_df = stuff_df.format("{:.2f}", subset = ['Fastball%'])
+            else:
+                stuff_df = stuff_df.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
+                stuff_df['Fastball%'] = stuff_df['Fastball%'].round(2)
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
