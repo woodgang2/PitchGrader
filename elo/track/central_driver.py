@@ -6,11 +6,11 @@ def calculate_grades ():
     driver.update_DB()
     stuff_plus.generate_all()
     location_plus.generate_all()
-    driver = database_driver.DatabaseDriver ()
+    # driver = database_driver.DatabaseDriver ()
     driver.update_GUI()
     driver = database_driver.DatabaseDriver (2023)
     driver.update_GUI()
     driver = database_driver.DatabaseDriver (2024)
     driver.update_GUI()
 
-# calculate_grades()
+calculate_grades()

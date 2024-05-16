@@ -1352,6 +1352,7 @@ class Driver:
         final_columns = base_columns + usage_columns1 + usage_columns2
         if game_log == 0:
             final_columns.remove ('Date')
+            players_df = players_df.drop_duplicates(subset=['Pitcher'], keep='first')
         players_df = players_df[final_columns]
         # exit (0)
         self.players_df = players_df
@@ -1588,7 +1589,11 @@ class Driver:
         if (self.year is not None):
             self.predictions_df = self.predictions_df[self.predictions_df['NewDate'].dt.year == self.year]
             self.predictions_df = self.predictions_df.drop ('NewDate', axis = 1)
-
+    def prune_variables (self):
+        self.input_variables_df['NewDate'] = pd.to_datetime(self.input_variables_df['Date'])
+        if (self.year is not None):
+            self.input_variables_df = self.input_variables_df[self.input_variables_df['NewDate'].dt.year == self.year]
+        self.input_variables_df = self.input_variables_df.drop ('NewDate', axis = 1)
     def add_command_to_game_logs (self):
         db_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), f'game_logs.parquet')
         df = pd.read_parquet(db_filename)
@@ -1598,6 +1603,10 @@ class Driver:
         db_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), f'radar_data.parquet')
         radar_df = pd.read_parquet(db_filename)
         radar_df = radar_df.drop_duplicates(subset=['Pitcher', 'Date'], keep='first')
+        try:
+            df = df.drop(columns = ['BatterTeam'])
+        except:
+            print ("no batter team to drop")
         df = df.merge(radar_df[['Pitcher', 'Date', 'BatterTeam']], on=['Pitcher', 'Date'], how='left')
         self.players_df = self.players_df.rename(columns={'Overall': 'Command'})
         df = df.merge(self.players_df[['Pitcher', 'Date', 'Command']], on=['Pitcher', 'Date'], how='left')
@@ -1677,13 +1686,16 @@ def train_model (focus=Focus.Location):
     driver.clean_data_for_offspeed()
     driver.train_classifier()
 
-def run_model (focus=Focus.Location):
+def run_model (focus=Focus.Location, year = None):
     driver = Driver ('radar4.db', 'radar_data', focus)
+    if (year is not None):
+        driver.set_year(year)
     # driver.read_radar_data()
     # driver.load_relevant_data()
     # driver.write_variable_data()
 
     driver.read_variable_data()
+    # driver.prune_variables()
     driver.clean_data_for_swing_model(0)
     driver.clean_data_for_fastballs()
     driver.load_model()
@@ -1698,6 +1710,7 @@ def run_model (focus=Focus.Location):
     driver.generate_predictions()
 
     driver.read_variable_data()
+    # driver.prune_variables()
     driver.clean_data_for_take_model(0)
     driver.clean_data_for_fastballs()
     driver.load_model()
@@ -1712,6 +1725,7 @@ def run_model (focus=Focus.Location):
     driver.generate_predictions()
 
     driver.read_variable_data()
+    # driver.prune_variables()
     driver.clean_data_for_contact_model(0)
     driver.clean_data_for_fastballs()
     driver.load_model()
@@ -1726,6 +1740,7 @@ def run_model (focus=Focus.Location):
     driver.generate_predictions()
 
     driver.read_variable_data()
+    # driver.prune_variables()
     driver.clean_data_for_foul_model(0)
     driver.clean_data_for_fastballs()
     driver.load_model()
@@ -1740,6 +1755,7 @@ def run_model (focus=Focus.Location):
     driver.generate_predictions()
 
     driver.read_variable_data()
+    # driver.prune_variables()
     driver.clean_data_for_in_play_model(0)
     driver.clean_data_for_fastballs()
     driver.load_model()
@@ -1753,6 +1769,7 @@ def run_model (focus=Focus.Location):
     driver.load_model()
     driver.generate_predictions()
     return driver
+
 
 def generate_location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus.Location), year = None):
     # driver.read_variable_data ()
@@ -1769,7 +1786,8 @@ def generate_location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus
     if (year is not None):
         driver.set_year(year)
         driver.prune_predictions()
-        # driver.write_predictions()
+    # driver.load_predictions ()
+    # driver.write_predictions()
     # driver.read_predictions(Focus.Stuff)
     driver.calculate_run_values_swing()
     driver.write_predictions ();
@@ -1779,9 +1797,10 @@ def generate_location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus
     driver.read_predictions(Focus.Location)
     driver.write_predictions_players()
     driver.write_players()
-    driver.read_predictions(Focus.Location)
-    driver.calculate_average_xRVs_by_game()
-    driver.add_command_to_game_logs()
+    if (year is None):
+        driver.read_predictions(Focus.Location)
+        driver.calculate_average_xRVs_by_game()
+        driver.add_command_to_game_logs()
 
     driver.calculate_percentiles()
     driver.write_percentiles()
@@ -1886,6 +1905,7 @@ def generate_all ():
     generate_location_ratings(year = 2024)
 
 # generate_all()
-# driver.read_predictions(Focus.Location)
-# driver.calculate_average_xRVs_by_game()
-# driver.add_command_to_game_logs()
+# generate_location_ratings()
+driver.read_predictions(Focus.Location)
+driver.calculate_average_xRVs_by_game()
+driver.add_command_to_game_logs()

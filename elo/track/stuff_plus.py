@@ -407,7 +407,7 @@ class Driver:
         # self.input_variables_df = self.input_variables_df.dropna()
         # It's often a good practice to scale your features, especially for mixture models
         scaler = StandardScaler()
-        features_scaled = scaler.fit_transform(features)
+        features_scaled = scaler.fit_tranrm(features)
 
         # Determine the optimal number of components for GMM based on BIC
         # n_components = np.arange(1, 21)  # Considering 1 to 20 components
@@ -1027,6 +1027,7 @@ class Driver:
             features = self.context_features
         X = self.current_df[features]
         y = self.current_df['Target']
+        from sklearn.utils.class_weight import compute_sample_weight
         # if (self.multi):
         #     y = self.current_df['Target1', 'Target2', 'Target3']
         # print (self.input_variables_df.to_string ())
@@ -1034,7 +1035,11 @@ class Driver:
         X['PitchType'] = X['PitchType'].astype('category')
         X['PitcherThrows'] = X['PitcherThrows'].astype('category')
         X['BatterSide'] = X['BatterSide'].astype('category')
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=20504)
+        # sample_weights = compute_sample_weight(
+        #     class_weight='balanced',
+        #     y=y_train
+        # )
         def objective(trial):
             estimators = trial.suggest_int('n_estimators', 150, 800)
             stopping_rounds = estimators // 10
@@ -1054,8 +1059,8 @@ class Driver:
                 # 'enable_categorical': True
             }
 
-            clf = xgb.XGBClassifier(**param,**self.param, enable_categorical=True)
-            clf.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
+            clf = xgb.XGBClassifier(**param,**self.param, enable_categorical=True, random_state = 20504)
+            clf.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)#, sample_weight = sample_weights)
             if (self.multi):
                 preds = clf.predict_proba(X_test)
             else:
@@ -1068,16 +1073,16 @@ class Driver:
             # class_preds = np.argmax(preds, axis=1)
             score = log_loss(y_test, preds)
             return score
-        storage_url = "sqlite:///optuna.db"
+        storage_url = "sqlite:///optuna2.db"
         study_name = f"{self.focus.name}_{self.currently_modeling}--{self.current_pitch_class}optimization"
         study = optuna.create_study(direction='minimize', storage=storage_url, study_name=study_name, load_if_exists=True)
-        study.optimize(objective, n_trials=400)
+        study.optimize(objective, n_trials=500)
         best_params = study.best_trial.params  # Get the best hyperparameters
         model_directory = "JobLib_Model_Stuff"
         if not os.path.exists(model_directory):
             os.makedirs(model_directory)
-        best_model = xgb.XGBClassifier(**best_params, enable_categorical=True)
-        best_model.fit(X_train, y_train)
+        best_model = xgb.XGBClassifier(**best_params, enable_categorical=True, random_state = 20504)
+        best_model.fit(X_train, y_train)#, sample_weight = sample_weights)
         model_filename = os.path.join(model_directory, f'joblib_model_{self.focus.name}_{self.currently_modeling}--{self.current_pitch_class}.joblib')
         joblib.dump(best_model, model_filename)
         # model_directory = "JobLib_Model_Stuff"
@@ -1197,6 +1202,10 @@ class Driver:
         ev = predictions_df ['EV'].mean ()
         predictions_df ['xRV'] = predictions_df ['EV'] - ev
         predictions_df['average_xRV'] = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].transform('mean')
+        overall_avg_xRV = predictions_df.groupby('PitchType')['xRV'].mean().reset_index()
+        overall_avg_xRV.rename(columns={'xRV': 'overall_avg_xRV'}, inplace=True)
+        predictions_df = predictions_df.merge(overall_avg_xRV, on='PitchType')
+        predictions_df['PitchxRV'] = predictions_df['xRV'] - predictions_df['overall_avg_xRV']
         self.predictions_df = predictions_df
     # def calculate_run_values_swing (self):
     #     self.calculate_run_values_swing_wrapped (0)
@@ -1205,9 +1214,16 @@ class Driver:
 
     def calculate_average_xRVs_wrapped (self, game_log = 0):
         predictions_df = self.predictions_df
+        predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
+        predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
+        predictions_df = predictions_df.dropna(subset=['Year'])
+        # predictions_df = predictions_df [predictions_df['PitchType'] == 'Splitter']
+        # print (predictions_df.head ().to_string ())
         predictions_df ["OldPitcher"] = predictions_df ["Pitcher"]
         if (game_log == 1):
             predictions_df ["Pitcher"] = predictions_df ["Pitcher"] + "/" + predictions_df ['Date']
+        else:
+            predictions_df ["Pitcher"] = predictions_df ["Pitcher"] + "/" + predictions_df ['Year']
         # predictions_df['average_xRV'] = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].transform('mean')
         # pitch_stats_df = predictions_df.groupby('PitchType')['xRV'].agg(['mean', 'std']).reset_index()
         # pitch_stats_df.columns = ['PitchType', 'Average_xRV', 'StDev_xRV']
@@ -1228,18 +1244,46 @@ class Driver:
         # exit (0)
         temp_df = predictions_df.copy ()
         temp_df['Overall_average_xRV'] = predictions_df.groupby('Pitcher')['xRV'].transform('mean')
-        temp_df = temp_df.drop_duplicates(subset=['Pitcher'], keep='first')
-        pitch_stats_df = temp_df.groupby('PitchType')['average_xRV'].agg(['mean', 'std']).reset_index()
-        pitch_stats_df.columns = ['PitchType', 'Average_xRV', 'StDev_xRV']
-
+        temp_df['Overall_average_PitchxRV'] = predictions_df.groupby('Pitcher')['PitchxRV'].transform('mean')
+        # temp_df2 = temp_df [temp_df['PitchType'] == 'Splitter']
+        # print (temp_df2.head ().to_string ())
+        temp_df = temp_df.drop_duplicates(subset=['Pitcher', 'PitchType'], keep='first')
+        # pitch_stats_df = temp_df.groupby('PitchType')['average_xRV'].agg(['mean', 'std']).reset_index()
+        # pitch_stats_df = temp_df.groupby('PitchType')['PitchxRV'].agg(['mean', 'std']).reset_index()
+        # pitch_stats_df.columns = ['PitchType', 'Average_xRV', 'StDev_xRV', 'Average_PitchxRV', 'StDev_PitchxRV']
+        # temp_df = temp_df [temp_df['PitchType'] == 'Splitter']
+        # print (temp_df.head ().to_string ())
+        pitch_stats_df = temp_df.groupby('PitchType').agg({
+            'average_xRV': ['mean', 'std'],
+            'PitchxRV': ['mean', 'std']
+        }).reset_index()
+        # print (pitch_stats_df.to_string ())
+        pitch_stats_df.columns = ['_'.join(col).strip() if col[1] else col[0] for col in pitch_stats_df.columns.values]
+        pitch_stats_df.columns = ['PitchType', 'Average_xRV', 'StDev_xRV', 'Average_PitchxRV', 'StDev_PitchxRV']
+        # print (pitch_stats_df)
+        # exit (0)
         # Calculate overall average and standard deviation of the average xRV across all pitch types
-        overall_stats = temp_df['Overall_average_xRV'].agg(['mean', 'std']).to_frame().T
-        overall_stats.insert(0, 'PitchType', 'Overall')
-        overall_stats.columns = ['PitchType', 'Average_xRV', 'StDev_xRV']
+        # overall_stats = temp_df['Overall_average_xRV'].agg(['mean', 'std']).to_frame().T
+        # overall_stats = temp_df['Overall_average_PitchxRV'].agg(['mean', 'std']).to_frame().T
+        # overall_stats.insert(0, 'PitchType', 'Overall')
+        # overall_stats.columns = ['PitchType', 'Average_xRV', 'StDev_xRV', 'Average_PitchxRV', 'StDev_PitchxRV']
+        overall_stats = temp_df.agg({
+            'Overall_average_xRV': ['mean', 'std'],
+            'Overall_average_PitchxRV': ['mean', 'std']
+        })
+        overall_stats = pd.DataFrame({
+            'PitchType': ['Overall'],
+            'Average_xRV': [overall_stats.loc['mean', 'Overall_average_xRV']],
+            'StDev_xRV': [overall_stats.loc['std', 'Overall_average_xRV']],
+            'Average_PitchxRV': [overall_stats.loc['mean', 'Overall_average_PitchxRV']],
+            'StDev_PitchxRV': [overall_stats.loc['std', 'Overall_average_PitchxRV']]
+        })
+        # print (overall_stats)
 
         xRV_df = pd.concat([pitch_stats_df, overall_stats], ignore_index=True)
         self.xRV_df = xRV_df
         print (xRV_df.to_string ())
+        # exit (0)
         avg_xRV = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].mean().reset_index()
         avg_xRV = avg_xRV.rename(columns={'xRV': 'average_xRV'})
         # predictions_df = predictions_df [['Pitcher', 'PitchType', 'OldPitcher', 'average_xRV']]
@@ -1263,11 +1307,11 @@ class Driver:
         # exit (0)
         # avg_xRV['z_score'] = round (avg_xRV['average_xRV']/avg_xRV['Average_xRV'] * 100, 2)
         players_df = avg_xRV.pivot(index='Pitcher', columns='PitchType', values='z_score').reset_index()
-        overall_avg_xRV = predictions_df.groupby('Pitcher')['xRV'].mean ().reset_index()
+        overall_avg_xRV = predictions_df.groupby('Pitcher')['PitchxRV'].mean ().reset_index()
         # print (overall_avg_xRV)
         # exit (0)
-        overall_stats = xRV_df[xRV_df['PitchType'] == 'Overall'][['Average_xRV', 'StDev_xRV']].iloc[0]
-        overall_avg_xRV['Overall_z_score'] = round ((overall_avg_xRV['xRV'] - overall_stats['Average_xRV']) / overall_stats['StDev_xRV'] * 10 + 50, 2)
+        overall_stats = xRV_df[xRV_df['PitchType'] == 'Overall'][['Average_PitchxRV', 'StDev_PitchxRV']].iloc[0]
+        overall_avg_xRV['Overall_z_score'] = round ((overall_avg_xRV['PitchxRV'] - overall_stats['Average_PitchxRV']) / overall_stats['StDev_PitchxRV'] * 10 + 50, 2)
         # overall_avg_xRV['Overall_z_score'] = round (overall_avg_xRV['xRV']/avg_xRV['Average_xRV'] * 100, 2)
         # print (overall_avg_xRV)
         # exit (0)
@@ -1277,7 +1321,6 @@ class Driver:
         players_df = players_df.merge(pitch_counts, on='Pitcher', how='left')
         # print (players_df)
         # exit (0)
-
 
         # Rename columns appropriately and handle NaNs for pitchers who do not use certain pitch types
         players_df = players_df.rename(columns={'Overall_z_score': 'Overall'}).fillna(np.nan)
@@ -1302,6 +1345,10 @@ class Driver:
             final_columns.remove ('Date')
             players_df = players_df.drop_duplicates(subset=['Pitcher'], keep='first')
         players_df = players_df[final_columns]
+        # players_df = players [players_df ['Pitcher'] == 'Burns, Chase']
+        # print (players_df.to_string ())
+        # print ('hi')
+        # exit (0)
         # players_df = players_df[players_df['Pitcher'] == 'Skenes, Paul']
         # print (players_df.head ().to_string ())
         # exit (0)
@@ -1476,8 +1523,9 @@ class Driver:
         probabilities = self.model.predict_proba(self.current_df[features])
         # Create a new column for each class probability
         for i, class_label in enumerate(class_labels):
-            self.current_df[f'Prob_{class_label}'] = probabilities[:, i]
+            self.current_df.loc[:, f'Prob_{class_label}'] = probabilities[:, i]
         self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
+
     def prune_predictions (self):
         self.predictions_df['NewDate'] = pd.to_datetime(self.predictions_df['Date'])
         if (self.year is not None):
@@ -1529,37 +1577,37 @@ def train_model (focus=Focus.Stuff):
     # driver.write_variable_data()
 
     driver.read_variable_data()
+    # driver.clean_data_for_contact_model()
+    # driver.clean_data_for_fastballs()
+    # driver.train_classifier()
+    # driver.clean_data_for_contact_model()
+    # driver.clean_data_for_breakingballs()
+    # driver.train_classifier()
     driver.clean_data_for_contact_model()
-    driver.clean_data_for_fastballs()
+    driver.clean_data_for_offspeed()
     driver.train_classifier()
-    # driver.clean_data_for_contact_model()
-    # driver.clean_data_for_breakingballs()
-    # driver.train_classifier()
-    # driver.clean_data_for_contact_model()
-    # driver.clean_data_for_offspeed()
-    # driver.train_classifier()
 
     driver.read_variable_data()
+    # driver.clean_data_for_foul_model()
+    # driver.clean_data_for_fastballs()
+    # driver.train_classifier()
+    # driver.clean_data_for_foul_model()
+    # driver.clean_data_for_breakingballs()
+    # driver.train_classifier()
     driver.clean_data_for_foul_model()
-    driver.clean_data_for_fastballs()
+    driver.clean_data_for_offspeed()
     driver.train_classifier()
-    # driver.clean_data_for_foul_model()
-    # driver.clean_data_for_breakingballs()
-    # driver.train_classifier()
-    # driver.clean_data_for_foul_model()
-    # driver.clean_data_for_offspeed()
-    # driver.train_classifier()
 
     driver.read_variable_data()
-    driver.clean_data_for_in_play_model()
-    driver.clean_data_for_fastballs()
-    driver.train_classifier()
+    # driver.clean_data_for_in_play_model()
+    # driver.clean_data_for_fastballs()
+    # driver.train_classifier()
     # driver.clean_data_for_in_play_model()
     # driver.clean_data_for_breakingballs()
     # driver.train_classifier()
-    # driver.clean_data_for_in_play_model()
-    # driver.clean_data_for_offspeed()
-    # driver.train_classifier()
+    driver.clean_data_for_in_play_model()
+    driver.clean_data_for_offspeed()
+    driver.train_classifier()
 
 def run_model (focus=Focus.Stuff, year = None):
     driver = Driver ('radar2.db', 'radar_data', focus)
@@ -1778,7 +1826,10 @@ def generate_all ():
 
 # generate_all()
 # driver.read_predictions(Focus.Stuff)
+# driver.calculate_average_xRVs()
+# driver.read_predictions(Focus.Stuff)
 # driver.calculate_average_xRVs ()
 # driver.calculate_average_xRVs_by_game()
 # driver.write_players_df_to_parquet('game_logs')
 # driver.read_and_write_pitch_log()
+# train_model()
