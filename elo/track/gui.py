@@ -1164,9 +1164,9 @@ else:
                 weighted_averages = pd.DataFrame({
                     'PitcherTeam': weighted_sums.index,
                     'PitchCount': weighted_sums['Total_PitchCount'],
-                    **{col: (weighted_sums[f'Weighted_{col}'] / weighted_sums[f'Total_{col}_PitchCount']).round() for col in desired_columns}
+                    **{col: (weighted_sums[f'Weighted_{col}'] / weighted_sums[f'Total_{col}_PitchCount']) for col in desired_columns}
                 })
-                container_wa.dataframe(weighted_averages)
+                # container_wa.dataframe(weighted_averages)
                 weighted_averages.set_index('PitcherTeam', inplace=True)
                 max_pitch_count = weighted_averages['PitchCount'].max()
                 eligible_teams = weighted_averages[weighted_averages['PitchCount'] >= max_pitch_count/2]
@@ -1176,7 +1176,7 @@ else:
                 order = ['PitchCount', 'Command', 'Command Rank', 'Stuff', 'Stuff Rank', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 weighted_averages = weighted_averages [order]
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                container_wa.dataframe(weighted_averages)
+                # container_wa.dataframe(weighted_averages)
                 if not show_changes:
                     weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                 container_wa.dataframe(weighted_averages)
