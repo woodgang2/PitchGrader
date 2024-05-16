@@ -1189,6 +1189,9 @@ class Driver:
         predictions_df = self.predictions_df
         predictions_df = predictions_df.dropna(subset=['xWhiff%'])
         predictions_df = predictions_df.fillna(0)
+        predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
+        predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
+        predictions_df = predictions_df.dropna(subset=['Year'])
         predictions_df['EV'] = (
                 predictions_df['xWhiff%'] * expected_run_values["SwingingStrike"]
                 + predictions_df['Prob_Contact'] * predictions_df['xFoul%'] * expected_run_values['Foul']
@@ -1201,11 +1204,12 @@ class Driver:
         )
         ev = predictions_df ['EV'].mean ()
         predictions_df ['xRV'] = predictions_df ['EV'] - ev
-        predictions_df['average_xRV'] = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].transform('mean')
+        predictions_df['average_xRV'] = predictions_df.groupby(['Pitcher', 'PitchType', 'Year'])['xRV'].transform('mean')
         overall_avg_xRV = predictions_df.groupby('PitchType')['xRV'].mean().reset_index()
         overall_avg_xRV.rename(columns={'xRV': 'overall_avg_xRV'}, inplace=True)
         predictions_df = predictions_df.merge(overall_avg_xRV, on='PitchType')
         predictions_df['PitchxRV'] = predictions_df['xRV'] - predictions_df['overall_avg_xRV']
+        predictions_df = predictions_df.drop (subset = ['Year'])
         self.predictions_df = predictions_df
     # def calculate_run_values_swing (self):
     #     self.calculate_run_values_swing_wrapped (0)
