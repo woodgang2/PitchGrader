@@ -680,6 +680,7 @@ if not st.session_state.team_flag:
             input_df = st.data_editor(prob_df)
             st.write ("History")
             stuff_history_df = driver.retrieve_stuff_history(name)
+            st.dataframe (stuff_history_df)
             location_history_df = driver.retrieve_location_history(name)
             location_history_df = location_history_df [['Pitcher', 'Overall', 'Year']]
             location_history_df = location_history_df.rename(columns={'Overall': 'Command'})
