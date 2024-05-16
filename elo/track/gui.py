@@ -679,9 +679,9 @@ if not st.session_state.team_flag:
             input_df = st.data_editor(prob_df)
             st.write ("History")
             stuff_history_df = driver.retrieve_stuff_history(name.translate(str.maketrans('', '', '.0123456789')))
-            st.success (name.translate(str.maketrans('', '', '.0123456789')))
-            st.dataframe (stuff_history_df)
-            location_history_df = driver.retrieve_location_history(name.translate(str.maketrans('', '', '0123456789')))
+            # st.success (name.translate(str.maketrans('', '', '.0123456789')))
+            # st.dataframe (stuff_history_df)
+            location_history_df = driver.retrieve_location_history(name.translate(str.maketrans('', '', '.0123456789')))
             location_history_df = location_history_df [['Pitcher', 'Overall', 'Year']]
             location_history_df = location_history_df.rename(columns={'Overall': 'Command'})
             location_history_df = location_history_df.drop_duplicates (['Pitcher', 'Year'])
@@ -709,6 +709,7 @@ if not st.session_state.team_flag:
             usage = [col for col in usage if col in stuff_history_df.columns]
             # st.success (colored_columns)
             # st.success (usage)
+            st.dataframe (stuff_history_df)
             stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:,.0f}", subset = colored_columns + ['PitchCount'])
             st.empty ()
             st.dataframe (stuff_history_df)
