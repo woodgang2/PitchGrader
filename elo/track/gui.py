@@ -145,10 +145,11 @@ if 'disabled' not in st.session_state:
 # Update dataset button
 col1, col2, col3 = st.columns([4, 2, 4])
 with col1:
-    if (st.session_state ['team_flag']):
-        team_toggle = st.button("Team View (switch to player)", key='team_toggle', type = 'primary')
-    else:
-        team_toggle = st.button("Player Profile (switch to team)", key='team_toggle', type = 'primary')
+    team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
+    # if (st.session_state ['team_flag']):
+    #     team_toggle = st.button("Team View (switch to player)", key='team_toggle', type = 'primary')
+    # else:
+    #     team_toggle = st.button("Player Profile (switch to team)", key='team_toggle', type = 'primary')
 #     update = st.button("Update Dataset", key='update_dataset', type = 'primary')
 #     if update:
 #         st.write (f"I'm just a placeholder button")
