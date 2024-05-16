@@ -196,7 +196,6 @@ if (team_toggle):
 # random_player = st.button ("Random player", key = 'random_player')
 batting_percentiles_df = driver.retrieve_percentiles_bat_team ('All')
 pitching_stuff_df = driver.retrieve_stuff_team ('All')
-st.dataframe (pitching_stuff_df)
 # batting_names_raw = batting_percentiles_df ['Batter']
 # pitching_names_raw = pitching_stuff_df ['Pitcher']
 # combined_names_raw = pd.concat([batting_names_raw, pitching_names_raw])
@@ -679,9 +678,8 @@ if not st.session_state.team_flag:
             prob_df.index.name = "Pitch Type"
             input_df = st.data_editor(prob_df)
             st.write ("History")
-            stuff_history_df = driver.retrieve_stuff_history(name)
-            st.dataframe (stuff_history_df)
-            location_history_df = driver.retrieve_location_history(name)
+            stuff_history_df = driver.retrieve_stuff_history(name.translate(str.maketrans('', '', '0123456789')))
+            location_history_df = driver.retrieve_location_history(name.translate(str.maketrans('', '', '0123456789')))
             location_history_df = location_history_df [['Pitcher', 'Overall', 'Year']]
             location_history_df = location_history_df.rename(columns={'Overall': 'Command'})
             location_history_df = location_history_df.drop_duplicates (['Pitcher', 'Year'])
