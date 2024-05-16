@@ -554,42 +554,7 @@ class Driver:
 
     def write_predictions_players (self, focus=Focus.Stuff):
         numeric_cols = self.predictions_df.select_dtypes(include='number').columns.tolist()
-        #
-        # averages_df = self.predictions_df.groupby(['Pitcher', 'PitchType'])[numeric_cols].mean().reset_index()
-        # averages_df[numeric_cols] = averages_df[numeric_cols].apply(lambda x: round(x, 2))
-        # averages_df = averages_df.merge(self.predictions_df[['Pitcher', 'PitcherTeam', 'PitcherThrows']].drop_duplicates(),
-        #                                 on='Pitcher', how='left')
-        # # Reordering columns to have PitcherTeam and PitcherThrows as the first two columns after Pitcher and PitchType
-        # final_columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType'] + [col for col in averages_df.columns if col not in ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType']]
-        # # self.predictions_df = averages_df[final_columns]
-        # numeric_cols = self.predictions_df.select_dtypes(include='number').columns.tolist()
-        #
-        # # Calculate the average of numeric columns grouped by Pitcher and PitchType
-        # averages_df = self.predictions_df.groupby(['Pitcher', 'PitchType'])[numeric_cols].mean().reset_index()
-        # averages_df[numeric_cols] = averages_df[numeric_cols].apply(lambda x: round(x, 2))
-        #
-        # # Merge in PitcherTeam and PitcherThrows
-        # averages_df = averages_df.merge(
-        #     self.predictions_df[['Pitcher', 'PitcherTeam', 'PitcherThrows']].drop_duplicates(),
-        #     on='Pitcher', how='left'
-        # )
-        #
-        # # Calculate the 'Usage' column
-        # pitch_counts = self.predictions_df.groupby('Pitcher').size().reset_index(name='TotalPitches')
-        # pitch_type_counts = self.predictions_df.groupby(['Pitcher', 'PitchType']).size().reset_index(name='PitchTypeCount')
-        # usage_df = pitch_type_counts.merge(pitch_counts, on='Pitcher')
-        # usage_df['Usage'] = (usage_df['PitchTypeCount'] / usage_df['TotalPitches']) #* 100
-        # usage_df['Usage'] = usage_df['Usage'].round(2)
-        #
-        # # Merge the Usage data back into the averages_df
-        # averages_df = averages_df.merge(usage_df[['Pitcher', 'PitchType', 'Usage']], on=['Pitcher', 'PitchType'], how='left')
-        #
-        # # Reorder columns to put Team and Throws after Pitcher and PitchType
-        # final_columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage'] + \
-        #                 [col for col in averages_df.columns if col not in ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage']]
-        # self.predictions_df =self.predictions_df.select_dtypes(include='number').columns.tolist()
-        #
-        # Calculate the average of numeric columns grouped by Pitcher and PitchType
+
         #TODO: going to get nuked by name change
         numeric_cols_no_zeros = ['Prob_InPlay', 'xFoul%', 'Prob_SoftGB', 'Prob_HardGB', 'Prob_SoftLD', 'Prob_HardLD', 'Prob_SoftFB', 'Prob_HardFB']  # Specify columns where zeros should be ignored in mean calculation
         agg_dict = {col: 'mean' for col in numeric_cols}  # Default aggregation is mean for all numeric columns
@@ -1190,7 +1155,9 @@ class Driver:
         predictions_df = predictions_df.dropna(subset=['xWhiff%'])
         predictions_df = predictions_df.fillna(0)
         predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
-        predictions_df['Year'] = predictions_df['Year'].dt.year
+        predictions_df['Year'] = predictions_df['Year'].dt.year.astype ('str')
+        if (self.year is None):
+            predictions_df ['Pitcher'] = predictions_df ['Pitcher'] + predictions_df ['Year']
         # predictions_df = predictions_df.dropna(subset=['Year'])
         predictions_df['EV'] = (
                 predictions_df['xWhiff%'] * expected_run_values["SwingingStrike"]
@@ -1340,8 +1307,8 @@ class Driver:
         usage_2d_df.columns = [f"{col} Usage" for col in usage_2d_df.columns]
         usage_2d_df_reset = usage_2d_df.reset_index()
         players_df = players_df.merge(usage_2d_df_reset, on='Pitcher', how='left')
-        if num_years == 1:
-            players_df['Pitcher'] = players_df['OldPitcher']
+        # if num_years == 1:
+        players_df['Pitcher'] = players_df['OldPitcher']
         players_df = players_df.drop (columns = ['OldPitcher'])
         base_columns = ['Pitcher', 'Date', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Overall']#, 'Four-Seam', 'Four-Seam Usage', 'Sinker', 'Sinker Usage', 'Cutter', 'Cutter Usage', 'Cutter_S', 'Cutter_S Usage', 'Curveball', 'Curveball Usage', 'Slider', 'Slider Usage', 'ChangeUp', 'ChangeUp Usage', 'Splitter', 'Splitter Usage']
         usage_columns1 = [col for col in players_df.columns if (not col.endswith('Usage')) and (col not in base_columns)]
@@ -1589,34 +1556,34 @@ def train_model (focus=Focus.Stuff):
     # driver.clean_data_for_contact_model()
     # driver.clean_data_for_fastballs()
     # driver.train_classifier()
-    # driver.clean_data_for_contact_model()
-    # driver.clean_data_for_breakingballs()
-    # driver.train_classifier()
     driver.clean_data_for_contact_model()
-    driver.clean_data_for_offspeed()
+    driver.clean_data_for_breakingballs()
     driver.train_classifier()
+    # driver.clean_data_for_contact_model()
+    # driver.clean_data_for_offspeed()
+    # driver.train_classifier()
 
     driver.read_variable_data()
     # driver.clean_data_for_foul_model()
     # driver.clean_data_for_fastballs()
-    # driver.train_classifier()
-    # driver.clean_data_for_foul_model()
-    # driver.clean_data_for_breakingballs()
     # driver.train_classifier()
     driver.clean_data_for_foul_model()
-    driver.clean_data_for_offspeed()
+    driver.clean_data_for_breakingballs()
     driver.train_classifier()
+    # driver.clean_data_for_foul_model()
+    # driver.clean_data_for_offspeed()
+    # driver.train_classifier()
 
     driver.read_variable_data()
     # driver.clean_data_for_in_play_model()
     # driver.clean_data_for_fastballs()
     # driver.train_classifier()
-    # driver.clean_data_for_in_play_model()
-    # driver.clean_data_for_breakingballs()
-    # driver.train_classifier()
     driver.clean_data_for_in_play_model()
-    driver.clean_data_for_offspeed()
+    driver.clean_data_for_breakingballs()
     driver.train_classifier()
+    # driver.clean_data_for_in_play_model()
+    # driver.clean_data_for_offspeed()
+    # driver.train_classifier()
 
 def run_model_for_player (df):
     driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
@@ -1845,5 +1812,7 @@ def generate_all ():
 # driver.calculate_average_xRVs_by_game()
 # driver.write_players_df_to_parquet('game_logs')
 # driver.read_and_write_pitch_log()
-# train_model()
+train_model()
+# generate_stuff_ratings()
+# run_model(Focus.Stuff)
 # generate_stuff_ratings()

@@ -1255,9 +1255,14 @@ class Driver:
                 + predictions_df['xSwing%'] * predictions_df['Prob_Contact'] * predictions_df['Prob_InPlay'] * predictions_df['Prob_SoftFB'] * expected_run_values['SoftFB']
                 + predictions_df['xSwing%'] * predictions_df['Prob_Contact'] * predictions_df['Prob_InPlay'] * predictions_df['Prob_HardFB'] * expected_run_values['HardFB']
         )
+        predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
+        predictions_df['Year'] = predictions_df['Year'].dt.year.astype ('str')
+        if (self.year is None):
+            predictions_df ['Pitcher'] = predictions_df ['Pitcher'] + predictions_df ['Year']
         ev = predictions_df ['EV'].mean ()
         predictions_df ['xRV'] = predictions_df ['EV'] - ev
         predictions_df['average_xRV'] = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].transform('mean')
+        predictions_df = predictions_df.drop (columns = ['Year'])
         self.predictions_df = predictions_df
     def calculate_average_xRVs_wrapped (self, game_log = 0):
         predictions_df = self.predictions_df
@@ -1905,6 +1910,8 @@ def generate_all ():
     generate_location_ratings(year = 2024)
 
 # generate_all()
+# generate_location_ratings()
+# run_model(Focus.Location)
 # generate_location_ratings()
 driver.read_predictions(Focus.Location)
 driver.calculate_average_xRVs_by_game()
