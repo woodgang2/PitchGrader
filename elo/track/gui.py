@@ -196,6 +196,7 @@ if (team_toggle):
 # random_player = st.button ("Random player", key = 'random_player')
 batting_percentiles_df = driver.retrieve_percentiles_bat_team ('All')
 pitching_stuff_df = driver.retrieve_stuff_team ('All')
+st.dataframe (pitching_stuff_df)
 # batting_names_raw = batting_percentiles_df ['Batter']
 # pitching_names_raw = pitching_stuff_df ['Pitcher']
 # combined_names_raw = pd.concat([batting_names_raw, pitching_names_raw])
@@ -285,8 +286,8 @@ if not st.session_state.team_flag:
         # name = name_parts.split(' ')[1] + ", " + name_parts.split(' ')[0]
         name = combined_dict.get(selected_name, '')
         # st.success (team_name)
-        # df = driver.retrieve_percentiles (name, team_name)
-        df = driver.retrieve_percentiles_team ("All")
+        df = driver.retrieve_percentiles (name, team_name)
+        # df = driver.retrieve_percentiles_team ("All")
         # df = pitching_percentiles_df [pitching_percentages_df ['Pitcher'] == name]
         if (df.empty) or (selected_name.split(', ')[1] == 'Batter'):
             df = driver.retrieve_percentiles_batter(name, team_name)
