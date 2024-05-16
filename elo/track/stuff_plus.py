@@ -1335,7 +1335,8 @@ class Driver:
         usage_2d_df.columns = [f"{col} Usage" for col in usage_2d_df.columns]
         usage_2d_df_reset = usage_2d_df.reset_index()
         players_df = players_df.merge(usage_2d_df_reset, on='Pitcher', how='left')
-        players_df ['Pitcher'] = players_df ['OldPitcher']
+        if players_df['Year'].dropna().nunique() == 1:
+            players_df['Pitcher'] = players_df['OldPitcher']
         players_df = players_df.drop (columns = ['OldPitcher'])
         base_columns = ['Pitcher', 'Date', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Overall']#, 'Four-Seam', 'Four-Seam Usage', 'Sinker', 'Sinker Usage', 'Cutter', 'Cutter Usage', 'Cutter_S', 'Cutter_S Usage', 'Curveball', 'Curveball Usage', 'Slider', 'Slider Usage', 'ChangeUp', 'ChangeUp Usage', 'Splitter', 'Splitter Usage']
         usage_columns1 = [col for col in players_df.columns if (not col.endswith('Usage')) and (col not in base_columns)]
