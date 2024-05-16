@@ -166,6 +166,7 @@ with col2:
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
     show_changes_placeholder = st.empty()
+container_a = st.container ()
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 
 year = year_selected
@@ -250,7 +251,7 @@ def color_values (value):
 # st.success (st.session_state['selected_player_index'] )
 # Conditional rendering based on the toggle state
 if not st.session_state.team_flag:
-    st.header ("Player Profile")
+    container_a.header ("Player Profile")
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
