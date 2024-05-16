@@ -1190,8 +1190,8 @@ class Driver:
         predictions_df = predictions_df.dropna(subset=['xWhiff%'])
         predictions_df = predictions_df.fillna(0)
         predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
-        predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
-        predictions_df = predictions_df.dropna(subset=['Year'])
+        predictions_df['Year'] = predictions_df['Year'].dt.year
+        # predictions_df = predictions_df.dropna(subset=['Year'])
         predictions_df['EV'] = (
                 predictions_df['xWhiff%'] * expected_run_values["SwingingStrike"]
                 + predictions_df['Prob_Contact'] * predictions_df['xFoul%'] * expected_run_values['Foul']
@@ -1209,7 +1209,7 @@ class Driver:
         overall_avg_xRV.rename(columns={'xRV': 'overall_avg_xRV'}, inplace=True)
         predictions_df = predictions_df.merge(overall_avg_xRV, on='PitchType')
         predictions_df['PitchxRV'] = predictions_df['xRV'] - predictions_df['overall_avg_xRV']
-        predictions_df = predictions_df.drop (subset = ['Year'])
+        predictions_df = predictions_df.drop (columns = ['Year'])
         self.predictions_df = predictions_df
     # def calculate_run_values_swing (self):
     #     self.calculate_run_values_swing_wrapped (0)
@@ -1221,6 +1221,7 @@ class Driver:
         predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
         predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
         predictions_df = predictions_df.dropna(subset=['Year'])
+        num_years = predictions_df['Year'].nunique()
         # predictions_df = predictions_df [predictions_df['PitchType'] == 'Splitter']
         # print (predictions_df.head ().to_string ())
         predictions_df ["OldPitcher"] = predictions_df ["Pitcher"]
@@ -1339,7 +1340,7 @@ class Driver:
         usage_2d_df.columns = [f"{col} Usage" for col in usage_2d_df.columns]
         usage_2d_df_reset = usage_2d_df.reset_index()
         players_df = players_df.merge(usage_2d_df_reset, on='Pitcher', how='left')
-        if players_df['Year'].nunique() == 1:
+        if num_years == 1:
             players_df['Pitcher'] = players_df['OldPitcher']
         players_df = players_df.drop (columns = ['OldPitcher'])
         base_columns = ['Pitcher', 'Date', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Overall']#, 'Four-Seam', 'Four-Seam Usage', 'Sinker', 'Sinker Usage', 'Cutter', 'Cutter Usage', 'Cutter_S', 'Cutter_S Usage', 'Curveball', 'Curveball Usage', 'Slider', 'Slider Usage', 'ChangeUp', 'ChangeUp Usage', 'Splitter', 'Splitter Usage']
@@ -1845,3 +1846,4 @@ def generate_all ():
 # driver.write_players_df_to_parquet('game_logs')
 # driver.read_and_write_pitch_log()
 # train_model()
+# generate_stuff_ratings()
