@@ -1151,7 +1151,7 @@ else:
             st.dataframe (df_bat)
             if (team_name == 'All' and not show_changes):
                 stuff_df = stuff_df_old
-                st.dataframe (stuff_df)
+                # st.dataframe (stuff_df)
                 grouped = stuff_df.groupby('PitcherTeam')
                 desired_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 weighted_sums = grouped.apply(lambda x: pd.Series(
@@ -1175,6 +1175,7 @@ else:
                 order = ['PitchCount', 'Command', 'Command Rank', 'Stuff', 'Stuff Rank', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 weighted_averages = weighted_averages [order]
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                container_wa.dataframe(weighted_averages)
                 if not show_changes:
                     weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                 container_wa.dataframe(weighted_averages)
