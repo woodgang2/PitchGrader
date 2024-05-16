@@ -714,7 +714,7 @@ if not st.session_state.team_flag:
             st.empty ()
             st.dataframe (stuff_history_df)
             with st.expander(f"Game Log"):
-                log_df = driver.retrieve_game_logs(name)
+                log_df = driver.retrieve_game_logs(name.translate(str.maketrans('', '', '.0123456789')))
                 rename_columns = {
                     'ChangeUp': 'CH',
                     'Curveball': 'CU',
