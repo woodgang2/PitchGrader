@@ -145,7 +145,10 @@ if 'disabled' not in st.session_state:
 # Update dataset button
 col1, col2, col3 = st.columns([4, 2, 4])
 with col1:
-    team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
+    if (st.session_state ['team_flag']):
+        team_toggle = st.button("Team View (switch to player)", key='team_toggle', type = 'primary')
+    else:
+        team_toggle = st.button("Player Profile (switch to team)", key='team_toggle', type = 'primary')
 #     update = st.button("Update Dataset", key='update_dataset', type = 'primary')
 #     if update:
 #         st.write (f"I'm just a placeholder button")
@@ -251,7 +254,7 @@ def color_values (value):
 # st.success (st.session_state['selected_player_index'] )
 # Conditional rendering based on the toggle state
 if not st.session_state.team_flag:
-    container_a.header ("Player Profile")
+    # container_a.header ("Player Profile")
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
