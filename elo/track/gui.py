@@ -678,6 +678,7 @@ if not st.session_state.team_flag:
             prob_df.index.name = "Pitch Type"
             input_df = st.data_editor(prob_df)
             st.write ("History")
+            st.success (name.translate(str.maketrans('', '', '0123456789')))
             stuff_history_df = driver.retrieve_stuff_history(name.translate(str.maketrans('', '', '0123456789')))
             st.success (name.translate(str.maketrans('', '', '0123456789')))
             st.dataframe (stuff_history_df)
