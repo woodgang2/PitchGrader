@@ -140,7 +140,7 @@ st.title('PitchGrader')
 # st.write('Database last updated 5/7/2024')
 col1, col2, col3 = st.columns([12, 1, 1])
 st.markdown("""
-    <hr style='margin-top: 0.2em; margin-bottom: 0.2em; height: 0.12em; border: none; background-color: #333;'>
+    <hr style='margin-top: 0.2em; margin-bottom: 0.35em; height: 0.12em; border: none; background-color: #333;'>
     """, unsafe_allow_html=True)
 with col1:
     st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
