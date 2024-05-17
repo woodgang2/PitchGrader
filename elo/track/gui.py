@@ -126,23 +126,8 @@ def readme_dialog():
     st.markdown("""
         A good century and then some has passed since this quote entered the annals of history, and times sure have changed. Fastballs only get faster, sliders only slide more, and every pitcher now has an arsenal of secondary pitches relying primarily on deception.
     
-        This project (accessible [here](https://pitchgrader.streamlit.app/)) represents a white-box (or at least a box which is not totally black) effort to assess collegiate pitchers based off of the intrinsic quality of their pitches, opposition quality notwithstanding. Significant inspiration was taken from Cameron Grove's work on PitchingBot and Professor Alan Nathan's various papers on the physics of baseball. All data was taken from trackman, and the methodology is detailed below.
+        This project represents an effort to assess collegiate pitchers based off of the intrinsic quality of their pitches, opposition quality notwithstanding. Significant inspiration was taken from Cameron Grove's work on PitchingBot and Professor Alan Nathan's various papers on the physics of baseball. All data was taken from trackman, and the methodology is briefly described below.
         """)
-
-    st.subheader("Project Components")
-    st.text("Note: Some files were omitted from this directory, like the raw .csvs and .db files used for the models.")
-
-    st.subheader("Pitch Classification")
-    st.text("Details about the pitch classification methodology, including corrections and enhancements.")
-
-    st.subheader("Stuff Model")
-    st.text("Explanation of the submodels for different pitch outcomes and the features used for modeling.")
-
-    st.subheader("Location Model")
-    st.text("Focuses on the importance of pitch location and includes features such as 'Balls', 'Strikes', 'PlateLocHeight', and 'PlateLocSide'.")
-
-    st.subheader("Swing Mechanics")
-    st.text("Analysis of batters' swing mechanics, including Collision Coefficient, Bat Speed, and more.")
 
 # Your title and divider with reduced whitespace
 st.title('PitchGrader')
