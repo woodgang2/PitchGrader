@@ -59,7 +59,7 @@ class DatabaseDriver:
         self.df.to_parquet(f'radar2.parquet', engine='pyarrow', compression='LZ4')
 
     def retrieve_percentiles (self, player, team = None):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
 
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
@@ -78,7 +78,7 @@ class DatabaseDriver:
         return df
 
     def retrieve_percentiles_batter (self, player, team = None):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
         table = f'Percentiles_Batters'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
@@ -89,7 +89,7 @@ class DatabaseDriver:
         return df
 
     def retrieve_percentiles_bat_team (self, team):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
         table = f'Percentiles_Batters'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
@@ -98,7 +98,7 @@ class DatabaseDriver:
             df = df [df['BatterTeam'] == team]
         return df
     def retrieve_percentages (self, player):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
 
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
@@ -115,7 +115,7 @@ class DatabaseDriver:
         return df
 
     def retrieve_percentages_team (self, team):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
 
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
@@ -146,7 +146,7 @@ class DatabaseDriver:
         return df
 
     def retrieve_percentages_batter (self, player):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
         table = f'Probabilities_Batters'
         # table = 'batting_variables'
         query = f'SELECT * FROM {table}'
@@ -162,7 +162,7 @@ class DatabaseDriver:
         return df
 
     def retrieve_percentages_bat_team (self, team):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
         table = f'Probabilities_Batters'
         # table = 'batting_variables'
         query = f'SELECT * FROM {table}'
@@ -179,7 +179,7 @@ class DatabaseDriver:
         return df
 
     def retrieve_percentiles_team (self, team):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
 
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
@@ -212,7 +212,7 @@ class DatabaseDriver:
         return df
 
     def retrieve_percentiles_team_bat (self, team):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
         table = f'Percentiles_Batters'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
@@ -232,7 +232,7 @@ class DatabaseDriver:
         return df
 
     def retrieve_stuff_team (self, team):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
 
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
@@ -254,7 +254,7 @@ class DatabaseDriver:
         return df
 
     def retrieve_location_team (self, team):
-        db_filename = os.path.join(self.current_dir, f'{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
         table = f'Pitcher_Location_Ratings_20_80_scale{self.year}'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
@@ -267,7 +267,7 @@ class DatabaseDriver:
     def retrieve_stuff (self, player, year = None):
         if (year is None):
             year = self.year
-        db_filename = os.path.join(self.current_dir, f'{year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{year}radar3.db')
 
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
@@ -302,7 +302,7 @@ class DatabaseDriver:
     def retrieve_location (self, player, year = None):
         if (year is None):
             year = self.year
-        db_filename = os.path.join(self.current_dir, f'{year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{year}radar3.db')
         table = f'Pitcher_Location_Ratings_20_80_scale{year}'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
