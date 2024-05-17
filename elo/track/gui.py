@@ -121,6 +121,9 @@ with col3:
 if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
 
+if 'min_pitch' not in st.session_state:
+    st.session_state['min_pitch'] = 0
+
 # if 'selected_player_index' not in st.session_state:
 #     st.session_state ['selected_player_index'] = 0
 #
@@ -906,6 +909,7 @@ else:
     st.session_state.team_name_update = team_name
     # st.success ('n1')
     min_pitch = st.text_input('Minimum Pitch Count', '', placeholder='Pitch Count', key='min_pitch')
+    st.session_state['min_pitch'] = min_pitch
     display_name = st.empty()
     # st.success (team_name)
     if team_name != '':
