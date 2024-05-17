@@ -148,6 +148,7 @@ with col3:
     if st.button("⚙️"):
         settings_dialog()
 col1, col3 = st.columns([14, 6])
+st.divider()
 with col1:
     # st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
     st.write('Database last updated: 5/7/2024')
