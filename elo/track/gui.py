@@ -99,7 +99,7 @@ if 'calculate_team_list' not in st.session_state:
     st.session_state.calculate_team_list = True
 
 if 'hide_unranked' not in st.session_state:
-    st.session_state.calculate_team_list = False
+    st.session_state.hide_unranked = False
 
 @st.experimental_dialog("Settings", width="large")
 def settings_dialog():
