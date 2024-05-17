@@ -95,6 +95,12 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+if 'calculate_team_list' not in st.session_state:
+    st.session_state.calculate_team_list = True
+
+if 'hide_unranked' not in st.session_state:
+    st.session_state.calculate_team_list = False
+
 @st.experimental_dialog("Settings", width="large")
 def settings_dialog():
     # st.header("Settings")
@@ -141,11 +147,6 @@ if 'team_flag' not in st.session_state:
 # if 'selected_player_index' not in st.session_state:
 #     st.session_state ['selected_player_index'] = 0
 #
-if 'calculate_team_list' not in st.session_state:
-    st.session_state.calculate_team_list = True
-
-if 'hide_unranked' not in st.session_state:
-    st.session_state.calculate_team_list = False
 
 if 'player_name_update' not in st.session_state:
     st.session_state.player_name_update = ''
