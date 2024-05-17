@@ -139,7 +139,7 @@ st.title('PitchGrader')
 # col1, col2, col3 = st.columns([4, 2, 4])
 # st.write('Database last updated 5/7/2024')
 col1, col2, col3 = st.columns([12, 1, 1])
-"---"
+st.markdown('<hr>', unsafe_allow_html=True)
 with col1:
     st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
 with col2:
