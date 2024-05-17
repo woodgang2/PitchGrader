@@ -909,6 +909,7 @@ else:
     st.session_state.team_name_update = team_name
     # st.success ('n1')
     min_pitch = st.text_input('Minimum Pitch Count', '', placeholder='Pitch Count', key='min_pitch')
+    st.empty ()
     display_name = st.empty()
     # st.success (team_name)
     if team_name != '':
