@@ -139,6 +139,7 @@ st.title('PitchGrader')
 # col1, col2, col3 = st.columns([4, 2, 4])
 # st.write('Database last updated 5/7/2024')
 col1, col2, col3 = st.columns([12, 1, 1])
+"---"
 with col1:
     st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
 with col2:
@@ -147,7 +148,6 @@ with col2:
 with col3:
     if st.button("⚙️"):
         settings_dialog()
-st.divider()
 col1, col3 = st.columns([14, 6])
 with col1:
     # st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
