@@ -121,8 +121,8 @@ with col3:
 if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
 
-if 'min_pitch' not in st.session_state:
-    st.session_state['min_pitch'] = ''
+# if 'min_pitch' not in st.session_state:
+#     st.session_state['min_pitch'] = ''
 
 # if 'selected_player_index' not in st.session_state:
 #     st.session_state ['selected_player_index'] = 0
