@@ -122,7 +122,7 @@ if 'team_flag' not in st.session_state:
     st.session_state.team_flag = False
 
 if 'min_pitch' not in st.session_state:
-    st.session_state['min_pitch'] = 0
+    st.session_state['min_pitch'] = ''
 
 # if 'selected_player_index' not in st.session_state:
 #     st.session_state ['selected_player_index'] = 0
@@ -949,8 +949,8 @@ else:
             weighted_command = round (weighted_sum2 / (total_weights+1e-6))
             if min_pitch:  # Check if something was entered
                 try:
-                    min_pitch = int(min_pitch)
-                    stuff_df = stuff_df [stuff_df ['PitchCount'] >= min_pitch]
+                    min_pitch2 = int(min_pitch)
+                    stuff_df = stuff_df [stuff_df ['PitchCount'] >= min_pitch2]
                 except ValueError:
                     st.error("Invalid number for the minimum pitch count.")
             if (show_changes):
