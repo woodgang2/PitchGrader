@@ -153,7 +153,7 @@ st.title('PitchGrader')
 # st.title('Stuff+ Model (also a swing mechanics model now)')
 # col1, col2, col3 = st.columns([4, 2, 4])
 # st.write('Database last updated 5/7/2024')
-col1, col2, col3 = st.columns([14, 5, 1])
+col1, col2, col3 = st.columns([14, 4, 2])
 with col1:
     st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
 with col2:
