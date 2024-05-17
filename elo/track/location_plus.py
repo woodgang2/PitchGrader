@@ -1161,6 +1161,12 @@ class Driver:
         #     (predictions_df['PitchCall'] == 'StrikeSwinging') |
         #     (predictions_df['PitchCall'] == 'Foul')
         #     ]
+        predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
+        predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
+        predictions_df = predictions_df.dropna(subset=['Year'])
+        # predictions_df = predictions_df[predictions_df['Pitcher'].str.contains(', ')]
+        # if (self.year is None):
+        #     predictions_df['Pitcher'] = predictions_df.apply(lambda row: f"{row['Pitcher'].split(', ')[0]}, {row['Year']} {row['Pitcher'].split(', ')[1]}", axis=1)
         predictions_df.to_sql (f'{self.focus.name}_Probabilities', conn, if_exists='replace', index=False)
         self.predictions_df = predictions_df
         conn.close ()
@@ -1904,8 +1910,8 @@ def generate_all ():
     generate_location_ratings(year = 2023)
     generate_location_ratings(year = 2024)
 
-# generate_all()
+generate_all()
 # generate_location_ratings()
-driver.read_predictions(Focus.Location)
-driver.calculate_average_xRVs_by_game()
-driver.add_command_to_game_logs()
+# driver.read_predictions(Focus.Location)
+# driver.calculate_average_xRVs_by_game()
+# driver.add_command_to_game_logs()
