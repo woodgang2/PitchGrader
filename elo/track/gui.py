@@ -95,21 +95,36 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+@st.experimental_dialog("Settings", width="large")
+def settings_dialog():
+    st.header("Settings")
 
+    # Team List
+    calculate_team_list = st.checkbox("Calculate team leaderboard", value=st.session_state.get("calculate_team_list", True), help = 'By default, selecting "All" in the team view will proc a calculation of overall team ranks for stuff and command')
+    st.session_state.calculate_team_list = calculate_team_list
+    show_unranked = st.checkbox("Only show qualified teams on leaderboard", value=st.session_state.get("show_unranked", True), help = 'By default, all teams will appear in the list of teams. Selecting this option will hide teams who have thrown too few pitches to qualify for a rank')
+    st.session_state.show_unranked = show_unranked
+
+    # Submit button to apply changes
+    if st.button("Apply"):
+        st.rerun()  # Closes the dialog and reruns the app to reflect changes
 # Your title and divider with reduced whitespace
 st.title('PitchGrader')
 # st.markdown('<hr style="height:2px;border:none;color:#333;background-color:#333;" /> ', unsafe_allow_html=True)
 # st.divider ()
 # st.markdown("""---""")
-st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
+# st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
 # st.title('Stuff+ Model (also a swing mechanics model now)')
 # col1, col2, col3 = st.columns([4, 2, 4])
 # st.write('Database last updated 5/7/2024')
 col1, col3 = st.columns([14, 6])
 with col1:
+    st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
     st.write('Database last updated: 5/7/2024')
     st.write('Feel free to send any questions, suggestions or bug reports to gangmu.liu@email.virginia.edu')
 with col3:
+    if st.button("⚙️"):
+        settings_dialog()
     show_color = st.toggle("Colored Grades ", value = True, help='By default, grades on the 20-80 scale are colored (coloring is disabled for large dataframes)')
     show_location = st.toggle("Location Grades", value = False, help='By default, location grades for individual pitches are not displayed')
 # col1, col3 = st.columns([12, 5])
@@ -127,6 +142,12 @@ if 'team_flag' not in st.session_state:
 # if 'selected_player_index' not in st.session_state:
 #     st.session_state ['selected_player_index'] = 0
 #
+if 'calculate_team_list' not in st.session_state:
+    st.session_state.calculate_team_list = True
+
+if 'show_unranked' not in st.session_state:
+    st.session_state.calculate_team_list = True
+
 if 'player_name_update' not in st.session_state:
     st.session_state.player_name_update = ''
 
