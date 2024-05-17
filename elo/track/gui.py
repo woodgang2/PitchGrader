@@ -101,8 +101,8 @@ def settings_dialog():
     # Team List
     calculate_team_list = st.checkbox("Calculate team leaderboard", value=st.session_state.get("calculate_team_list", True), help = 'By default, selecting "All" in the team view will proc a calculation of overall team ranks for stuff and command')
     st.session_state.calculate_team_list = calculate_team_list
-    show_unranked = st.checkbox("Only show qualified teams on leaderboard", value=st.session_state.get("show_unranked", True), help = 'By default, all teams will appear in the list of teams. Selecting this option will hide teams who have thrown too few pitches to qualify for a rank')
-    st.session_state.show_unranked = show_unranked
+    hide_unranked = st.checkbox("Only show qualified teams on leaderboard", value=st.session_state.get("hide_unranked", False), help = 'By default, all teams will appear in the list of teams. Selecting this option will hide teams who have thrown too few pitches to qualify for a rank')
+    st.session_state.hide_unranked = hide_unranked
 
     # Submit button to apply changes
     if st.button("Apply"):
@@ -144,8 +144,8 @@ if 'team_flag' not in st.session_state:
 if 'calculate_team_list' not in st.session_state:
     st.session_state.calculate_team_list = True
 
-if 'show_unranked' not in st.session_state:
-    st.session_state.calculate_team_list = True
+if 'hide_unranked' not in st.session_state:
+    st.session_state.calculate_team_list = False
 
 if 'player_name_update' not in st.session_state:
     st.session_state.player_name_update = ''
@@ -1211,7 +1211,7 @@ else:
                 weighted_averages = weighted_averages [order]
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 # container_wa.dataframe(weighted_averages)
-                if (st.session_state.show_unranked == False):
+                if (st.session_state.hide_unranked == True):
                     weighted_averages = weighted_averages.dropna (subset = ['Stuff Rank'])
                 if not show_changes:
                     weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
