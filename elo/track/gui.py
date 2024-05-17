@@ -97,8 +97,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 @st.experimental_dialog("Settings", width="large")
 def settings_dialog():
-    st.header("Settings")
-
+    # st.header("Settings")
     # Team List
     calculate_team_list = st.checkbox("Calculate team leaderboard", value=st.session_state.get("calculate_team_list", True), help = 'By default, selecting "All" in the team view will proc a calculation of overall team ranks for stuff and command')
     st.session_state.calculate_team_list = calculate_team_list
@@ -1072,12 +1071,13 @@ else:
             stuff_df = stuff_df.set_index ('Pitcher')
             stuff_df_old = stuff_df
             if (team_name == 'All' and not show_changes):
-                with st.expander(f"Team List"):
-                    # colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                    # if not show_changes:
-                    #     weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:,.0f}")
-                    # st.dataframe (weighted_averages)
-                    container_wa = st.container()
+                if (st.session_state.calculate_team_list == True):
+                    with st.expander(f"Team List"):
+                        # colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                        # if not show_changes:
+                        #     weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:,.0f}")
+                        # st.dataframe (weighted_averages)
+                        container_wa = st.container()
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns and stuff_df[col].notna().any()]
             if not show_changes and show_color and stuff_df.shape[0] < 1000:
@@ -1183,7 +1183,7 @@ else:
             st.dataframe (df)
             st.dataframe (prob_df_final)
             st.dataframe (df_bat)
-            if (team_name == 'All' and not show_changes):
+            if (team_name == 'All' and not show_changes and st.session_state.calculate_team_list == True):
                 stuff_df = stuff_df_old
                 # st.dataframe (stuff_df)
                 grouped = stuff_df.groupby('PitcherTeam')
@@ -1211,6 +1211,8 @@ else:
                 weighted_averages = weighted_averages [order]
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 # container_wa.dataframe(weighted_averages)
+                if (st.session_state.show_unranked == False):
+                    weighted_averages = weighted_averages.dropna (subset = ['Stuff Rank'])
                 if not show_changes:
                     weighted_averages = weighted_averages.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                 container_wa.dataframe(weighted_averages)
