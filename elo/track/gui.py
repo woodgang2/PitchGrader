@@ -112,7 +112,38 @@ def settings_dialog():
 
     # Submit button to apply changes
     if st.button("Apply"):
+        st.success ("Settings Updated!")
         st.rerun()  # Closes the dialog and reruns the app to reflect changes
+@st.experimental_dialog("Readme", width="large")
+def readme_dialog():
+    # st.header("Settings")
+    # Team List
+    st.write("""
+    "_Well, this year I’m told the team did well because one pitcher had a fine curve ball. I understand that a curve ball is thrown with a deliberate attempt to deceive. Surely this is not an ability we should want to foster at Harvard._"
+    — A quote commonly attributed to Charles Eliot, President of Harvard, but in actuality was likely sourced from Charles Eliot Norton in 1884, Professor of the History of Art at Harvard (Hershberger, 2017).
+    """)
+
+    st.markdown("""
+        A good century and then some has passed since this quote entered the annals of history, and times sure have changed. Fastballs only get faster, sliders only slide more, and every pitcher now has an arsenal of secondary pitches relying primarily on deception.
+    
+        This project (accessible [here](https://pitchgrader.streamlit.app/)) represents a white-box (or at least a box which is not totally black) effort to assess collegiate pitchers based off of the intrinsic quality of their pitches, opposition quality notwithstanding. Significant inspiration was taken from Cameron Grove's work on PitchingBot and Professor Alan Nathan's various papers on the physics of baseball. All data was taken from trackman, and the methodology is detailed below.
+        """)
+
+    st.subheader("Project Components")
+    st.text("Note: Some files were omitted from this directory, like the raw .csvs and .db files used for the models.")
+
+    st.subheader("Pitch Classification")
+    st.text("Details about the pitch classification methodology, including corrections and enhancements.")
+
+    st.subheader("Stuff Model")
+    st.text("Explanation of the submodels for different pitch outcomes and the features used for modeling.")
+
+    st.subheader("Location Model")
+    st.text("Focuses on the importance of pitch location and includes features such as 'Balls', 'Strikes', 'PlateLocHeight', and 'PlateLocSide'.")
+
+    st.subheader("Swing Mechanics")
+    st.text("Analysis of batters' swing mechanics, including Collision Coefficient, Bat Speed, and more.")
+
 # Your title and divider with reduced whitespace
 st.title('PitchGrader')
 # st.markdown('<hr style="height:2px;border:none;color:#333;background-color:#333;" /> ', unsafe_allow_html=True)
@@ -122,14 +153,23 @@ st.title('PitchGrader')
 # st.title('Stuff+ Model (also a swing mechanics model now)')
 # col1, col2, col3 = st.columns([4, 2, 4])
 # st.write('Database last updated 5/7/2024')
-col1, col3 = st.columns([14, 6])
+col1, col2, col3 = st.columns([14, 6, 6])
+col1, col2, col3 = st.columns([14, 6])
 with col1:
     st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
-    st.write('Database last updated: 5/7/2024')
-    st.write('Feel free to send any questions, suggestions or bug reports to gangmu.liu@email.virginia.edu')
+with col2:
+    if st.button("?"):
+        readme_dialog()
 with col3:
     if st.button("⚙️"):
         settings_dialog()
+with col1:
+    # st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
+    st.write('Database last updated: 5/7/2024')
+    st.write('Feel free to send any questions, suggestions or bug reports to gangmu.liu@email.virginia.edu')
+with col3:
+    # if st.button("⚙️"):
+    #     settings_dialog()
     show_color = st.toggle("Colored Grades ", value = True, help='By default, grades on the 20-80 scale are colored (coloring is disabled for large dataframes)')
     show_location = st.toggle("Location Grades", value = False, help='By default, location grades for individual pitches are not displayed')
 # col1, col3 = st.columns([12, 5])
