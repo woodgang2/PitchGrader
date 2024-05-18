@@ -14,16 +14,18 @@ import pandas as pd
 import streamlit as st
 st.set_page_config(layout="wide")
 st.markdown(
-    f'''
-            <style>
-                .reportview-container .sidebar-content {{
-                    padding-top: {1}rem;
+    """
+        <style>
+            .appview-container .main .block-container {{
+                padding-top: {padding_top}rem;
+                padding-bottom: {padding_bottom}rem;
                 }}
-                .reportview-container .main .block-container {{
-                    padding-top: {100}rem !important;
-                }}
-            </style>
-            ''',unsafe_allow_html=True)
+
+        </style>""".format(
+        padding_top=1, padding_bottom=1
+    ),
+    unsafe_allow_html=True,
+)
 
 # st.write("""
 # # My first app
