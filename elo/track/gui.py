@@ -282,7 +282,7 @@ if 'disabled' not in st.session_state:
 col1, col2, col3 = st.columns([15.5, 4.5, 8])
 with col1:
     #options = ['Combined', 2024, 2023]
-    year_selected = st.selectbox ('', options = [2024, 2023], index = 1, key = 'year')
+    # year_selected = st.selectbox ('', options = [2024, 2023], index = 1, key = 'year')
     # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
     # if (st.session_state ['team_flag']):
     #     team_toggle = st.button("Team View (switch to player)", key='team_toggle', type = 'primary')
@@ -310,6 +310,9 @@ with col2:
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
     show_changes_placeholder = st.empty()
+col1, col2, col3 = st.columns([5, 12])
+with col1:
+    year_selected = st.selectbox ('', options = [2024, 2023], index = 1, key = 'year')
 # st.markdown("""
 # <hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
 # """, unsafe_allow_html=True)
