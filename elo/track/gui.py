@@ -318,7 +318,7 @@ with col2:
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
     show_changes_placeholder = st.empty()
-col1, col3 = st.columns([4.5, 12])
+col1, col3 = st.columns([4.525, 12])
 with col1:
     year_selected = st.selectbox ('', options = [2024, 2023], index = 1, key = 'year')
 # st.markdown("""
