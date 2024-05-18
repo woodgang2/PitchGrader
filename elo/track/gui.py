@@ -24,7 +24,7 @@ st.markdown(
                 }}
 
         </style>""".format(
-        padding_top=1, padding_bottom=1, padding_right = 12.5, padding_left = 12.5
+        padding_top=1, padding_bottom=1, padding_right = 17.5, padding_left = 17.5
     ),
     unsafe_allow_html=True,
 )
