@@ -1170,6 +1170,13 @@ class Driver:
         #     (predictions_df['PitchCall'] == 'StrikeSwinging') |
         #     (predictions_df['PitchCall'] == 'Foul')
         #     ]
+        #here - split years for combined
+        predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
+        predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
+        predictions_df = predictions_df.dropna(subset=['Year'])
+        # predictions_df = predictions_df[predictions_df['Pitcher'].str.contains(', ')]
+        # if (self.year is None):
+        #     predictions_df['Pitcher'] = predictions_df.apply(lambda row: f"{row['Pitcher'].split(', ')[0]}, {row['Year']} {row['Pitcher'].split(', ')[1]}", axis=1)
         predictions_df.to_sql (f'{self.focus.name}_Probabilities{suffix}', conn, if_exists='replace', index=False)
         self.predictions_df = predictions_df
         conn.close ()
@@ -1189,9 +1196,9 @@ class Driver:
         predictions_df = self.predictions_df
         predictions_df = predictions_df.dropna(subset=['xWhiff%'])
         predictions_df = predictions_df.fillna(0)
-        predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
-        predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
-        predictions_df = predictions_df.dropna(subset=['Year'])
+        # predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
+        # predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
+        # predictions_df = predictions_df.dropna(subset=['Year'])
         predictions_df['EV'] = (
                 predictions_df['xWhiff%'] * expected_run_values["SwingingStrike"]
                 + predictions_df['Prob_Contact'] * predictions_df['xFoul%'] * expected_run_values['Foul']
@@ -1209,7 +1216,7 @@ class Driver:
         overall_avg_xRV.rename(columns={'xRV': 'overall_avg_xRV'}, inplace=True)
         predictions_df = predictions_df.merge(overall_avg_xRV, on='PitchType')
         predictions_df['PitchxRV'] = predictions_df['xRV'] - predictions_df['overall_avg_xRV']
-        predictions_df = predictions_df.drop (subset = ['Year'])
+        # predictions_df = predictions_df.drop (columns = ['Year'])
         self.predictions_df = predictions_df
     # def calculate_run_values_swing (self):
     #     self.calculate_run_values_swing_wrapped (0)
@@ -1218,9 +1225,9 @@ class Driver:
 
     def calculate_average_xRVs_wrapped (self, game_log = 0):
         predictions_df = self.predictions_df
-        predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
-        predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
-        predictions_df = predictions_df.dropna(subset=['Year'])
+        # predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
+        # predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
+        # predictions_df = predictions_df.dropna(subset=['Year'])
         # predictions_df = predictions_df [predictions_df['PitchType'] == 'Splitter']
         # print (predictions_df.head ().to_string ())
         predictions_df ["OldPitcher"] = predictions_df ["Pitcher"]
@@ -1836,7 +1843,7 @@ def generate_all ():
     run_model(Focus.Stuff, year = 2024)
     generate_stuff_ratings(year = 2024)
 
-# generate_all()
+generate_all()
 # driver.read_predictions(Focus.Stuff)
 # driver.calculate_average_xRVs()
 # driver.read_predictions(Focus.Stuff)
