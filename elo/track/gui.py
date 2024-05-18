@@ -1066,18 +1066,17 @@ with tab2:
     # st.success (st.session_state['team_name'])
     # team_name = st.text_input('Team ID (from trackman)', '', placeholder='Team ID (UVA is VIR_CAV) - Enter "All" to see all players', key='team_name')
     # team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, key='team_name')
-
-    # Update 'team_name' if there's a new update that is different and not empty
-    if st.session_state.team_name_update and st.session_state.team_name_update != st.session_state['team_name']:
+    if (st.session_state.team_name_update != '') & (st.session_state['team_name'] == ''):
         st.session_state['team_name'] = st.session_state.team_name_update
-
-    # Determine the default index for the selectbox
+    # st.success (st.session_state['player_name'])
+    st.session_state['team_name'] = st.session_state['team_name']
     default_index = options_teams.index(st.session_state['team_name']) if st.session_state['team_name'] in options_teams else 0
-
-    # Use selectbox and update 'team_name'
-    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, index=default_index, key='team_name')
-
-    # Update 'team_name_update' to track changes
+    if default_index == 0:
+        st.session_state['team_name'] = ''
+    # st.session_state['team_name'] = st.session_state['team_name']
+    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, index= default_index, key='team_name')
+    # st.success ('n2', team_name, 'h')
+    # st.success (team_name)
     st.session_state.team_name_update = team_name
     # st.success ('n1')
     min_pitch = st.text_input('Minimum Pitch Count', '', placeholder='Pitch Count', key='min_pitch')
