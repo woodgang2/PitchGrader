@@ -304,7 +304,7 @@ with col2:
         st.markdown(
             """
                 <style>
-                div[data-testid="stContainer"] > div.stButton > button {
+                container > button {
                     height: auto;
                     padding-right: 50px !important;
                 }
