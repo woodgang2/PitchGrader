@@ -269,7 +269,7 @@ if 'disabled' not in st.session_state:
 # Update dataset button
 col1, col2, col3 = st.columns([15.5, 4.5, 8])
 with col1:
-    year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
+    year_selected = st.selectbox (options = ['Combined', 2024, 2023], index = 1, key = 'year')
     # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
     # if (st.session_state ['team_flag']):
     #     team_toggle = st.button("Team View (switch to player)", key='team_toggle', type = 'primary')
