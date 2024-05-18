@@ -279,7 +279,7 @@ if 'disabled' not in st.session_state:
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 # Update dataset button
 # col1, col4, col2, col3 = st.columns([12.5, 3, 4.5, 8])
-col3,_, col1, col2 = st.columns([9, 11, 4.5, 5])
+col3,_, col2, col1 = st.columns([9, 11, 4.5, 5])
 with col1:
     random_team = st.button ('Random team', key = 'random_team')
     #options = ['Combined', 2024, 2023]
