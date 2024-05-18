@@ -22,7 +22,7 @@ st.markdown(
     """
     <style>
     .reportview-container .main .block-container {
-        max-width: 90%;  /* Adjust the percentage to set your desired max-width */
+        max-width: 50%;  /* Adjust the percentage to set your desired max-width */
         padding-top: 5rem;
         padding-right: 2rem;
         padding-left: 2rem;
