@@ -268,9 +268,9 @@ if 'disabled' not in st.session_state:
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 # Update dataset button
 col1, col2, col3 = st.columns([15.5, 4.5, 8])
-with col1:
-    team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
-    tab1, tab2 = st.tabs(["Player", "Team"])
+tab1, tab2 = st.tabs(["Player", "Team"])
+# with col1:
+    # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
     # if (st.session_state ['team_flag']):
     #     team_toggle = st.button("Team View (switch to player)", key='team_toggle', type = 'primary')
     # else:
@@ -319,8 +319,8 @@ show_changes = show_changes_placeholder.button (f"Compare pitches to previous ye
 # if (show_changes):
 #     driver2 = database_driver.DatabaseDriver(year=(year-1))
 stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
-if (team_toggle):
-    st.session_state.team_flag = not st.session_state.team_flag
+# if (team_toggle):
+#     st.session_state.team_flag = not st.session_state.team_flag
 # random_player = st.button ("Random player", key = 'random_player')
 batting_percentiles_df = driver.retrieve_percentiles_bat_team ('All')
 pitching_stuff_df = driver.retrieve_stuff_team ('All')
