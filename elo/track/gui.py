@@ -28,6 +28,18 @@ st.markdown(
     ),
     unsafe_allow_html=True,
 )
+st.markdown(
+    """
+<style>
+button {
+    height: auto;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
 
 # st.write("""
 # # My first app
