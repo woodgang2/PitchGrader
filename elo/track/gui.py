@@ -1013,6 +1013,7 @@ with tab1:
                     labels = ['-', ' ', '+', '++']
                     prob_df2['Upside'] = pd.cut(prob_df2['Raw'], bins=bins, labels=labels, right=False)
                     prob_df2 = prob_df2 [['Usage', 'xRV', 'Raw', 'Vol', 'Outlook', 'Upside']]
+                    prob_df2 = round (prob_df2, 2)
                     st.dataframe(prob_df2)
                     pivot_df = prob_df2 [['Upside', 'Raw']]
                     pivot_df = pivot_df.round (2)
