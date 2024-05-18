@@ -295,7 +295,7 @@ with col2:
 with col3:
     show_changes_placeholder = st.empty()
 st.markdown("""
-<hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.1em; border: none; background-color: #31333F;'>
+<hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
 """, unsafe_allow_html=True)
 container_a = st.container ()
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
