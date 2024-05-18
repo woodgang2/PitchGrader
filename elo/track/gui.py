@@ -300,19 +300,7 @@ with col1:
 with col2:
     random_player = st.button ("Random player", key = 'random_player')
     button_label = "Random team"# + "　" * 1
-    with st.container ():
-        st.markdown(
-            """
-                <style>
-                container > button {
-                    height: auto;
-                    padding-right: 50px !important;
-                }
-                </style>
-            """,
-            unsafe_allow_html=True,
-        )
-        random_team = st.button (button_label, key = 'random_team')
+    random_team = st.button (button_label, key = 'random_team')
 #     team_toggle = st.button("Toggle team/player")
 #     if (team_toggle):
 #         st.session_state.team_flag = not st.session_state.team_flag
