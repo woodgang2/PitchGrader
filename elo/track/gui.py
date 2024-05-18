@@ -1316,8 +1316,11 @@ with tab2:
             df = df.set_index(['Pitcher', 'PitchType'])
             prob_df_final = prob_df_final.set_index (['Pitcher', 'PitchType'])
             df_bat = df_bat.set_index ('Batter')
+            st.write ("Percentiles")
             st.dataframe (df)
+            st.write ("Attributes")
             st.dataframe (prob_df_final)
+            st.write ("Swing Mechanics")
             st.dataframe (df_bat)
             if (team_name == 'All' and not show_changes and st.session_state.calculate_team_list == True):
                 stuff_df = stuff_df_old
