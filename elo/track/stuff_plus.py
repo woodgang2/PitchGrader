@@ -1174,7 +1174,7 @@ class Driver:
         predictions_df['Year'] = pd.to_datetime(predictions_df['Date'], format='%Y-%m-%d', errors='coerce')
         predictions_df['Year'] = predictions_df['Year'].dt.year.astype(str)
         predictions_df = predictions_df.dropna(subset=['Year'])
-        # predictions_df = predictions_df[predictions_df['Pitcher'].str.contains(', ')]
+        predictions_df = predictions_df[predictions_df['Pitcher'].str.contains(', ')]
         # if (self.year is None):
         #     predictions_df['Pitcher'] = predictions_df.apply(lambda row: f"{row['Pitcher'].split(', ')[0]}, {row['Year']} {row['Pitcher'].split(', ')[1]}", axis=1)
         predictions_df.to_sql (f'{self.focus.name}_Probabilities{suffix}', conn, if_exists='replace', index=False)
