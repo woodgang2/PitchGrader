@@ -305,7 +305,7 @@ with col2:
             """
                 <style>
                 button {
-                    padding-right: 10px !important;
+                    padding-right: 50px !important;
                 }
                 </style>
             """,
