@@ -157,7 +157,7 @@ def readme_dialog():
     """)
 
     st.markdown("""
-        A good century and then some has passed since this quote entered the annals of history, and times sure have changed. Fastballs only get faster, sliders only slide more, and every pitcher now has an arsenal of secondary pitches relying primarily on deception.
+        A good century and then some has passed since this quote entered the annals of history, and times sure have changed. Pitches are faster, break more, and every pitcher now has an arsenal of secondary pitches relying primarily on deception.
     
         This project represents an effort to assess collegiate pitchers based off of the intrinsic quality of their pitches, opposition quality notwithstanding. Significant inspiration was taken from Cameron Grove's work on PitchingBot and Professor Alan Nathan's various papers on the physics of baseball. All data was taken from trackman, and the methodology is briefly described below.
         """)
