@@ -298,9 +298,9 @@ with col3:
 # <hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
 # """, unsafe_allow_html=True)
 container_a = st.container ()
-tab1, tab2 = st.tabs(["Player", "Team"])
+# tab1, tab2 = st.tabs(["Player", "Team"])
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
-
+tab1, tab2 = st.tabs(["Player", "Team"])
 year = year_selected
 if (year_selected == 'Combined'):
     year = ''
