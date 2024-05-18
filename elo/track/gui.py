@@ -281,13 +281,9 @@ if 'disabled' not in st.session_state:
 # col1, col4, col2, col3 = st.columns([12.5, 3, 4.5, 8])
 st.markdown("""
     <style>
-        /* Reduce margins around all columns */
-        .st-cz {
-            margin-bottom: -20px !important;
-        }
         /* Further reduce padding and margins around specific widgets */
-        .stButton, .stSelectbox {
-            margin-bottom: -10px !important;
+        .stButton {
+            margin-bottom: -20px !important;
         }
     </style>
 """, unsafe_allow_html=True)
