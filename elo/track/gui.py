@@ -400,14 +400,14 @@ with tab1:
     if 'player_name' not in st.session_state:
         st.success ("not in session state")
         st.session_state['player_name'] = options[0]
-    st.success (st.session_state['player_name'])
-    st.dataframe (options)
-    st.error (options.index(st.session_state['player_name']))
+    # st.success (st.session_state['player_name'])
+    # st.dataframe (options)
+    # st.error (options.index(st.session_state['player_name']))
     default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
     if default_index == 0:
-        st.success ("default index = 0")
+        # st.success ("default index = 0")
         st.session_state['player_name'] = ''
-    st.success (st.session_state['player_name'])
+    # st.success (st.session_state['player_name'])
     selected_name = st.selectbox('Player', options=options, index=default_index)# index=default_index, key='player_name')
     st.session_state.player_name_update = selected_name
     team_name = ''
@@ -1037,7 +1037,7 @@ with tab2:
     if default_index == 0:
         st.session_state['team_name'] = ''
     # st.session_state['team_name'] = st.session_state['team_name']
-    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, index= default_index, key='team_name')
+    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, index= default_index)#, key='team_name')
     # st.success ('n2', team_name, 'h')
     # st.success (team_name)
     st.session_state.team_name_update = team_name
