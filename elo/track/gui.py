@@ -19,10 +19,12 @@ st.markdown(
             .appview-container .main .block-container {{
                 padding-top: {padding_top}rem;
                 padding-bottom: {padding_bottom}rem;
+                padding-right: {padding_right}rem;
+                padding-left: {padding_left}rem;
                 }}
 
         </style>""".format(
-        padding_top=1, padding_bottom=1
+        padding_top=1, padding_bottom=1, padding_right = 1, paddingleft = 1
     ),
     unsafe_allow_html=True,
 )
