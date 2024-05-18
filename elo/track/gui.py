@@ -268,7 +268,6 @@ if 'disabled' not in st.session_state:
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 # Update dataset button
 col1, col2, col3 = st.columns([15.5, 4.5, 8])
-tab1, tab2 = st.tabs(["Player", "Team"])
 # with col1:
     # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
     # if (st.session_state ['team_flag']):
@@ -298,6 +297,7 @@ with col3:
 st.markdown("""
 <hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
 """, unsafe_allow_html=True)
+tab1, tab2 = st.tabs(["Player", "Team"])
 container_a = st.container ()
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 
