@@ -92,7 +92,8 @@ def display_static_slider(label, value, max_value=100.0):
     color = color_for_value(value)
     value = int (value)
     background_color = '#f2f2f2'
-    if (st.get_option('theme.backgroundColor') == '#000000'):
+    st.success (st.get_option('theme.backgroundColor'))
+    if (st.get_option('theme.backgroundColor') == '#000000' or st.get_option('theme.backgroundColor') == 'black'):
         background_color = '#c1c1c1'
     # percentage = "{:.0f}%".format(percentage)
 
