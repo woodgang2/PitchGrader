@@ -427,7 +427,7 @@ with tab1:
         st.session_state['player_name'] = random_option
     if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
         st.session_state['player_name'] = st.session_state.player_name_update
-    else:
+    elif st.session_state['player_name'] == '':
         pick_random()
     # st.success (st.session_state['player_name'])
     if 'player_name' not in st.session_state:
