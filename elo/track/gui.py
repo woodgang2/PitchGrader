@@ -211,9 +211,10 @@ st.title('PitchGrader')
 # col1, col2, col3 = st.columns([4, 2, 4])
 # st.write('Database last updated 5/7/2024')
 col1, col2, col3 = st.columns([12, 1, 1])
-st.markdown("""
-    <hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
-    """, unsafe_allow_html=True)
+st.divider ()
+# st.markdown("""
+#     <hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
+#     """, unsafe_allow_html=True)
 with col1:
     st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
 with col2:
@@ -294,6 +295,9 @@ with col2:
 # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
 with col3:
     show_changes_placeholder = st.empty()
+st.markdown("""
+<hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
+""", unsafe_allow_html=True)
 container_a = st.container ()
 year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 
