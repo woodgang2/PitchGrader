@@ -111,7 +111,7 @@ def settings_dialog():
     st.session_state.hide_unranked = hide_unranked
 
     # Submit button to apply changes
-    if st.button("Apply"):
+    if st.button("Apply", type = 'primary'):
         st.success ("Settings Updated!")
         st.rerun()  # Closes the dialog and reruns the app to reflect changes
 @st.experimental_dialog("Readme", width="large")
