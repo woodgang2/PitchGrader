@@ -428,9 +428,6 @@ with tab1:
     if 'player_name' not in st.session_state:
         st.session_state['player_name'] = options[0]
 
-    if (st.session_state['player_name'] == ''):
-        st.experimental_rerun()
-
     # if ('player_name_update' in st.session_state):
     if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
         st.session_state['player_name'] = st.session_state.player_name_update
