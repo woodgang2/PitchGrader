@@ -289,7 +289,8 @@ if random_player:
 
 def color_values (value):
     if not show_color or show_changes or pd.isna(value):
-        return f'background-color: #ffffff'
+        # return f'background-color: #ffffff'
+        return st.get_option('theme.backgroundColor')
     # Create a color map with specific hex values
     cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#ff0000", "#ffff00", "#00ff00"])
     norm = mcolors.Normalize(vmin=15, vmax=85)
