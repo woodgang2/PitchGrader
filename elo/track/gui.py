@@ -299,7 +299,7 @@ with col1:
 # Button to toggle between personal details and team view
 with col2:
     random_player = st.button ("Random player", key = 'random_player')
-    random_team = st.button ("Random team", key = 'random_team')
+    random_team = st.button ("Random team  ", key = 'random_team')
 #     team_toggle = st.button("Toggle team/player")
 #     if (team_toggle):
 #         st.session_state.team_flag = not st.session_state.team_flag
