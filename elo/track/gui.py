@@ -91,10 +91,8 @@ def display_static_slider(label, value, max_value=100.0):
         bubble_width = min_width
     color = color_for_value(value)
     value = int (value)
-    background_color = '#f2f2f2'
-    st.success (st.get_option('theme.backgroundColor'))
-    if (st.get_option('theme.backgroundColor') == '#000000' or st.get_option('theme.backgroundColor') == 'black'):
-        background_color = '#c1c1c1'
+    # background_color = '#f2f2f2'
+    background_color = '#c1c1c1'
     # percentage = "{:.0f}%".format(percentage)
 
     # Create the "slider" using markdown with custom styling
