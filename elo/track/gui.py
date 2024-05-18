@@ -18,7 +18,7 @@ st.set_page_config(layout="wide")
 st.markdown("""
 <style>
     .reportview-container .main .block-container {
-        padding: 0rem 5rem; /* Top/Bottom padding 0rem, Left/Right padding 5rem */
+        padding: 0rem 50rem; /* Top/Bottom padding 0rem, Left/Right padding 5rem */
     }
 </style>
 """, unsafe_allow_html=True)
