@@ -183,7 +183,7 @@ with col2:
 with col3:
     if st.button("⚙️"):
         settings_dialog()
-col1, col3 = st.columns([12, 2])
+col1, col3 = st.columns([12, 4])
 with col1:
     # st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
     st.write('Database last updated: 5/7/2024')
