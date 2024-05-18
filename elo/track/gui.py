@@ -324,7 +324,7 @@ if not st.session_state.team_flag:
     default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
     if default_index == 0:
         st.session_state['player_name'] = ''
-    selected_name = st.selectbox('Player', options=options, index=default_index, key='player_name')
+    selected_name = st.selectbox('Player', options=options, key='player_name')# index=default_index, key='player_name')
     st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
