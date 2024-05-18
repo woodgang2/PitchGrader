@@ -846,6 +846,7 @@ with tab1:
             location_history_df = location_history_df [['Pitcher', 'Overall', 'Year']]
             location_history_df = location_history_df.rename(columns={'Overall': 'Command'})
             location_history_df = location_history_df.drop_duplicates (['Pitcher', 'Year'])
+            st.empty ()
             stuff_history_df = stuff_history_df.drop_duplicates (['Pitcher', 'Year'])
             stuff_history_df = stuff_history_df.merge (location_history_df, on = 'Year')
             stuff_history_df = stuff_history_df.rename(columns=rename_columns)
