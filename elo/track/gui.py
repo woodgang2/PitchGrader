@@ -422,13 +422,14 @@ with tab1:
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
     # st.success (st.session_state['player_name'])
+    if ('player_name_update' in st.session_state):
+        if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
+            st.session_state['player_name'] = st.session_state.player_name_update
     if 'player_name_update' not in st.session_state:
         st.session_state.player_name_update = options[0]
 
     if 'player_name' not in st.session_state:
         st.session_state['player_name'] = options[0]
-    if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
-        st.session_state['player_name'] = st.session_state.player_name_update
     # st.success (st.session_state['player_name'])
     def pick_random ():
         random_option = random.choice(options)
