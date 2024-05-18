@@ -333,7 +333,7 @@ if (year_selected != 'Combined'):
     driver2 = database_driver.DatabaseDriver(year=(year-1))
 else:
     driver2 = database_driver.DatabaseDriver(year=2023)
-show_changes = show_changes_placeholder.button (f"Compare pitches to previous year", key = 'show_changes', disabled=st.session_state["disabled"])
+show_changes = show_changes_placeholder.button (f"Compare pitches to previous year", key = 'show_changes', disabled=st.session_state["disabled"], type = 'primary')
 # driver = database_driver.DatabaseDriver(year=year)
 # if (show_changes):
 #     driver2 = database_driver.DatabaseDriver(year=(year-1))
