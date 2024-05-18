@@ -669,33 +669,6 @@ if not st.session_state.team_flag:
             st.empty ()
             st.write ("Percentiles")
             st.dataframe(df_display)
-            pitch_types = df['PitchType'].unique().tolist()
-            if (not show_changes):
-                index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
-                temp = df['PitchType'].iloc [index]
-                # st.title (temp)
-                def add_custom_css():
-                    st.markdown("""
-                            <style>
-                                .block-container > .row {
-                                    gap: 2rem;  /* Adjust the gap size as needed */
-                                }
-                            </style>
-                        """, unsafe_allow_html=True)
-
-                add_custom_css()
-                col1, space, col2 = st.columns([2, 1, 2])
-
-                with col1:
-                    display_static_slider('xRV', df ['xRV'].iloc [index])
-                    display_static_slider('xWhiff%', df ['xWhiff%'].iloc [index])
-                    display_static_slider('xFoul%', df ['xFoul%'].iloc [index])
-
-                with col2:
-                    display_static_slider('xGB%', df ['xGB%'].iloc [index])
-                    display_static_slider('xHH%', 100 - df ['xHH%'].iloc [index])
-                    display_static_slider('xHHFB%', 100 - df ['Prob_HardFB'].iloc [index])
-
             st.write ("Attributes")
             prob_df = driver.retrieve_percentages(name)
             prob_df = prob_df.drop_duplicates ('PitchType')
@@ -760,6 +733,32 @@ if not st.session_state.team_flag:
             prob_df = prob_df.set_index('PitchType')
             prob_df.index.name = "Pitch Type"
             input_df = st.data_editor(prob_df)
+            pitch_types = df['PitchType'].unique().tolist()
+            if (not show_changes):
+                index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
+                temp = df['PitchType'].iloc [index]
+                # st.title (temp)
+                def add_custom_css():
+                    st.markdown("""
+                            <style>
+                                .block-container > .row {
+                                    gap: 2rem;  /* Adjust the gap size as needed */
+                                }
+                            </style>
+                        """, unsafe_allow_html=True)
+
+                add_custom_css()
+                col1, space, col2 = st.columns([2, 1, 2])
+
+                with col1:
+                    display_static_slider('xRV', df ['xRV'].iloc [index])
+                    display_static_slider('xWhiff%', df ['xWhiff%'].iloc [index])
+                    display_static_slider('xFoul%', df ['xFoul%'].iloc [index])
+
+                with col2:
+                    display_static_slider('xGB%', df ['xGB%'].iloc [index])
+                    display_static_slider('xHH%', 100 - df ['xHH%'].iloc [index])
+                    display_static_slider('xHHFB%', 100 - df ['Prob_HardFB'].iloc [index])
             st.write ("History")
             stuff_history_df = driver.retrieve_stuff_history(name)
             location_history_df = driver.retrieve_location_history(name)
