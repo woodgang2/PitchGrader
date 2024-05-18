@@ -288,7 +288,7 @@ with col1:
 # Button to toggle between personal details and team view
 with col2:
     random_player = st.button ("Random player", key = 'random_player')
-    random_player2 = st.button ("Random player", key = 'random_player2')
+    random_team = st.button ("Random team", key = 'random_team')
 #     team_toggle = st.button("Toggle team/player")
 #     if (team_toggle):
 #         st.session_state.team_flag = not st.session_state.team_flag
@@ -364,6 +364,9 @@ options = [''] + list(combined_names)
 if random_player:
     random_option = random.choice(options)
     st.session_state['player_name'] = random_option
+if random_team:
+    random_option = random.choice(options_teams)
+    st.session_state['team_name'] = random_option
 
 def color_values (value):
     if not show_color or show_changes or pd.isna(value):
