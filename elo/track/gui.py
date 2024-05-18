@@ -169,7 +169,7 @@ def readme_dialog():
     
     The individual pitch grades represent a pitch's expected run values relative to other pitches of that type. The expected pitch run value (not in the dfs) represents the difference between the expected run value of a pitch and the average expected run value of that pitch type, and the overall grade represents the pitcher's average expected pitch run value relative to other pitchers. Relievers generally lose 6-10 stuff points when transitioning to a starting role. The stuff model assumes average command. All percentile sliders on the streamlit deployment are based off of the model's generated probabilities. 
     
-    - The full sets of features used are: \['PitchType', 'PitcherThrows', 'BatterSide', 'RelSpeed', 'InducedVertBreak', 'HorzBreak', 'SpinRate', 'SpinEfficiency*', 'AxisDifference*', 'RelHeight', 'RelSide', 'Extension', 'VAA*'\] for fastballs, \['PitchType', 'PitcherThrows', 'BatterSide', 'RelSpeed', 'InducedVertBreak', 'HorzBreak', 'SpinRate', 'SpinEfficiency*', 'AxisDifference*', 'RelHeight', 'RelSide', 'Extension', 'DifferenceRS*', 'DifferenceIVB*', 'DifferenceHB*'\] for breaking balls and offspeeds (* ~> calculated, otherwise taken directly from trackman). 
+    - The full sets of features used are: \[PitchType, PitcherThrows, BatterSide, RelSpeed, InducedVertBreak, HorzBreak, SpinRate, SpinEfficiency*, AxisDifference*, RelHeight, RelSide, Extension, VAA*\] for fastballs, \[PitchType, PitcherThrows, BatterSide, RelSpeed, InducedVertBreak, HorzBreak, SpinRate, SpinEfficiency*, AxisDifference*, RelHeight, RelSide, Extension, DifferenceRS*, DifferenceIVB*, DifferenceHB*\] for breaking balls and offspeeds (* ~> calculated, otherwise taken directly from trackman). 
     
     - On some of the more notable features: Axis Difference is a proxy for non-Magnus movement, and measures the difference between the inferred spin axis, which was calculated as        
                 self.radar_df['InferredSpinAxis'] = np.where(self.radar_df['pfxx'] < 0,
@@ -177,7 +177,7 @@ def readme_dialog():
                                                     np.arctan (self.radar_df['pfxz'] / self.radar_df['pfxx']) * 180 / math.pi + 90),
   and the spin axis given by trackman. VAA represents vertical approach angle above average, which is vertical approach angle normalized for plate height. 
   
-    Location Model: Similar to the stuff model, except with 2 extra submodels, take and swing. Assumes average stuff for each pitcher. The full set of features used are: \['PitchType', 'PitcherThrows', 'BatterSide', 'Balls', 'Strikes', 'PlateLocHeight', 'PlateLocSide'\].
+    Location Model: Similar to the stuff model, except with 2 extra submodels, take and swing. Assumes average stuff for each pitcher. The full set of features used are: \[PitchType, PitcherThrows, BatterSide, Balls, Strikes, PlateLocHeight, PlateLocSide\].
     
     Swing Mechanics: the batters were in the database, so I had to do something with them, right? Note: the swing models/databases haven't been updated for a few months now. Some notable outputs of the model are:
       
