@@ -1,2 +1,4 @@
+# Streamlit config.toml
+
 [theme]
 base="light"
