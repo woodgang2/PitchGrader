@@ -20,7 +20,7 @@ st.markdown(
                     padding-top: {1}rem;
                 }}
                 .reportview-container .main .block-container {{
-                    padding-top: {100}rem;
+                    padding-top: {100}rem !important;
                 }}
             </style>
             ''',unsafe_allow_html=True)
