@@ -270,6 +270,7 @@ if 'disabled' not in st.session_state:
 col1, col2, col3 = st.columns([15.5, 4.5, 8])
 with col1:
     team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
+    tab1, tab2 = st.tabs(["Player", "Team"])
     # if (st.session_state ['team_flag']):
     #     team_toggle = st.button("Team View (switch to player)", key='team_toggle', type = 'primary')
     # else:
@@ -382,7 +383,8 @@ def color_values (value):
 # pitching_stuff_df = driver.retrieve_stuff_team ('All')
 # st.success (st.session_state['selected_player_index'] )
 # Conditional rendering based on the toggle state
-if not st.session_state.team_flag:
+# if not st.session_state.team_flag:
+with tab1:
     # container_a.header ("Player Profile")
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
@@ -1014,7 +1016,8 @@ if not st.session_state.team_flag:
                     st.success (f"Unicorn Score: {round (running_average, 2)}")
     # df = pd.read_csv("my_data.csv")
     # st.line_chart(df)
-else:
+# else:
+with tab2:
     #Here: Team
     # st.success (st.session_state['team_name'])
     # team_name = st.text_input('Team ID (from trackman)', '', placeholder='Team ID (UVA is VIR_CAV) - Enter "All" to see all players', key='team_name')
