@@ -91,6 +91,9 @@ def display_static_slider(label, value, max_value=100.0):
         bubble_width = min_width
     color = color_for_value(value)
     value = int (value)
+    background_color = '#f2f2f2'
+    if (st.get_option('theme.backgroundColor') == '#000000'):
+        background_color = '#c1c1c1'
     # percentage = "{:.0f}%".format(percentage)
 
     # Create the "slider" using markdown with custom styling
@@ -98,7 +101,7 @@ def display_static_slider(label, value, max_value=100.0):
     slider_bar = f"""
         <div style='width: 100%; padding-bottom: 1rem;'>  <!-- Increase padding-bottom as needed -->
         <div style='text-align: center;'>{label}</div>
-        <div style='margin-top: 1rem; background-color: #f2f2f2; border-radius: 10px; height: 10px; position: relative;'> <!-- Adjust margin-top to increase space -->
+        <div style='margin-top: 1rem; background-color: {background_color}; border-radius: 10px; height: 10px; position: relative;'> <!-- Adjust margin-top to increase space -->
             <div style='position: absolute; top: -20px; left: {percentage}%; transform: translateX(-50%);'>
                 <div style='background-color: {color}; color: white; padding: 0.5rem; border-radius: 20px; width: {bubble_width}px; text-align: center;'>
                     {value}
