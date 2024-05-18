@@ -407,6 +407,7 @@ with tab1:
     if default_index == 0:
         st.success ("default index = 0")
         st.session_state['player_name'] = ''
+    st.success (st.session_state['player_name'])
     selected_name = st.selectbox('Player', options=options, key='player_name')# index=default_index, key='player_name')
     st.session_state.player_name_update = selected_name
     team_name = ''
