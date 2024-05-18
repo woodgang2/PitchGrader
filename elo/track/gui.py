@@ -1006,8 +1006,8 @@ with tab1:
                     prob_df2['Raw'] = simulation_results_per_row
                     prob_df2['Vol'] = simulation_results_per_row_std
                     prob_df2['Outlook'] = simulation_results_per_row_pos
-                    prob_df2 = prob_df2 [['Usage', 'xRV', 'Raw', 'Vol', 'Outlook']]
-                    st.dataframe(prob_df2)
+                    # prob_df2 = prob_df2 [['Usage', 'xRV', 'Raw', 'Vol', 'Outlook']]
+                    # st.dataframe(prob_df2)
                     # prob_df2.reset_index(inplace=True)
                     bins = [0, 6, 6.5, 7.5, 15]
                     labels = ['-', ' ', '+', '++']
