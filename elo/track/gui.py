@@ -299,7 +299,7 @@ with col1:
 # Button to toggle between personal details and team view
 with col2:
     random_player = st.button ("Random player", key = 'random_player')
-    button_label = "Random team"# + "　" * 1
+    button_label = "Random team" + "&nbsp;" * 10# + "　" * 1
     random_team = st.button (button_label, key = 'random_team')
 #     team_toggle = st.button("Toggle team/player")
 #     if (team_toggle):
