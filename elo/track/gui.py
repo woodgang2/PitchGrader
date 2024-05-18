@@ -193,7 +193,7 @@ def readme_dialog():
         
         - Swing Decision - calculated by fitting a model to predict swings based on the difference between the expected intrinsic value of a swing vs. the run value of a take. Final metric is based off how often they choose "correctly" compared to the league. It's a little funky right now, and I need to tinker with the model a little.
         
-        **References**:
+    **References**:
 
   * Hershberger, R. (2017). With a Deliberate Attempt to Deceive: Correcting a Quotation Misattributed to Charles Eliot, President of
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Harvard. Baseball Research Journal, Spring 2017.
