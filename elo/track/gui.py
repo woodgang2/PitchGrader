@@ -1071,9 +1071,6 @@ with tab2:
     if st.session_state.team_name_update and st.session_state.team_name_update != st.session_state['team_name']:
         st.session_state['team_name'] = st.session_state.team_name_update
 
-    # Define the options for the selectbox
-    options_teams = ['Team1', 'Team2', 'Team3']  # Example options
-
     # Determine the default index for the selectbox
     default_index = options_teams.index(st.session_state['team_name']) if st.session_state['team_name'] in options_teams else 0
 
