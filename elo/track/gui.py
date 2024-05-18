@@ -425,21 +425,21 @@ with tab1:
 
     if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
         st.session_state['player_name'] = st.session_state.player_name_update
-    # st.success (st.session_state['player_name'])
+    st.success (st.session_state['player_name'])
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
     if 'player_name' not in st.session_state:
         st.success ("not in session state")
         st.session_state['player_name'] = options[0]
-    # st.success (st.session_state['player_name'])
+    st.success (st.session_state['player_name'])
     # st.dataframe (options)
     # st.error (options.index(st.session_state['player_name']))
     default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
     if default_index == 0:
         # st.success ("default index = 0")
         st.session_state['player_name'] = ''
-    # st.success (st.session_state['player_name'])
+    st.success (st.session_state['player_name'])
     selected_name = st.selectbox('Name', options=options, index=default_index)# index=default_index, key='player_name')
     st.session_state.player_name_update = selected_name
     team_name = ''
