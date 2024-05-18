@@ -973,7 +973,7 @@ with tab1:
                             '5th_percentile': np.percentile(sampled_data, 5),
                             '75th_percentile': np.percentile(sampled_data, 75),  # Add percentile value
                             '95th_percentile': np.percentile(sampled_data, 95),
-                            'pos': (sampled_data > 0).mean() * 100
+                            'pos': (sampled_data > 0).mean()
                         }
                     return simulation_results
                 def find_comps(df):
