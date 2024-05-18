@@ -1074,7 +1074,7 @@ with tab2:
     if default_index == 0:
         st.session_state['team_name'] = ''
     # st.session_state['team_name'] = st.session_state['team_name']
-    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, index= default_index)#, key='team_name')
+    team_name = st.selectbox('Team ID (UVA is VIR_CAV)', options=options_teams, index= default_index, key='team_name')
     # st.success ('n2', team_name, 'h')
     # st.success (team_name)
     st.session_state.team_name_update = team_name
