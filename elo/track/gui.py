@@ -299,7 +299,7 @@ def color_values (value):
     rgba = cmap(norm(value))
     color = mcolors.rgb2hex(rgba)
     # if show_color:
-    return f'background-color: {color}'
+    return f'background-color: {color}; color: black;'
     # return f'background-color: #ffffff'
 
 # batting_percentages_df = driver.retrieve_percentages_bat_team ('All')
