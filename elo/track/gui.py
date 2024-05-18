@@ -28,17 +28,17 @@ st.markdown(
     ),
     unsafe_allow_html=True,
 )
-st.markdown(
-    """
-        <style>
-        button {
-            height: auto;
-            padding-right: 15px !important;
-        }
-        </style>
-    """,
-    unsafe_allow_html=True,
-)
+# st.markdown(
+#     """
+#         <style>
+#         button {
+#             height: auto;
+#             padding-right: 15px !important;
+#         }
+#         </style>
+#     """,
+#     unsafe_allow_html=True,
+# )
 
 # st.write("""
 # # My first app
