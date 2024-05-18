@@ -279,8 +279,9 @@ if 'disabled' not in st.session_state:
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 # Update dataset button
 # col1, col4, col2, col3 = st.columns([12.5, 3, 4.5, 8])
-col1, col2, col3 = st.columns([15.5, 4.5, 8])
-# with col1:
+_,col1, col2, col3 = st.columns([12.5, 3.5, 4.5, 8])
+with col1:
+    random_team = st.button ('Random team', key = 'random_team')
     #options = ['Combined', 2024, 2023]
     # year_selected = st.selectbox ('', options = [2024, 2023], index = 1, key = 'year')
     # team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
@@ -301,8 +302,7 @@ col1, col2, col3 = st.columns([15.5, 4.5, 8])
 # Button to toggle between personal details and team view
 with col2:
     random_player = st.button ("Random player", key = 'random_player')
-    button_label = "Random team" + "&nbsp;" * 2# + "　" * 1
-    random_team = st.button (button_label, key = 'random_team')
+    # button_label = "Random team" + "&nbsp;" * 2# + "　" * 1
 #     team_toggle = st.button("Toggle team/player")
 #     if (team_toggle):
 #         st.session_state.team_flag = not st.session_state.team_flag
