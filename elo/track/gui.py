@@ -299,8 +299,8 @@ with col3:
 # """, unsafe_allow_html=True)
 container_a = st.container ()
 # tab1, tab2 = st.tabs(["Player", "Team"])
-year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 tab1, tab2 = st.tabs(["Player", "Team"])
+year_selected = st.selectbox ("Year", options = ['Combined', 2024, 2023], index = 1, key = 'year')
 year = year_selected
 if (year_selected == 'Combined'):
     year = ''
@@ -390,6 +390,7 @@ with tab1:
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
     # st.success (st.session_state['player_name'])
+
     if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
         st.session_state['player_name'] = st.session_state.player_name_update
     # st.success (st.session_state['player_name'])
@@ -397,9 +398,11 @@ with tab1:
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
     if 'player_name' not in st.session_state:
+        st.success ("not in session state")
         st.session_state['player_name'] = options[0]
     default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
     if default_index == 0:
+        st.success ("default index = 0")
         st.session_state['player_name'] = ''
     selected_name = st.selectbox('Player', options=options, key='player_name')# index=default_index, key='player_name')
     st.session_state.player_name_update = selected_name
