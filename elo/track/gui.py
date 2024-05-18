@@ -183,7 +183,7 @@ with col2:
 with col3:
     if st.button("⚙️"):
         settings_dialog()
-col1, col3 = st.columns([16, 4])
+col1, col3 = st.columns([15, 4])
 with col1:
     # st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
     st.write('Database last updated: 5/7/2024')
@@ -228,7 +228,7 @@ if 'disabled' not in st.session_state:
 # driver = database_driver.DatabaseDriver()
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 # Update dataset button
-col1, col2, col3 = st.columns([4, 2, 4])
+col1, col2, col3 = st.columns([15, 2, 2])
 with col1:
     team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
     # if (st.session_state ['team_flag']):
