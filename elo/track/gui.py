@@ -10,31 +10,41 @@ import matplotlib.colors as mcolors
 
 import database_driver
 import stuff_plus
-import streamlit as st
 import pandas as pd
+import streamlit as st
+st.set_page_config(layout="wide")
+
+# Inject custom CSS with st.markdown
+st.markdown("""
+<style>
+    .reportview-container .main .block-container {
+        padding: 0rem 5rem; /* Top/Bottom padding 0rem, Left/Right padding 5rem */
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # st.write("""
 # # My first app
 # Hello *world!*
 # """)
 
-st.markdown(
-    """
-    <style>
-    .reportview-container .main .block-container {
-        max-width: 50%;  /* Adjust the percentage to set your desired max-width */
-        padding-top: 5rem;
-        padding-right: 2rem;
-        padding-left: 2rem;
-        padding-bottom: 5rem;
-    }
-    .reportview-container .main .sidebar-content {
-        width: 300px;  /* Adjust the pixel width to set your desired sidebar width */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# st.markdown(
+#     """
+#     <style>
+#     .reportview-container .main .block-container {
+#         max-width: 50%;
+#         padding-top: 5rem;
+#         padding-right: 2rem;
+#         padding-left: 2rem;
+#         padding-bottom: 5rem;
+#     }
+#     .reportview-container .main .sidebar-content {
+#         width: 300px;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True
+# )
 
 def interpolate_color(minval, maxval, val, color_palette):
     """Interpolate between colors in color_palette where color_palette
