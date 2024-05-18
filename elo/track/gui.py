@@ -18,6 +18,23 @@ import pandas as pd
 # Hello *world!*
 # """)
 
+st.markdown(
+    """
+    <style>
+    .reportview-container .main .block-container {
+        max-width: 90%;  /* Adjust the percentage to set your desired max-width */
+        padding-top: 5rem;
+        padding-right: 2rem;
+        padding-left: 2rem;
+        padding-bottom: 5rem;
+    }
+    .reportview-container .main .sidebar-content {
+        width: 300px;  /* Adjust the pixel width to set your desired sidebar width */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 def interpolate_color(minval, maxval, val, color_palette):
     """Interpolate between colors in color_palette where color_palette
