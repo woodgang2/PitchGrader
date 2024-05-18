@@ -228,7 +228,7 @@ if 'disabled' not in st.session_state:
 # driver = database_driver.DatabaseDriver()
 # stuff_driver = stuff_plus.Driver('radar2.db', 'radar_data')
 # Update dataset button
-col1, col2, col3 = st.columns([14, 4, 8])
+col1, col2, col3 = st.columns([15, 4, 8])
 with col1:
     team_toggle = st.button("Toggle team/player", key='team_toggle', type = 'primary')
     # if (st.session_state ['team_flag']):
