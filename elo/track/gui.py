@@ -401,7 +401,7 @@ with tab1:
         st.success ("not in session state")
         st.session_state['player_name'] = options[0]
     st.success (st.session_state['player_name'])
-    st.table (options)
+    st.dataframe (options)
     default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
     if default_index == 0:
         st.success ("default index = 0")
