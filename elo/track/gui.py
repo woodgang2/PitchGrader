@@ -1012,6 +1012,8 @@ with tab1:
                     bins = [0, 6, 6.5, 7.5, 15]
                     labels = ['-', ' ', '+', '++']
                     prob_df2['Upside'] = pd.cut(prob_df2['Raw'], bins=bins, labels=labels, right=False)
+                    prob_df2 = prob_df2 [['Usage', 'xRV', 'Raw', 'Vol', 'Outlook', 'Upside']]
+                    st.dataframe(prob_df2)
                     pivot_df = prob_df2 [['Upside', 'Raw']]
                     pivot_df = pivot_df.round (2)
                     pivot_df = pivot_df.T
@@ -1025,7 +1027,7 @@ with tab1:
                         'Splitter' : 'FS'
                     }
                     pivot_df = pivot_df.rename(columns=rename_columns)
-                    st.dataframe (pivot_df)
+                    # st.dataframe (pivot_df)
                 # st.dataframe (stuff_df)
             # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
             # # Assuming calculate_mahalanobis is defined
