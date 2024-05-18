@@ -422,22 +422,32 @@ with tab1:
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
     # st.success (st.session_state['player_name'])
-    # Initialize session_state variables if not already done
     if 'player_name_update' not in st.session_state:
         st.session_state.player_name_update = options[0]
 
     if 'player_name' not in st.session_state:
         st.session_state['player_name'] = options[0]
 
-    # Define the select box and immediately capture any changes to the session state
-    selected_name = st.selectbox('Name', options=options, index=options.index(st.session_state['player_name']), key='player_name')
-
-    # Update player_name_update after user interaction
-    st.session_state.player_name_update = selected_name
-
-    # Now, use the updated player_name_update to potentially modify player_name
-    if st.session_state.player_name_update and st.session_state['player_name'] == '':
+    # if ('player_name_update' in st.session_state):
+    if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
         st.session_state['player_name'] = st.session_state.player_name_update
+    # st.success (st.session_state['player_name'])
+    def pick_random ():
+        random_option = random.choice(options)
+        st.session_state['player_name'] = random_option
+    if 'player_name' not in st.session_state:
+        # st.success ("not in session state")
+        st.session_state['player_name'] = options[0]
+    # st.success (st.session_state['player_name'])
+    # st.dataframe (options)
+    # st.error (options.index(st.session_state['player_name']))
+    default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
+    if default_index == 0:
+        # st.success ("default index = 0")
+        st.session_state['player_name'] = ''
+    # st.success (st.session_state['player_name'])
+    selected_name = st.selectbox('Name', options=options, index=default_index, key='player_name')# index=default_index, key='player_name')
+    st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
