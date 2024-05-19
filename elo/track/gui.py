@@ -427,6 +427,7 @@ with tab1:
         st.session_state['player_name'] = random_option
     # if (st.session_state['player_name'] == ''):
     #     pick_random ()
+    default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
     selected_name = st.selectbox('Name', options=options, index = default_index, key='player_name')#, on_change=first_click)# index=default_index, key='player_name')
     st.session_state.player_name_update = selected_name
     team_name = ''
