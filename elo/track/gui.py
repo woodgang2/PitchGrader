@@ -262,7 +262,7 @@ if 'team_flag' not in st.session_state:
 #
 
 if 'player_name_update' not in st.session_state:
-    st.session_state.player_name_update = 'Burns, Chase'
+    st.session_state.player_name_update = ''
 
 if 'player_name' not in st.session_state:
     st.session_state['player_name'] = ''
@@ -422,7 +422,6 @@ with tab1:
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
     # st.success (st.session_state['player_name'])
-    flag = False
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
@@ -443,8 +442,8 @@ with tab1:
         # st.success ("default index = 0")
         st.session_state['player_name'] = ''
     # st.success (st.session_state['player_name'])
-    selected_name = st.selectbox('Name', options=options, index=default_index, key='player_name')# index=default_index, key='player_name')
-    st.session_state.player_name_update = selected_name
+    st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index, key='player_name')# index=default_index, key='player_name')
+    # st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
