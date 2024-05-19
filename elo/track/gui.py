@@ -425,10 +425,10 @@ with tab1:
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
-    if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
-        st.error ("proc")
-        st.session_state['player_name'] = st.session_state.player_name_update
-    elif st.session_state['player_name'] == '':
+    # if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
+    #     st.error ("proc")
+    #     st.session_state['player_name'] = st.session_state.player_name_update
+    if st.session_state['player_name'] == '':
         pick_random()
         st.session_state['player_name'] = ''
     st.success (st.session_state['player_name'])
