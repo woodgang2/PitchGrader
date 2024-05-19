@@ -438,12 +438,12 @@ with tab1:
     # st.success (st.session_state['player_name'])
     # st.dataframe (options)
     # st.error (options.index(st.session_state['player_name']))
-    default_index = options.index(st.session_state['player_name_update']) if st.session_state['player_name_update'] in options else 0
-    # if default_index == 0:
-        # st.success ("default index = 0")
-        # st.session_state['player_name'] = ''
-    # st.success (st.session_state['player_name'])
-    st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index)#, key='player_name')# index=default_index, key='player_name')
+    def update_selection():
+        st.session_state['player_name_update'] = new_selection
+
+    # Display the selectbox and update the state when the selection changes
+    new_selection = st.selectbox('Name', options=options, index=options.index(st.session_state['player_name_update']), on_change=update_selection)
+    #, key='player_name')# index=default_index, key='player_name')
     # st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
