@@ -327,7 +327,7 @@ def changed_year ():
     st.session_state.recently_selected_year = True
     st.error ("changed year")
 with col1:
-    year_selected = st.selectbox ('', options = [2024, 2023], index = 0, key = 'year', on_change = changed_year ())
+    year_selected = st.selectbox ('', options = [2024, 2023], index = 0, key = 'year', on_change = changed_year)
 # st.markdown("""
 # <hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
 # """, unsafe_allow_html=True)
