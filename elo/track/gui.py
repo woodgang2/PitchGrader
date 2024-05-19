@@ -439,9 +439,9 @@ with tab1:
     # st.dataframe (options)
     # st.error (options.index(st.session_state['player_name']))
     default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
-    if default_index == 0:
+    # if default_index == 0:
         # st.success ("default index = 0")
-        st.session_state['player_name'] = ''
+        # st.session_state['player_name'] = ''
     st.success (st.session_state['player_name'])
     st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index, key='player_name')# index=default_index, key='player_name')
     # st.session_state.player_name_update = selected_name
