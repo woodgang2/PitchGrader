@@ -448,13 +448,31 @@ with tab1:
         # st.success ("default index = 0")
         # st.session_state['player_name'] = ''
     # st.success (st.session_state['player_name'])
-    if st.session_state.recently_selected_year == True:
-        st.error ("top flag")
-        st.session_state.recently_selected_year = False
-        st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index)#, key='player_name')# index=default_index, key='player_name')
-    else:
-        st.success ("flag")
-        st.session_state.player_name_update = st.selectbox('Name', options=options)
+    default_index = 0  # Default index
+
+    # Initialize the selection index in session state if it's not already set
+    if 'selection_index' not in st.session_state:
+        st.session_state.selection_index = default_index
+
+    # Check if recently_selected_year flag is true and handle it
+    if st.session_state.get('recently_selected_year', False):
+        st.error("Top flag")
+        # Optionally reset the index here if needed
+        st.session_state.selection_index = default_index
+        st.session_state.recently_selected_year = False  # Reset the flag
+
+    # Display the selectbox using the session state index
+    selected_option = st.selectbox('Name', options=options, index=st.session_state.selection_index)
+
+    # Update the session state to reflect the current index
+    st.session_state.selection_index = options.index(selected_option)
+
+    # Additional logic based on the selection
+    if not st.session_state.get('recently_selected_year', False):
+        st.success("Flag")
+
+    # Store the selection in session state if needed elsewhere
+    st.session_state.player_name_update = selected_option
     # st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
