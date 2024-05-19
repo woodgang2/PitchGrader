@@ -438,24 +438,24 @@ with tab1:
     # st.success (st.session_state['player_name'])
     # st.dataframe (options)
     # st.error (options.index(st.session_state['player_name']))
-    def update_selection():
-        st.session_state['player_name_update'] = new_selection
-
-    # Display the selectbox and update the state when the selection changes
-    new_selection = st.selectbox('Name', options=options, index=options.index(st.session_state['player_name_update']), on_change=update_selection)
-    #, key='player_name')# index=default_index, key='player_name')
-    # st.session_state.player_name_update = selected_name
+    default_index = options.index(st.session_state['player_name_update']) if st.session_state['player_name_update'] in options else 0
+    # if default_index == 0:
+        # st.success ("default index = 0")
+        # st.session_state['player_name'] = ''
+    # st.success (st.session_state['player_name'])
+    selected_name = st.selectbox('Name', options=options, key='player_name')#index=default_index)#, key='player_name')# index=default_index, key='player_name')
+    st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
     # if first_name and last_name:
-    if st.session_state.player_name_update != '':
+    if selected_name != '':
         # display_name = st.empty()
         # display_name.success(f'Player name: {first_name} {last_name}') #want to update this
         # name = last_name + ", " + first_name
         # name_parts = selected_name.split(' - ')[0]
         # name = name_parts.split(' ')[1] + ", " + name_parts.split(' ')[0]
-        name = combined_dict.get(st.session_state.player_name_update, '')
+        name = combined_dict.get(selected_name, '')
         # st.success (team_name)
         df = driver.retrieve_percentiles (name, team_name)
         # df = pitching_percentiles_df [pitching_percentages_df ['Pitcher'] == name]
