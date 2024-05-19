@@ -421,7 +421,7 @@ with tab1:
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
-    # st.success (st.session_state['player_name'])
+    st.success (st.session_state['player_name'],st.session_state.player_name_update)
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
