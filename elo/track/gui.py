@@ -438,7 +438,8 @@ with tab1:
     st.success (st.session_state['player_name'])
     # st.dataframe (options)
     # st.error (options.index(st.session_state['player_name']))
-    default_index = options.index(st.session_state['player_name_update']) if st.session_state['player_name_update'] in options else 0
+    # default_index = options.index(st.session_state['player_name_update']) if st.session_state['player_name_update'] in options else 0
+    st.error (st.session_state['player_name'] in options)
     default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
     # if default_index == 0:
         # st.success ("default index = 0")
