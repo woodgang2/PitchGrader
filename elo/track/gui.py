@@ -436,11 +436,11 @@ with tab1:
     # if 'player_name' not in st.session_state:
         # st.success ("not in session state")
         # st.session_state['player_name'] = options[0]
-    st.success (st.session_state['player_name'])
+    # st.success (st.session_state['player_name'])
     # st.dataframe (options)
     # st.error (options.index(st.session_state['player_name']))
     # default_index = options.index(st.session_state['player_name_update']) if st.session_state['player_name_update'] in options else 0
-    st.error (st.session_state['player_name'] in options)
+    # st.error (st.session_state['player_name'] in options)
     default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
     # if (flag):
     #     st.session_state['player_name'] = ''
@@ -462,19 +462,19 @@ with tab1:
     #     if (st.session_state.no_click) == True:
     #         st.experimental_rerun
     #     st.session_state.selected_player = False
-    st.session_state.player_name_update = st.selectbox('Name', options=options, index = default_index, key='player_name')#, on_change=first_click)# index=default_index, key='player_name')
-    # st.session_state.player_name_update = selected_name
+    selected_name = st.selectbox('Name', options=options, index = default_index, key='player_name')#, on_change=first_click)# index=default_index, key='player_name')
+    st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
     # if first_name and last_name:
-    if st.session_state.player_name_update != '':
+    if selected_name != '':
         # display_name = st.empty()
         # display_name.success(f'Player name: {first_name} {last_name}') #want to update this
         # name = last_name + ", " + first_name
         # name_parts = selected_name.split(' - ')[0]
         # name = name_parts.split(' ')[1] + ", " + name_parts.split(' ')[0]
-        name = combined_dict.get(st.session_state.player_name_update, '')
+        name = combined_dict.get(selected_name, '')
         # st.success (team_name)
         df = driver.retrieve_percentiles (name, team_name)
         # df = pitching_percentiles_df [pitching_percentages_df ['Pitcher'] == name]
