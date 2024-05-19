@@ -435,7 +435,7 @@ with tab1:
     display_name = st.empty()
     # if first_name and last_name:
     if selected_name == '':
-        st.success ('test')
+        st.success ('Pick a name to get started!')
     if selected_name != '':
         # display_name = st.empty()
         # display_name.success(f'Player name: {first_name} {last_name}') #want to update this
