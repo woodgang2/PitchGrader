@@ -428,6 +428,7 @@ with tab1:
     if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
         st.session_state['player_name'] = st.session_state.player_name_update
     elif st.session_state['player_name'] == '':
+        st.success ('')
         pick_random()
         st.session_state['player_name'] = ''
     # st.success (st.session_state['player_name'])
