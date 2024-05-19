@@ -444,7 +444,7 @@ with tab1:
         # st.session_state['player_name'] = ''
     # st.success (st.session_state['player_name'])
     def rerun ():
-        st.experimental_rerun
+        st.experimental_rerun ()
     st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index, on_change = rerun())#, key='player_name')# index=default_index, key='player_name')
     # st.session_state.player_name_update = selected_name
     team_name = ''
