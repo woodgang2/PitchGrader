@@ -454,8 +454,8 @@ with tab1:
     # else:
     #     st.success ("flag")
     #     st.session_state.player_name_update = st.selectbox('Name', options=options)
-    st.session_state.player_name_update = st.selectbox('Name', options=options, index = 0, key = 'player_name')
-    # st.session_state.player_name_update = selected_name
+    selected_name = st.selectbox('Name', options=options, index = 0, key = 'player_name')
+    st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
