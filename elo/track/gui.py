@@ -425,51 +425,16 @@ with tab1:
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
-    if (st.session_state['player_name'] == ''):
-        pick_random ()
-    # if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
-    #     st.error ("proc")
-    #     st.session_state['player_name'] = st.session_state.player_name_update
-    # flag = False
-    # if st.session_state['player_name'] == '':
-    #     pick_random()
-    #     flag = True
-    # st.success (st.session_state['player_name'])
-    # if 'player_name' not in st.session_state:
-        # st.success ("not in session state")
-        # st.session_state['player_name'] = options[0]
-    # st.success (st.session_state['player_name'])
-    # st.dataframe (options)
-    # st.error (options.index(st.session_state['player_name']))
-    # default_index = options.index(st.session_state['player_name_update']) if st.session_state['player_name_update'] in options else 0
-    # st.error (st.session_state['player_name'] in options)
-    default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
-    # if (flag):
-    #     st.session_state['player_name'] = ''
-    #     default_index = 0
-    # if default_index == 0:
-        # st.success ("default index = 0")
-        # st.session_state['player_name'] = ''
-    # st.success (st.session_state['player_name'])
-    # if st.session_state.recently_selected_year == True:
-    #     st.error ("top flag")
-    #     st.session_state.recently_selected_year = False
-    #     st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index)#, key='player_name')# index=default_index, key='player_name')
-    # else:
-    #     st.success ("flag")
-    #     st.session_state.player_name_update = st.selectbox('Name', options=options)
-    # if 'no_click' not in st.session_state:
-    #     st.session_state.no_click = True
-    # def first_click ():
-    #     if (st.session_state.no_click) == True:
-    #         st.experimental_rerun
-    #     st.session_state.selected_player = False
+    # if (st.session_state['player_name'] == ''):
+    #     pick_random ()
     selected_name = st.selectbox('Name', options=options, index = default_index, key='player_name')#, on_change=first_click)# index=default_index, key='player_name')
     st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
     # if first_name and last_name:
+    if selected_name == '':
+        st.success ('test')
     if selected_name != '':
         # display_name = st.empty()
         # display_name.success(f'Player name: {first_name} {last_name}') #want to update this
