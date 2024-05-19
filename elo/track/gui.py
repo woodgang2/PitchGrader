@@ -428,10 +428,10 @@ with tab1:
     # if (st.session_state.player_name_update != '') & (st.session_state['player_name'] == ''):
     #     st.error ("proc")
     #     st.session_state['player_name'] = st.session_state.player_name_update
-    flag = False
-    if st.session_state['player_name'] == '':
-        pick_random()
-        flag = True
+    # flag = False
+    # if st.session_state['player_name'] == '':
+    #     pick_random()
+    #     flag = True
     # st.success (st.session_state['player_name'])
     # if 'player_name' not in st.session_state:
         # st.success ("not in session state")
@@ -442,9 +442,9 @@ with tab1:
     # default_index = options.index(st.session_state['player_name_update']) if st.session_state['player_name_update'] in options else 0
     st.error (st.session_state['player_name'] in options)
     default_index = options.index(st.session_state['player_name']) if st.session_state['player_name'] in options else 0
-    if (flag):
-        st.session_state['player_name'] = ''
-        default_index = 0
+    # if (flag):
+    #     st.session_state['player_name'] = ''
+    #     default_index = 0
     # if default_index == 0:
         # st.success ("default index = 0")
         # st.session_state['player_name'] = ''
