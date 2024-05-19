@@ -448,9 +448,11 @@ with tab1:
         # st.session_state['player_name'] = ''
     # st.success (st.session_state['player_name'])
     if st.session_state.recently_selected_year == True:
+        st.error ("top flag")
         st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index)#, key='player_name')# index=default_index, key='player_name')
         st.session_state.recently_selected_year = False
     else:
+        st.success ("flag")
         st.session_state.player_name_update = st.selectbox('Name', options=options)
     # st.session_state.player_name_update = selected_name
     team_name = ''
