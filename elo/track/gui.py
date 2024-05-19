@@ -453,7 +453,7 @@ with tab1:
     if 'no_click' not in st.session_state:
         st.session_state.no_click = True
     def first_click ():
-        if (st.session_state.no_click):
+        if (st.session_state.no_click) == True:
             st.experimental_rerun
         st.session_state.selected_player = False
     st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index, key='player_name', on_change=first_click)# index=default_index, key='player_name')
