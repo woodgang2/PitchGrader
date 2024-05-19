@@ -435,7 +435,7 @@ with tab1:
     # if 'player_name' not in st.session_state:
         # st.success ("not in session state")
         # st.session_state['player_name'] = options[0]
-    # st.success (st.session_state['player_name'])
+    st.success (st.session_state['player_name'])
     # st.dataframe (options)
     # st.error (options.index(st.session_state['player_name']))
     default_index = options.index(st.session_state['player_name_update']) if st.session_state['player_name_update'] in options else 0
