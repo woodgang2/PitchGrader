@@ -421,7 +421,7 @@ with tab1:
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
     # last_name = st.text_input('Last Name', '', placeholder='Last name', key='last_name')
     # team_name = st.text_input('Team Name', '', placeholder='Team name', key='team_name')
-    st.success (st.session_state['player_name'] + ", " + st.session_state.player_name_update)
+    # st.success (st.session_state['player_name'] + ", " + st.session_state.player_name_update)
     def pick_random ():
         random_option = random.choice(options)
         st.session_state['player_name'] = random_option
@@ -431,7 +431,7 @@ with tab1:
     if st.session_state['player_name'] == '':
         pick_random()
         st.session_state['player_name'] = ''
-    st.success (st.session_state['player_name'])
+    # st.success (st.session_state['player_name'])
     # if 'player_name' not in st.session_state:
         # st.success ("not in session state")
         # st.session_state['player_name'] = options[0]
@@ -442,7 +442,7 @@ with tab1:
     # if default_index == 0:
         # st.success ("default index = 0")
         # st.session_state['player_name'] = ''
-    st.success (st.session_state['player_name'])
+    # st.success (st.session_state['player_name'])
     st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index)#, key='player_name')# index=default_index, key='player_name')
     # st.session_state.player_name_update = selected_name
     team_name = ''
