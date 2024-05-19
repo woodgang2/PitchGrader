@@ -321,7 +321,7 @@ with col2:
 with col3:
     show_changes_placeholder = st.empty()
 col1, col3 = st.columns([4.525, 12])
-if ('recently_selected_year') not in st.session_state:
+if 'recently_selected_year' not in st.session_state:
     st.session_state.recently_selected_year = False
 def changed_year ():
     st.session_state.recently_selected_year = True
