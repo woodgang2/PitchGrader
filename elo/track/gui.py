@@ -321,8 +321,12 @@ with col2:
 with col3:
     show_changes_placeholder = st.empty()
 col1, col3 = st.columns([4.525, 12])
+if ('recently_selected_year') not in st.session_state:
+    st.session_state.recently_selected_year = False
+def changed_year ():
+    st.session_state.recently_selected_year = True
 with col1:
-    year_selected = st.selectbox ('', options = [2024, 2023], index = 0, key = 'year')
+    year_selected = st.selectbox ('', options = [2024, 2023], index = 0, key = 'year', on_change = changed_year ())
 # st.markdown("""
 # <hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
 # """, unsafe_allow_html=True)
@@ -443,19 +447,23 @@ with tab1:
         # st.success ("default index = 0")
         # st.session_state['player_name'] = ''
     # st.success (st.session_state['player_name'])
-    selected_name = st.selectbox('Name', options=options, key='player_name')#index=default_index)#, key='player_name')# index=default_index, key='player_name')
-    st.session_state.player_name_update = selected_name
+    if st.session_state.recently_selected_year == True:
+        st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index)#, key='player_name')# index=default_index, key='player_name')
+        st.session_state.recently_selected_year = False
+    else:
+        st.session_state.player_name_update = st.selectbox('Name', options=options)
+    # st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
     display_name = st.empty()
     # if first_name and last_name:
-    if selected_name != '':
+    if st.session_state.player_name_update != '':
         # display_name = st.empty()
         # display_name.success(f'Player name: {first_name} {last_name}') #want to update this
         # name = last_name + ", " + first_name
         # name_parts = selected_name.split(' - ')[0]
         # name = name_parts.split(' ')[1] + ", " + name_parts.split(' ')[0]
-        name = combined_dict.get(selected_name, '')
+        name = combined_dict.get(st.session_state.player_name_update, '')
         # st.success (team_name)
         df = driver.retrieve_percentiles (name, team_name)
         # df = pitching_percentiles_df [pitching_percentages_df ['Pitcher'] == name]
