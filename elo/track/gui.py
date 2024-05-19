@@ -448,17 +448,17 @@ with tab1:
     # When both names have been entered, display the full name
     display_name = st.empty()
     # if first_name and last_name:
-    if selected_name != '':
+    if st.session_state.player_name_update != '':
         # display_name = st.empty()
         # display_name.success(f'Player name: {first_name} {last_name}') #want to update this
         # name = last_name + ", " + first_name
         # name_parts = selected_name.split(' - ')[0]
         # name = name_parts.split(' ')[1] + ", " + name_parts.split(' ')[0]
-        name = combined_dict.get(selected_name, '')
+        name = combined_dict.get(st.session_state.player_name_update, '')
         # st.success (team_name)
         df = driver.retrieve_percentiles (name, team_name)
         # df = pitching_percentiles_df [pitching_percentages_df ['Pitcher'] == name]
-        if (df.empty) or (selected_name.split(', ')[1] == 'Batter'):
+        if (df.empty) or (st.session_state.player_name_update.split(', ')[1] == 'Batter'):
             df = driver.retrieve_percentiles_batter(name, team_name)
             # df = batting_percentiles_df [batting_percentiles_df ['Batter'] == name]
             if (df.empty):
