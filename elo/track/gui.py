@@ -321,13 +321,8 @@ with col2:
 with col3:
     show_changes_placeholder = st.empty()
 col1, col3 = st.columns([4.525, 12])
-if 'recently_selected_year' not in st.session_state:
-    st.session_state.recently_selected_year = False
-def changed_year ():
-    st.session_state.recently_selected_year = True
-    st.error ("changed year")
 with col1:
-    year_selected = st.selectbox ('', options = [2024, 2023], index = 0, key = 'year', on_change = changed_year)
+    year_selected = st.selectbox ('', options = [2024, 2023], index = 0, key = 'year')#, on_change = changed_year)
 # st.markdown("""
 # <hr style='margin-top: 0.2em; margin-bottom: 1.2em; height: 0.12em; border: none; background-color: #31333F;'>
 # """, unsafe_allow_html=True)
@@ -455,7 +450,12 @@ with tab1:
     # else:
     #     st.success ("flag")
     #     st.session_state.player_name_update = st.selectbox('Name', options=options)
-    st.session_state.player_name_update = st.selectbox('Name', options=options, key='player_name')#index=default_index)#, key='player_name')# index=default_index, key='player_name')
+    # if 'recently_selected_year' not in st.session_state:
+    #     st.session_state.recently_selected_year = False
+    # def changed_year ():
+    #     st.session_state.recently_selected_year = True
+    #     st.error ("changed year")
+    st.session_state.player_name_update = st.selectbox('Name', options=options, index=default_index, key='player_name')# index=default_index, key='player_name')
     # st.session_state.player_name_update = selected_name
     team_name = ''
     # When both names have been entered, display the full name
