@@ -699,7 +699,8 @@ with tab1:
                         return "Long Reliever"
                 pitcher_type = classify_pitcher(log_df.copy ())
                 # display_name.success (f"Pitcher: {first_name} {last_name}, {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
-                display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
+                if (side == ''):
+                    display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
                 df = df.drop(columns=['ExitSpeed', 'PitcherId', 'overall_avg_xRV', 'PitchxRV'])
                 df = df.drop_duplicates ('PitchType')
                 df = df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
