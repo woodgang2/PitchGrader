@@ -690,7 +690,7 @@ with tab1:
                     return "Short Reliever"
                 else:
                     return "Long Reliever"
-            pitcher_type = classify_pitcher(log_df)
+            pitcher_type = classify_pitcher(log_df.copy ())
             # display_name.success (f"Pitcher: {first_name} {last_name}, {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
             display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
             df = df.drop(columns=['ExitSpeed', 'PitcherId'])
