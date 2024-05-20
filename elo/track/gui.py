@@ -680,8 +680,8 @@ with tab1:
             log_df = driver.retrieve_game_logs(name)
             def classify_pitcher(df):
                 total_entries = len(df)
-                high_pitch_count = (df['pitch_count'] > 50).sum() / total_entries
-                low_pitch_count = (df['pitch_count'] < 30).sum() / total_entries
+                high_pitch_count = (df['PitchCount'] > 50).sum() / total_entries
+                low_pitch_count = (df['PitchCount'] < 30).sum() / total_entries
                 if high_pitch_count >= 0.85:
                     return "Starter"
                 elif low_pitch_count >= 0.85:
