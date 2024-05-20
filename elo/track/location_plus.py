@@ -45,6 +45,11 @@ class Focus(enum.Enum):
     Location = 2
     Overall = 3
 
+class Side(enum.Enum):
+    Left = 1
+    Right = 2
+    Both = 3
+
 def calculate_averages(row, averages_df):
     pitcher = row['Pitcher']
     if pitcher in averages_df.index:
@@ -73,8 +78,12 @@ class Driver:
         self.percentiles_df = []
         self.model = xgb.Booster()
         self.year = None
+        self.side = Side.Both
     def set_year (self, year):
         self.year = year
+
+    def set_side (self, side):
+        self.side = side
 
     def read_radar_data (self, new = 0):
         print ("Reading radar data")
@@ -577,10 +586,11 @@ class Driver:
         pitch_counts = self.predictions_df.groupby('Pitcher').size().reset_index(name='TotalPitches')
         pitch_type_counts = self.predictions_df.groupby(['Pitcher', 'PitchType']).size().reset_index(name='PitchTypeCount')
         usage_df = pitch_type_counts.merge(pitch_counts, on='Pitcher')
-        usage_df['Usage'] = (usage_df['PitchTypeCount'] / usage_df['TotalPitches']) #* 100
-        usage_df['Usage'] = usage_df['Usage'].round(2)
-        # Merge the Usage data back into the averages_df
-        averages_df = averages_df.merge(usage_df[['Pitcher', 'PitchType', 'Usage']], on=['Pitcher', 'PitchType'], how='left')
+        if ('Usage' not in averages_df.columns):
+            usage_df['Usage'] = (usage_df['PitchTypeCount'] / usage_df['TotalPitches']) #* 100
+            usage_df['Usage'] = usage_df['Usage'].round(2)
+            # Merge the Usage data back into the averages_df
+            averages_df = averages_df.merge(usage_df[['Pitcher', 'PitchType', 'Usage']], on=['Pitcher', 'PitchType'], how='left')
         # Reorder columns to put Team and Throws after Pitcher and PitchType
         final_columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage'] + \
                         [col for col in averages_df.columns if col not in ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage']]
@@ -588,7 +598,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        table = f'{focus.name}_Probabilities_Pitchers{year}'
+        side = self.side.name
+        if (self.side.name == 'Both'):
+            side = ''
+        table = f'{focus.name}_Probabilities_Pitchers{year}_{side}'
         # table = f'{focus.name}_Probabilities_Pitchers'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(predictions_df) // chunk_size + 1
@@ -627,6 +640,9 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
+        side = self.side.name
+        if (self.side.name == 'Both'):
+            side = ''
         table = f'{focus.name}_Probabilities{year}'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.predictions_df) // chunk_size + 1
@@ -658,7 +674,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}'
+        side = self.side.name
+        if (self.side.name == 'Both'):
+            side = ''
+        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}_{side}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.players_df) // chunk_size + 1
@@ -680,7 +699,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        table = f'Percentiles_{focus.name}_Pitchers{year}'
+        side = self.side.name
+        if (self.side.name == 'Both'):
+            side = ''
+        table = f'Percentiles_{focus.name}_Pitchers{year}_{side}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.percentiles_df) // chunk_size + 1
@@ -1057,7 +1079,7 @@ class Driver:
 
         # Save the best model to a file within the 'Model' directory
         model_filename = os.path.join(model_directory, f'joblib_model_{self.focus.name}_{self.currently_modeling}--{self.current_pitch_class}.json')
-        # model_filename = f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}.json' # or use .bin for binary format
+        # model_filename = f'{self.focus.name}_{self.currently_modeling}"-"{self.current_pitch_class}.json' # or use .bin for binary format
         best_model.save_model(model_filename)
 
         model_directory = "JobLib_Model_Location"
@@ -1090,7 +1112,7 @@ class Driver:
         # Create a new column for each class probability
         for i, class_label in enumerate(class_labels):
             self.current_df[f'Prob_{class_label}'] = probabilities[:, i]
-        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
+        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}"-"{self.current_pitch_class}')
 
     #post prediction flowchart
     # predictions -> Location_Probabilities
@@ -1520,7 +1542,7 @@ class Driver:
         # Create a new column for each class probability
         for i, class_label in enumerate(class_labels):
             self.current_df[f'Prob_{class_label}'] = probabilities[:, i]
-        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
+        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}"-"{self.current_pitch_class}')
 
     def generate_loc_plot (self):
         df = self.predictions_df
@@ -1591,17 +1613,27 @@ class Driver:
         plt.show()
 
     def prune_predictions (self):
-        self.predictions_df['NewDate'] = pd.to_datetime(self.predictions_df['Date'])
+        self.predictions_df['NewDate'] = pd.to_datetime(self.predictions_df['Date'], errors='coerce')
+        self.predictions_df = self.predictions_df.dropna(subset=['NewDate'])
         if (self.year is not None):
             self.predictions_df = self.predictions_df[self.predictions_df['NewDate'].dt.year == self.year]
-            self.predictions_df = self.predictions_df.drop ('NewDate', axis = 1)
+        self.predictions_df = self.predictions_df.drop ('NewDate', axis = 1)
+        if (self.side is not Side.Both):
+            # print (self.predictions_df[['BatterSide']])
+            # print (self.side.name)
+            self.predictions_df = self.predictions_df[self.predictions_df['BatterSide'] == self.side.name]
     def prune_variables (self):
         self.input_variables_df['NewDate'] = pd.to_datetime(self.input_variables_df['Date'])
         if (self.year is not None):
             self.input_variables_df = self.input_variables_df[self.input_variables_df['NewDate'].dt.year == self.year]
         self.input_variables_df = self.input_variables_df.drop ('NewDate', axis = 1)
+        if (self.side is not Side.Both):
+            self.input_variables_df = self.input_variables_df[self.input_variables_df['BatterSide'] == self.side.name]
     def add_command_to_game_logs (self):
-        db_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), f'game_logs.parquet')
+        side = self.side.name
+        if (self.side == Side.Both):
+            side = ''
+        db_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), f'game_logs{side}.parquet')
         df = pd.read_parquet(db_filename)
         # self.read_radar_data()
         # self.radar_df.to_parquet(f'radar_data.parquet', engine='pyarrow', compression='ZSTD')
@@ -1618,7 +1650,7 @@ class Driver:
         df = df.merge(self.players_df[['Pitcher', 'Date', 'Command']], on=['Pitcher', 'Date'], how='left')
         # print (df.head().to_string ())
         # exit (0)
-        df.to_parquet(f'game_logs.parquet', engine='pyarrow', compression='ZSTD')
+        df.to_parquet(f'game_logs{side}.parquet', engine='pyarrow', compression='ZSTD')
 
 # xgb_clf = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
 # xgb.set_config(verbosity=1)
@@ -1808,8 +1840,35 @@ def generate_location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus
         driver.calculate_average_xRVs_by_game()
         driver.add_command_to_game_logs()
 
-    driver.calculate_percentiles()
-    driver.write_percentiles()
+def add_location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus.Location), year = None, side = Side.Both):
+    if (year is None):
+        driver.read_variable_data ()
+        driver.load_predictions ()
+        driver.calculate_run_values_swing()
+        driver.write_predictions ();
+    prune = False
+    if (year is not None):
+        driver.set_year(year)
+        prune = True
+    if (side is not Side.Both):
+        driver.set_side (side)
+        prune = True
+    # driver.load_predictions ()
+    # driver.write_predictions()
+    driver.read_predictions()
+    if (prune == True):
+        driver.prune_predictions()
+    driver.calculate_average_xRVs()
+    driver.write_predictions_players()
+    driver.write_players()
+    if (year is None):
+        driver.read_predictions(Focus.Location)
+        if (prune == True):
+            driver.prune_predictions()
+        driver.calculate_average_xRVs_by_game()
+        driver.add_command_to_game_logs()
+    # driver.calculate_percentiles()
+    # driver.write_percentiles()
     # driver.table_to_excel ("Pitcher_Location_Ratings_20_80_scale")
 
 # train_model()

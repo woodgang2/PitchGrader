@@ -44,6 +44,11 @@ class Focus(enum.Enum):
     Location = 2
     Overall = 3
 
+class Side(enum.Enum):
+    Left = 1
+    Right = 2
+    Both = 3
+
 def calculate_averages(row, averages_df):
     pitcher = row['Pitcher']
     if pitcher in averages_df.index:
@@ -74,9 +79,13 @@ class Driver:
         self.percentiles_df = []
         self.model = xgb.Booster()
         self.year = None
+        self.side = Side.Both
 
     def set_year (self, year):
         self.year = year
+
+    def set_side (self, side):
+        self.side = side
 
     def read_radar_data (self, new = 0):
         print ("Reading radar data")
@@ -196,7 +205,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        table_name = f'{focus.name}_Probabilities{year}'
+        # side = self.side.name
+        # if (self.side.name == 'Both'):
+        #     side = ''
+        table_name = f'{focus.name}_Probabilities{year}'#-{side}'
         conn = sqlite3.connect(f'{self.db_file}')
         total_rows = pd.read_sql_query(f'SELECT COUNT(*) FROM {table_name}', conn).iloc[0, 0]
         chunksize = 10000
@@ -612,18 +624,24 @@ class Driver:
         pitch_counts = self.predictions_df.groupby('Pitcher').size().reset_index(name='TotalPitches')
         pitch_type_counts = self.predictions_df.groupby(['Pitcher', 'PitchType']).size().reset_index(name='PitchTypeCount')
         usage_df = pitch_type_counts.merge(pitch_counts, on='Pitcher')
-        usage_df['Usage'] = (usage_df['PitchTypeCount'] / usage_df['TotalPitches']) #* 100
-        usage_df['Usage'] = usage_df['Usage'].round(2)
-        # Merge the Usage data back into the averages_df
-        averages_df = averages_df.merge(usage_df[['Pitcher', 'PitchType', 'Usage']], on=['Pitcher', 'PitchType'], how='left')
+        # print (usage_df.head ().to_string ())
+        if ('Usage' not in averages_df.columns):
+            usage_df['Usage'] = (usage_df['PitchTypeCount'] / usage_df['TotalPitches']) #* 100
+            usage_df['Usage'] = usage_df['Usage'].round(2)
+            # Merge the Usage data back into the averages_df
+            averages_df = averages_df.merge(usage_df[['Pitcher', 'PitchType', 'Usage']], on=['Pitcher', 'PitchType'], how='left')
         # Reorder columns to put Team and Throws after Pitcher and PitchType
         final_columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage'] + \
                         [col for col in averages_df.columns if col not in ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchType', 'Usage']]
+        # print (averages_df.head ().to_string ())
         predictions_df = averages_df[final_columns]
         year = self.year
         if (self.year is None):
             year = ''
-        table = f'{focus.name}_Probabilities_Pitchers{year}'
+        side = self.side.name
+        if (self.side.name == 'Both'):
+            side = ''
+        table = f'{focus.name}_Probabilities_Pitchers{year}_{side}'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(predictions_df) // chunk_size + 1
         conn = sqlite3.connect(f'{self.db_file}')
@@ -694,7 +712,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}'
+        side = self.side.name
+        if (self.side.name == 'Both'):
+            side = ''
+        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}_{side}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.players_df) // chunk_size + 1
@@ -716,7 +737,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        table = f'Percentiles_{focus.name}_Pitchers{year}'
+        side = self.side.name
+        if (self.side.name == 'Both'):
+            side = ''
+        table = f'Percentiles_{focus.name}_Pitchers{year}_{side}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.percentiles_df) // chunk_size + 1
@@ -1116,7 +1140,7 @@ class Driver:
         # Create a new column for each class probability
         for i, class_label in enumerate(class_labels):
             self.current_df[f'Prob_{class_label}'] = probabilities[:, i]
-        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
+        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}"-"{self.current_pitch_class}')
 
     #post prediction flowchart
     # predictions -> Stuff_Probabilities
@@ -1371,16 +1395,24 @@ class Driver:
     def calculate_average_xRVs_by_game (self):
         self.calculate_average_xRVs_wrapped (game_log = 1)
     def write_players_df_to_parquet (self, name = 'players_df'):
-        self.players_df.to_parquet(f'{name}.parquet', engine='pyarrow', compression='ZSTD')
-        self.read_radar_data()
-        self.radar_df.to_parquet(f'radar_data.parquet', engine='pyarrow', compression='LZ4')
+        side = self.side.name
+        if (self.side == Side.Both):
+            side = ''
+        if (self.side == Side.Both and self.year is None):
+            self.read_radar_data()
+            self.radar_df.to_parquet(f'radar_data.parquet', engine='pyarrow', compression='LZ4')
+            side = ''
+        self.players_df.to_parquet(f'{name}{side}.parquet', engine='pyarrow', compression='ZSTD')
 
     def calculate_percentiles (self, focus=Focus.Stuff):
         year = self.year
         if (self.year is None):
             year = ''
+        side = self.side.name
+        if (self.side.name == 'Both'):
+            side = ''
         print ("Reading player predictions")
-        table_name = f'{focus.name}_Probabilities_Pitchers{year}'
+        table_name = f'{focus.name}_Probabilities_Pitchers{year}_{side}'
         conn = sqlite3.connect(f'{self.db_file}')
         total_rows = pd.read_sql_query(f'SELECT COUNT(*) FROM {table_name}', conn).iloc[0, 0]
         chunksize = 10000
@@ -1536,18 +1568,25 @@ class Driver:
         # Create a new column for each class probability
         for i, class_label in enumerate(class_labels):
             self.current_df.loc[:, f'Prob_{class_label}'] = probabilities[:, i]
-        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
+        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}"-"{self.current_pitch_class}')
 
     def prune_predictions (self):
-        self.predictions_df['NewDate'] = pd.to_datetime(self.predictions_df['Date'])
+        self.predictions_df['NewDate'] = pd.to_datetime(self.predictions_df['Date'], errors='coerce')
+        self.predictions_df = self.predictions_df.dropna(subset=['NewDate'])
         if (self.year is not None):
             self.predictions_df = self.predictions_df[self.predictions_df['NewDate'].dt.year == self.year]
         self.predictions_df = self.predictions_df.drop ('NewDate', axis = 1)
+        if (self.side is not Side.Both):
+            # print (self.predictions_df[['BatterSide']])
+            # print (self.side.name)
+            self.predictions_df = self.predictions_df[self.predictions_df['BatterSide'] == self.side.name]
     def prune_variables (self):
         self.input_variables_df['NewDate'] = pd.to_datetime(self.input_variables_df['Date'])
         if (self.year is not None):
             self.input_variables_df = self.input_variables_df[self.input_variables_df['NewDate'].dt.year == self.year]
         self.input_variables_df = self.input_variables_df.drop ('NewDate', axis = 1)
+        if (self.side is not Side.Both):
+            self.input_variables_df = self.input_variables_df[self.input_variables_df['BatterSide'] == self.side.name]
     def store_probs_LZ4 (self):
         self.predictions_df.to_parquet (f'{self.focus}_Probs.parquet', engine='pyarrow', compression='zstd')
 
@@ -1706,6 +1745,31 @@ def generate_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.St
     driver.write_predictions_players()
     driver.write_players()
     driver.read_predictions(Focus.Stuff)
+    if (year is None):
+        driver.calculate_average_xRVs_by_game()
+        driver.write_players_df_to_parquet('game_logs')
+
+    driver.calculate_percentiles()
+    driver.write_percentiles()
+
+def add_stuff_ratings (driver = Driver ('radar2.db', 'radar_data', Focus.Stuff), year = None, side = Side.Both):
+    driver = Driver ('radar2.db', 'radar_data', Focus.Stuff)
+    prune = False
+    if (year is not None):
+        driver.set_year(year)
+        prune = True
+    if (side is not Side.Both):
+        driver.set_side (side)
+        prune = True
+    driver.read_predictions(Focus.Stuff)
+    if (prune == True):
+        driver.prune_predictions()
+    driver.calculate_average_xRVs()
+    driver.write_predictions_players()
+    driver.write_players()
+    driver.read_predictions(Focus.Stuff)
+    if (prune == True):
+        driver.prune_predictions()
     if (year is None):
         driver.calculate_average_xRVs_by_game()
         driver.write_players_df_to_parquet('game_logs')

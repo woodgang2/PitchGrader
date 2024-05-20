@@ -1,3 +1,5 @@
+import enum
+
 import pandas as pd
 import glob
 import os
@@ -8,10 +10,10 @@ from matplotlib import pyplot as plt
 from sqlalchemy import create_engine
 from tqdm import tqdm
 
-
 class DatabaseDriver:
-    def __init__(self, year = ''):
+    def __init__(self, year = '', side = ''):
         self.year = year
+        self.side = side
         self.df = []
         self.current_dir = os.path.dirname(os.path.realpath(__file__))
         self.db_file = 'radar2.db'
@@ -134,7 +136,7 @@ class DatabaseDriver:
 
     def write_percentages (self):
         db_filename = os.path.join(self.current_dir, 'radar2.db')
-        table = f'Stuff_Probabilities_Pitchers{self.year}'
+        table = f'Stuff_Probabilities_Pitchers{self.year}_{self.side}'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
@@ -203,7 +205,7 @@ class DatabaseDriver:
 
     def write_percentiles (self):
         db_filename = os.path.join(self.current_dir, 'radar2.db')
-        table = f'Percentiles_Stuff_Pitchers{self.year}'
+        table = f'Percentiles_Stuff_Pitchers{self.year}_{self.side}'
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
@@ -318,7 +320,7 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Pitcher_Stuff_Ratings_20_80_scale{self.year}'
+        table = f'Pitcher_Stuff_Ratings_20_80_scale{self.year}_{self.side}'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -333,7 +335,7 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Pitcher_Location_Ratings_20_80_scale{self.year}'
+        table = f'Pitcher_Location_Ratings_20_80_scale{self.year}_{self.side}'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -432,7 +434,7 @@ class DatabaseDriver:
         # self.input_variables_df = averages_df[final_columns]
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(df) // chunk_size + 1
-        conn = sqlite3.connect(f'Data/{self.year}radar{number}.db')
+        conn = sqlite3.connect(f'Data/{self.year}radar{number}{self.side}.db')
         conn.execute(f'DROP TABLE IF EXISTS {table}')
         with tqdm(total=len(df), desc="Writing to database") as pbar:
             for start in range(0, len(df), chunk_size):
@@ -583,8 +585,8 @@ driver = DatabaseDriver ()
 # driver = DatabaseDriver ()
 # driver.write_percentages()
 
-def update_gui (year = ''):
-    driver = DatabaseDriver (year)
+def update_gui (year = '', side = ''):
+    driver = DatabaseDriver (year, side)
     driver.write_percentages_batter()
     driver.write_percentages()
     driver.write_percentiles_bat()
