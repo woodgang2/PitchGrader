@@ -922,7 +922,7 @@ with tab1:
                 if st.session_state.truncate_game_log:
                     log_df['Year'] = pd.to_datetime(log_df.index)
                     log_df = log_df[log_df['Year'].dt.year == year_selected]
-                    log_df.drop (columns = ['Year'])
+                    log_df = log_df.drop (columns = ['Year'])
                 st.empty ()
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 # usage = {col for col in log_df.columns if col.endswith('%')}
