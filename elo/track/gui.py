@@ -684,7 +684,7 @@ with tab1:
                 total_entries = len(df)
                 high_pitch_count = (df['PitchCount'] > 50).sum() / total_entries
                 low_pitch_count = (df['PitchCount'] < 30).sum() / total_entries
-                if high_pitch_count >= 0.85:
+                if high_pitch_count >= 0.65:
                     return "Starter"
                 elif low_pitch_count >= 0.65:
                     return "Short Reliever"
