@@ -160,7 +160,7 @@ def settings_dialog():
     hide_unranked = st.checkbox("Only show qualified teams on leaderboard", value=st.session_state.get("hide_unranked", False), help = 'By default, every team in the database will appear in the list of teams. Selecting this option will hide teams who have thrown too few pitches to qualify for a rank')
     st.session_state.hide_unranked = hide_unranked
     st.write ('Game Log')
-    truncate_game_log = st.checkbox("Only show games from selected year in game log", value=st.session_state.get("hide_unranked", False), help = 'By default, games from each year included in the database are displayed in the game log')
+    truncate_game_log = st.checkbox("Only show games from selected year in game log", value=st.session_state.get("truncate_game_log", False), help = 'By default, games from each year included in the database are displayed in the game log')
     st.session_state.truncate_game_log = truncate_game_log
 
     # Submit button to apply changes
