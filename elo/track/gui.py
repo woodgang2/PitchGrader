@@ -163,6 +163,7 @@ def settings_dialog():
     truncate_game_log = st.checkbox("Only show games from selected year in game log", value=st.session_state.get("truncate_game_log", False), help = 'By default, games from each year included in the database are displayed in the game log')
     st.session_state.truncate_game_log = truncate_game_log
 
+    st.markdown("&#160;")
     # Submit button to apply changes
     if st.button("Save and Exit", type = 'primary'):
         st.success ("Settings Updated!")
