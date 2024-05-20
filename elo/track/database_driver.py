@@ -66,7 +66,10 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Percentiles_Stuff_Pitchers{self.year}'
+        side = f'_{self.side}'
+        if (self.side == ''):
+            side = ''
+        table = f'Percentiles_Stuff_Pitchers{self.year}{side}'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
@@ -105,7 +108,10 @@ class DatabaseDriver:
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
         # db_filename = 'radar2.db'
-        table = f'Stuff_Probabilities_Pitchers{self.year}'
+        side = f'_{self.side}'
+        if (self.side == ''):
+            side = ''
+        table = f'Stuff_Probabilities_Pitchers{self.year}{side}'
         # table = 'Stuff_Probabilities'
         # conn = sqlite3.connect(db_filename)
         query = f'SELECT * FROM {table}'
