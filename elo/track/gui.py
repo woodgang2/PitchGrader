@@ -680,7 +680,7 @@ with tab1:
                 container.dataframe(stuff_df)
                 container.markdown("</div>", unsafe_allow_html=True)
                 desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                log_df = driver.retrieve_game_logs(name)
+                log_df = driver.retrieve_game_logs(name, force_both = True)
                 def classify_pitcher(df):
                     df['Date'] = pd.to_datetime(df['Date'])
                     df = df[df['Date'].dt.year == year_selected]
@@ -891,7 +891,7 @@ with tab1:
                 st.empty ()
                 st.dataframe (stuff_history_df)
                 with st.expander(f"Game Log"):
-                    # log_df = driver.retrieve_game_logs(name)
+                    log_df = driver.retrieve_game_logs(name)
                     rename_columns = {
                         'ChangeUp': 'CH',
                         'Curveball': 'CU',
