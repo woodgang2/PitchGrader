@@ -679,6 +679,7 @@ with tab1:
             desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             log_df = driver.retrieve_game_logs(name)
             def classify_pitcher(df):
+                df = df[df['Date'].contains(year_selected)]
                 total_entries = len(df)
                 high_pitch_count = (df['PitchCount'] > 50).sum() / total_entries
                 low_pitch_count = (df['PitchCount'] < 30).sum() / total_entries
