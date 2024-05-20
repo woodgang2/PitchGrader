@@ -920,7 +920,7 @@ with tab1:
                 actual_order = [col for col in desired_order if col in log_df.columns]
                 log_df = log_df [actual_order]
                 if st.session_state.truncate_game_log:
-                    log_df['Year'] = pd.to_datetime(log_df['Date'])
+                    log_df['Year'] = pd.to_datetime(log_df.index)
                     log_df = log_df[log_df['Year'].dt.year == year_selected]
                     log_df.drop (columns = ['Year'])
                 st.empty ()
