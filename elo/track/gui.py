@@ -677,9 +677,20 @@ with tab1:
             container.dataframe(stuff_df)
             container.markdown("</div>", unsafe_allow_html=True)
             desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-
+            log_df = driver.retrieve_game_logs(name)
+            def classify_pitcher(df):
+                total_entries = len(df)
+                high_pitch_count = (df['pitch_count'] > 50).sum() / total_entries
+                low_pitch_count = (df['pitch_count'] < 30).sum() / total_entries
+                if high_pitch_count >= 0.85:
+                    return "Starter"
+                elif low_pitch_count >= 0.85:
+                    return "Short Reliever"
+                else:
+                    return "Long Reliever"
+            pitcher_type = classify_pitcher(log_df)
             # display_name.success (f"Pitcher: {first_name} {last_name}, {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
-            display_name.success (f"Pitcher: {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
+            display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
             df = df.drop(columns=['ExitSpeed', 'PitcherId'])
             df = df.drop_duplicates ('PitchType')
             df = df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
@@ -867,7 +878,7 @@ with tab1:
             st.empty ()
             st.dataframe (stuff_history_df)
             with st.expander(f"Game Log"):
-                log_df = driver.retrieve_game_logs(name)
+                # log_df = driver.retrieve_game_logs(name)
                 rename_columns = {
                     'ChangeUp': 'CH',
                     'Curveball': 'CU',
