@@ -938,148 +938,6 @@ with tab1:
                 # update = st.button("Update Percentiles", key='update_percentiles', type = 'secondary')
                 # st.write ("Game Log")
 
-                #TODO: this
-                if (not show_changes):
-                    # st.success ("test")
-                    location_df = driver.retrieve_location_team ('All')
-                    location_df = location_df [['Pitcher', 'Overall']]
-                    # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
-                    location_df = location_df.rename(columns={'Overall': 'Command'})
-                    #legacy: manual specified year
-                    driver1 = database_driver.DatabaseDriver(year=2024)
-                    driver12 = database_driver.DatabaseDriver(year=(2023))
-                    stuff_df = driver1.retrieve_stuff_team ('All')
-                    stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
-                    stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
-                    # stuff_df = stuff_df.round(0)
-                    prob_MC_df = driver12.retrieve_percentages_team ('All')
-                    prob_MC_df = prob_MC_df [prob_MC_df ['Pitcher'] != name]
-                    stuff_df = stuff_df.drop_duplicates(subset=['Pitcher'])
-                    stuff_df = stuff_df.set_index('Pitcher')
-                    stuff_df = stuff_df [stuff_df['PitchCount'] >= 80]
-
-                    stuff_df2 = driver12.retrieve_stuff_team ('All')
-                    stuff_df2 = stuff_df2.rename(columns={'Overall': 'Stuff'})
-                    stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
-                    stuff_df2 = stuff_df2.drop_duplicates(subset=['Pitcher'])
-                    stuff_df2 = stuff_df2.set_index('Pitcher')
-                    stuff_df2 = stuff_df2 [stuff_df2['PitchCount'] >= 80]
-
-                    def get_stuff(row):
-                        pitch_type = row['PitchType']
-                        pitcher = row['Pitcher']
-                        if pitcher in stuff_df.index:
-                            return stuff_df.at[pitcher, pitch_type]
-                        return None
-                    # Apply function to prob_MC_df
-                    prob_MC_df['Stuff_new'] = prob_MC_df.apply(get_stuff, axis=1)
-                    stuff_df = stuff_df2
-                    prob_MC_df['Stuff_old'] = prob_MC_df.apply(get_stuff, axis=1)
-                    prob_MC_df = prob_MC_df.dropna(subset=['Stuff_new', 'Stuff_old'])
-                    prob_MC_df ['Stuff_diff'] = prob_MC_df['Stuff_new'] - prob_MC_df['Stuff_old']
-                    # st.empty ()
-                    # prob_MC_df = prob_MC_df [prob_MC_df['PitchCount'] >= 80]
-                    # st.dataframe (prob_MC_df)
-                    # st.dataframe (prob_df)
-                    def calculate_mahalanobis(df_single, df_multi, columns):
-                        scaler = StandardScaler()
-                        scaled_multi_values = scaler.fit_transform(df_multi[columns].values)
-                        scaled_single_value = scaler.transform(df_single[columns].values[0].reshape(1, -1))
-                        cov_matrix = np.cov(scaled_multi_values, rowvar=False)
-                        cov_matrix_inv = inv(cov_matrix)
-                        df_multi['Mahalanobis'] = [mahalanobis(row, scaled_single_value[0], cov_matrix_inv) for row in scaled_multi_values]
-                        return df_multi
-
-                    def compute_weights(df, epsilon=0.01):
-                        # inverse_distances = 1 / (df['Mahalanobis'] + epsilon)
-                        weights = np.exp(-1* df['Mahalanobis'])
-                        normalized_weights = weights / weights.sum()
-                        return normalized_weights
-
-                    def sample_performance(df, num_samples=1000):
-                        weights = compute_weights(df)
-                        sampled_indices = np.random.choice(df.index, size=num_samples, p=weights)
-                        return sampled_indices
-
-                    def monte_carlo_simulation(df, sampled_indices, performance_metrics):
-                        simulation_results = {metric: [] for metric in performance_metrics}
-                        for metric in performance_metrics:
-                            sampled_data = df.loc[sampled_indices, metric]
-                            simulation_results[metric] = {
-                                'mean': np.mean(sampled_data),
-                                'std': np.std(sampled_data),
-                                '5th_percentile': np.percentile(sampled_data, 5),
-                                '75th_percentile': np.percentile(sampled_data, 75),  # Add percentile value
-                                '95th_percentile': np.percentile(sampled_data, 95),
-                                'pos': (sampled_data > 0).mean()
-                            }
-                        return simulation_results
-                    def find_comps(df):
-                        df_sorted = df.sort_values('Mahalanobis')
-                        most_similar = df_sorted.head(3)
-                        least_similar = df_sorted.tail(3)
-                        mean_squared_distance = np.mean(df_sorted['Mahalanobis']**2)
-                        return most_similar, least_similar, mean_squared_distance
-
-                    performance_metrics = ['Stuff_diff']
-                    simulation_results_per_row = []
-                    simulation_results_per_row_std = []
-                    simulation_results_per_row_pos = []
-                    prob_df2 = prob_df [prob_df ['Usage'] > 0.01]
-                    running_average = 0
-                    count = 0
-                    with st.expander(f"Upside Details"):
-                        for index, row in prob_df2.iterrows():
-                            modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak', 'VAA', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'RelHeight', "RelSide", 'Extension', 'VertRelAngle', 'HorzRelAngle'])
-                            sampled_indices = sample_performance(modified_prob_MC_df, 1000000)
-                            simulation_results = monte_carlo_simulation(modified_prob_MC_df, sampled_indices, performance_metrics)
-                            simulation_results_per_row.append(simulation_results['Stuff_diff']['75th_percentile'])
-                            simulation_results_per_row_std.append(simulation_results['Stuff_diff']['std'])
-                            simulation_results_per_row_pos.append(simulation_results['Stuff_diff']['pos'])
-                            most_similar, least_similar, mean_squared_distance = find_comps(modified_prob_MC_df)
-                            count += 1
-                            running_average = (running_average * (count - 1) + mean_squared_distance) / count
-                            st.success (simulation_results)
-
-                        prob_df2['Raw'] = simulation_results_per_row
-                        prob_df2['Vol'] = simulation_results_per_row_std
-                        prob_df2['Outlook'] = simulation_results_per_row_pos
-                        # prob_df2 = prob_df2 [['Usage', 'xRV', 'Raw', 'Vol', 'Outlook']]
-                        # st.dataframe(prob_df2)
-                        # prob_df2.reset_index(inplace=True)
-                        bins = [0, 6, 6.5, 7.5, 15]
-                        labels = ['-', ' ', '+', '++']
-                        prob_df2['Upside'] = pd.cut(prob_df2['Raw'], bins=bins, labels=labels, right=False)
-                        prob_df2 = prob_df2 [['Usage', 'xRV', 'Raw', 'Vol', 'Outlook', 'Upside']]
-                        prob_df2 = round (prob_df2, 2)
-                        st.dataframe(prob_df2)
-                        pivot_df = prob_df2 [['Upside', 'Raw']]
-                        pivot_df = pivot_df.round (2)
-                        pivot_df = pivot_df.T
-                        rename_columns = {
-                            'ChangeUp': 'CH',
-                            'Curveball': 'CU',
-                            'Cutter' : 'FC',
-                            'Four-Seam' : 'FF',
-                            'Sinker' : 'SI',
-                            'Slider' : 'SL',
-                            'Splitter' : 'FS'
-                        }
-                        pivot_df = pivot_df.rename(columns=rename_columns)
-                        # st.dataframe (pivot_df)
-                    # st.dataframe (stuff_df)
-                # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
-                # # Assuming calculate_mahalanobis is defined
-                # st.empty ()
-                # prob_df = prob_df [prob_df.index == 'Four-Seam']
-                # distances = calculate_mahalanobis(prob_MC_df, columns_to_be_compared, prob_df)
-                # weights = compute_weights(distances)
-                # sampled_indices = sample_performance(prob_MC_df, weights)
-                # simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, columns_to_be_compared)
-                # st.table (simulation_results)
-                if not show_changes:
-                    with st.expander(f"Player Comps"):
-                        st.success (f"Unicorn Score: {round (running_average, 2)}")
             tab_B, tab_L, tab_R = st.tabs(["Overall", "vs. Left", "vs. Right"])
             with tab_B:
                 populate_player_profile(driver)
@@ -1088,6 +946,166 @@ with tab1:
             with tab_R:
                 populate_player_profile(driver, 'Right')
             st.empty ()
+            #TODO: this
+            if (not show_changes):
+                driver.remove_side ()
+                prob_df = driver.retrieve_percentages(name)
+                prob_df = prob_df.drop_duplicates ('PitchType')
+                # prob_df = pitching_percentages_df [pitching_percentages_df ['Pitcher'] == name]
+                prob_df = prob_df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
+                cols = [col for col in prob_df.columns if col != 'xRV']
+                cols.insert(2, 'xRV')
+                prob_df = prob_df[cols]
+                prob_df = prob_df.drop(columns=['ExitSpeed', 'PitcherId'])
+                prob_df ['DifferenceRS'] = prob_df [f'DifferenceRS{year}']
+                prob_df ['DifferenceHB'] = prob_df [f'DifferenceHB{year}']
+                prob_df ['DifferenceIVB'] = prob_df [f'DifferenceIVB{year}']
+                prob_df = prob_df.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'EV', 'average_xRV'])
+                prob_df ['xGB%'] = prob_df ['Prob_SoftGB'] + prob_df ['Prob_HardGB']
+                prob_df ['xHH%'] = prob_df ['Prob_HardGB'] + prob_df ['Prob_HardLD'] + prob_df ['Prob_HardFB']
+                prob_df = prob_df.sort_values(by='Usage', ascending = False)
+                prob_df = prob_df.set_index('PitchType')
+                prob_df.index.name = "Pitch Type"
+                # st.success ("test")
+                location_df = driver.retrieve_location_team ('All')
+                location_df = location_df [['Pitcher', 'Overall']]
+                # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
+                location_df = location_df.rename(columns={'Overall': 'Command'})
+                #legacy: manual specified year
+                driver1 = database_driver.DatabaseDriver(year=2024)
+                driver12 = database_driver.DatabaseDriver(year=(2023))
+                stuff_df = driver1.retrieve_stuff_team ('All')
+                stuff_df = stuff_df.rename(columns={'Overall': 'Stuff'})
+                stuff_df = stuff_df.merge (location_df, on = 'Pitcher')
+                # stuff_df = stuff_df.round(0)
+                prob_MC_df = driver12.retrieve_percentages_team ('All')
+                prob_MC_df = prob_MC_df [prob_MC_df ['Pitcher'] != name]
+                stuff_df = stuff_df.drop_duplicates(subset=['Pitcher'])
+                stuff_df = stuff_df.set_index('Pitcher')
+                stuff_df = stuff_df [stuff_df['PitchCount'] >= 80]
+
+                stuff_df2 = driver12.retrieve_stuff_team ('All')
+                stuff_df2 = stuff_df2.rename(columns={'Overall': 'Stuff'})
+                stuff_df2 = stuff_df2.merge (location_df, on = 'Pitcher')
+                stuff_df2 = stuff_df2.drop_duplicates(subset=['Pitcher'])
+                stuff_df2 = stuff_df2.set_index('Pitcher')
+                stuff_df2 = stuff_df2 [stuff_df2['PitchCount'] >= 80]
+
+                def get_stuff(row):
+                    pitch_type = row['PitchType']
+                    pitcher = row['Pitcher']
+                    if pitcher in stuff_df.index:
+                        return stuff_df.at[pitcher, pitch_type]
+                    return None
+                # Apply function to prob_MC_df
+                prob_MC_df['Stuff_new'] = prob_MC_df.apply(get_stuff, axis=1)
+                stuff_df = stuff_df2
+                prob_MC_df['Stuff_old'] = prob_MC_df.apply(get_stuff, axis=1)
+                prob_MC_df = prob_MC_df.dropna(subset=['Stuff_new', 'Stuff_old'])
+                prob_MC_df ['Stuff_diff'] = prob_MC_df['Stuff_new'] - prob_MC_df['Stuff_old']
+                # st.empty ()
+                # prob_MC_df = prob_MC_df [prob_MC_df['PitchCount'] >= 80]
+                # st.dataframe (prob_MC_df)
+                # st.dataframe (prob_df)
+                def calculate_mahalanobis(df_single, df_multi, columns):
+                    scaler = StandardScaler()
+                    scaled_multi_values = scaler.fit_transform(df_multi[columns].values)
+                    scaled_single_value = scaler.transform(df_single[columns].values[0].reshape(1, -1))
+                    cov_matrix = np.cov(scaled_multi_values, rowvar=False)
+                    cov_matrix_inv = inv(cov_matrix)
+                    df_multi['Mahalanobis'] = [mahalanobis(row, scaled_single_value[0], cov_matrix_inv) for row in scaled_multi_values]
+                    return df_multi
+
+                def compute_weights(df, epsilon=0.01):
+                    # inverse_distances = 1 / (df['Mahalanobis'] + epsilon)
+                    weights = np.exp(-1* df['Mahalanobis'])
+                    normalized_weights = weights / weights.sum()
+                    return normalized_weights
+
+                def sample_performance(df, num_samples=1000):
+                    weights = compute_weights(df)
+                    sampled_indices = np.random.choice(df.index, size=num_samples, p=weights)
+                    return sampled_indices
+
+                def monte_carlo_simulation(df, sampled_indices, performance_metrics):
+                    simulation_results = {metric: [] for metric in performance_metrics}
+                    for metric in performance_metrics:
+                        sampled_data = df.loc[sampled_indices, metric]
+                        simulation_results[metric] = {
+                            'mean': np.mean(sampled_data),
+                            'std': np.std(sampled_data),
+                            '5th_percentile': np.percentile(sampled_data, 5),
+                            '75th_percentile': np.percentile(sampled_data, 75),  # Add percentile value
+                            '95th_percentile': np.percentile(sampled_data, 95),
+                            'pos': (sampled_data > 0).mean()
+                        }
+                    return simulation_results
+                def find_comps(df):
+                    df_sorted = df.sort_values('Mahalanobis')
+                    most_similar = df_sorted.head(3)
+                    least_similar = df_sorted.tail(3)
+                    mean_squared_distance = np.mean(df_sorted['Mahalanobis']**2)
+                    return most_similar, least_similar, mean_squared_distance
+
+                performance_metrics = ['Stuff_diff']
+                simulation_results_per_row = []
+                simulation_results_per_row_std = []
+                simulation_results_per_row_pos = []
+                prob_df2 = prob_df [prob_df ['Usage'] > 0.01]
+                running_average = 0
+                count = 0
+                with st.expander(f"Upside Details"):
+                    for index, row in prob_df2.iterrows():
+                        modified_prob_MC_df = calculate_mahalanobis(row.to_frame().T, prob_MC_df, ['RelSpeed', 'InducedVertBreak', 'HorzBreak', 'VAA', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'RelHeight', "RelSide", 'Extension', 'VertRelAngle', 'HorzRelAngle'])
+                        sampled_indices = sample_performance(modified_prob_MC_df, 1000000)
+                        simulation_results = monte_carlo_simulation(modified_prob_MC_df, sampled_indices, performance_metrics)
+                        simulation_results_per_row.append(simulation_results['Stuff_diff']['75th_percentile'])
+                        simulation_results_per_row_std.append(simulation_results['Stuff_diff']['std'])
+                        simulation_results_per_row_pos.append(simulation_results['Stuff_diff']['pos'])
+                        most_similar, least_similar, mean_squared_distance = find_comps(modified_prob_MC_df)
+                        count += 1
+                        running_average = (running_average * (count - 1) + mean_squared_distance) / count
+                        st.success (simulation_results)
+
+                    prob_df2['Raw'] = simulation_results_per_row
+                    prob_df2['Vol'] = simulation_results_per_row_std
+                    prob_df2['Outlook'] = simulation_results_per_row_pos
+                    # prob_df2 = prob_df2 [['Usage', 'xRV', 'Raw', 'Vol', 'Outlook']]
+                    # st.dataframe(prob_df2)
+                    # prob_df2.reset_index(inplace=True)
+                    bins = [0, 6, 6.5, 7.5, 15]
+                    labels = ['-', ' ', '+', '++']
+                    prob_df2['Upside'] = pd.cut(prob_df2['Raw'], bins=bins, labels=labels, right=False)
+                    prob_df2 = prob_df2 [['Usage', 'xRV', 'Raw', 'Vol', 'Outlook', 'Upside']]
+                    prob_df2 = round (prob_df2, 2)
+                    st.dataframe(prob_df2)
+                    pivot_df = prob_df2 [['Upside', 'Raw']]
+                    pivot_df = pivot_df.round (2)
+                    pivot_df = pivot_df.T
+                    rename_columns = {
+                        'ChangeUp': 'CH',
+                        'Curveball': 'CU',
+                        'Cutter' : 'FC',
+                        'Four-Seam' : 'FF',
+                        'Sinker' : 'SI',
+                        'Slider' : 'SL',
+                        'Splitter' : 'FS'
+                    }
+                    pivot_df = pivot_df.rename(columns=rename_columns)
+                    # st.dataframe (pivot_df)
+                # st.dataframe (stuff_df)
+            # columns_to_be_compared = ['RelSpeed', 'InducedVertBreak', 'HorzBreak']
+            # # Assuming calculate_mahalanobis is defined
+            # st.empty ()
+            # prob_df = prob_df [prob_df.index == 'Four-Seam']
+            # distances = calculate_mahalanobis(prob_MC_df, columns_to_be_compared, prob_df)
+            # weights = compute_weights(distances)
+            # sampled_indices = sample_performance(prob_MC_df, weights)
+            # simulation_results = monte_carlo_simulation(prob_MC_df, sampled_indices, columns_to_be_compared)
+            # st.table (simulation_results)
+            if not show_changes:
+                with st.expander(f"Player Comps"):
+                    st.success (f"Unicorn Score: {round (running_average, 2)}")
             # location_df = driver.retrieve_location (name)
             # location_df = location_df [['Pitcher', 'Overall']]
             # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)

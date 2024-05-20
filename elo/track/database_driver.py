@@ -344,7 +344,8 @@ class DatabaseDriver:
 
     def set_side (self, side):
         self.side = side
-
+    def remove_side (self):
+        self.side = ''
 
     def write_stuff (self):
         db_filename = os.path.join(self.current_dir, 'radar2.db')
