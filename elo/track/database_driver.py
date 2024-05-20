@@ -432,7 +432,7 @@ class DatabaseDriver:
         # self.input_variables_df = averages_df[final_columns]
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(df) // chunk_size + 1
-        conn = sqlite3.connect(f'{self.year}radar{number}.db')
+        conn = sqlite3.connect(f'Data/{self.year}radar{number}.db')
         conn.execute(f'DROP TABLE IF EXISTS {table}')
         with tqdm(total=len(df), desc="Writing to database") as pbar:
             for start in range(0, len(df), chunk_size):
@@ -538,6 +538,35 @@ class DatabaseDriver:
         df = df [df['Pitcher'] == player]
         return df
 
+def copy_tables(source_db, target_db, table_names):
+    # Connect to the source database
+    src_conn = sqlite3.connect(source_db)
+    src_cursor = src_conn.cursor()
+
+    # Connect to the target database
+    tgt_conn = sqlite3.connect(target_db)
+    tgt_cursor = tgt_conn.cursor()
+
+    # Iterate over each table name to copy it
+    for table_name in table_names:
+        # Fetch the creation SQL for each table from the source database
+        src_cursor.execute(f"SELECT sql FROM sqlite_master WHERE type='table' AND name='{table_name}'")
+        create_table_sql = src_cursor.fetchone()[0]
+
+        # Create the table in the target database
+        tgt_cursor.execute(create_table_sql)
+        tgt_conn.commit()
+
+        # Copy all data from the source table to the target table
+        src_cursor.execute(f"SELECT * FROM {table_name}")
+        rows = src_cursor.fetchall()
+        placeholders = ', '.join(['?'] * len(rows[0])) if rows else ''
+        tgt_cursor.executemany(f"INSERT INTO {table_name} VALUES ({placeholders})", rows)
+        tgt_conn.commit()
+
+    # Close connections
+    src_conn.close()
+    tgt_conn.close()
 
 
 driver = DatabaseDriver ()
