@@ -61,7 +61,7 @@ class DatabaseDriver:
         self.df.to_parquet(f'radar2.parquet', engine='pyarrow', compression='LZ4')
 
     def retrieve_percentiles (self, player, team = None):
-        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3{self.side}.db')
 
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
@@ -100,7 +100,7 @@ class DatabaseDriver:
             df = df [df['BatterTeam'] == team]
         return df
     def retrieve_percentages (self, player):
-        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
+        db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3{self.side}.db')
 
         # Create a connection to the database
         # conn = sqlite3.connect(db_file)
