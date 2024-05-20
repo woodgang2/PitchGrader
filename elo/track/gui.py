@@ -870,6 +870,7 @@ with tab1:
                 st.empty ()
                 stuff_history_df ['Year'] = stuff_history_df ['Year'].astype(str)
                 stuff_history_df = stuff_history_df.set_index('Year')
+                st.empty ()
                 stuff_history_df.index.name = 'Year'
                 stuff_history_df.rename(columns={'Overall': 'Overall Stuff', 'PitcherTeam' : 'Team'}, inplace=True)
                 st.empty ()
@@ -882,6 +883,7 @@ with tab1:
                 stuff_history_df = stuff_history_df.dropna(axis=1, how = 'all')
                 # stuff_history_df.update(stuff_history_df.filter(like='%').apply(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x))
                 stuff_history_df.loc[:, stuff_history_df.columns.str.contains('%')] = stuff_history_df.filter(like='%').applymap(lambda x: '{:.2f}'.format(x) if pd.notnull(x) else x)
+                st.empty ()
                 colored_columns = ['Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 usage = ['FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
                 colored_columns = [col for col in colored_columns if col in stuff_history_df.columns]
