@@ -704,7 +704,7 @@ with tab1:
             pitcher_type = classify_pitcher(log_df.copy ())
             # display_name.success (f"Pitcher: {first_name} {last_name}, {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
             display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
-            df = df.drop(columns=['ExitSpeed', 'PitcherId'])
+            df = df.drop(columns=['ExitSpeed', 'PitcherId', 'overall_avg_xRV', 'PitchxRV'])
             df = df.drop_duplicates ('PitchType')
             df = df.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
             cols = [col for col in df.columns if col != 'xRV']
@@ -778,6 +778,7 @@ with tab1:
             prob_df ['DifferenceRS'] = prob_df [f'DifferenceRS{year}']
             prob_df ['DifferenceHB'] = prob_df [f'DifferenceHB{year}']
             prob_df ['DifferenceIVB'] = prob_df [f'DifferenceIVB{year}']
+            prob_df = prob_df.drop (columns = ['overall_avg_xRV', 'PitchxRV'])
             if (show_changes):
                 prob_df2 = driver2.retrieve_percentages(name)
                 prob_df2 = prob_df2.drop_duplicates ('PitchType')
