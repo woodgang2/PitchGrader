@@ -828,10 +828,11 @@ with tab1:
                 prob_df = prob_df.sort_values(by='Usage', ascending = False)
                 prob_df = prob_df.set_index('PitchType')
                 prob_df.index.name = "Pitch Type"
-                input_df = st.data_editor(prob_df)
+                # input_df = st.data_editor(prob_df)
+                st.dataframe(prob_df)
                 pitch_types = df['PitchType'].unique().tolist()
                 if (not show_changes):
-                    index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x])
+                    index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x], key = f'type{side}')
                     temp = df['PitchType'].iloc [index]
                     # st.title (temp)
                     def add_custom_css():
