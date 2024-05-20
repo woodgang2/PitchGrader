@@ -778,7 +778,7 @@ with tab1:
             prob_df ['DifferenceRS'] = prob_df [f'DifferenceRS{year}']
             prob_df ['DifferenceHB'] = prob_df [f'DifferenceHB{year}']
             prob_df ['DifferenceIVB'] = prob_df [f'DifferenceIVB{year}']
-            prob_df = prob_df.drop (columns = ['overall_avg_xRV', 'PitchxRV'])
+            prob_df = prob_df.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'EV'])
             if (show_changes):
                 prob_df2 = driver2.retrieve_percentages(name)
                 prob_df2 = prob_df2.drop_duplicates ('PitchType')
@@ -1349,7 +1349,7 @@ with tab2:
                 prob_df_final = prob_df_final[prob_df_final['PitchType'] == pitch_selected]
                 df = df[df['PitchType'] == pitch_selected]
             df = df.drop (columns = ['overall_avg_xRV', 'PitchxRV'])
-            prob_df_final = prob_df_final.drop (columns = ['overall_avg_xRV', 'PitchxRV'])
+            prob_df_final = prob_df_final.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'EV'])
             df = df.set_index(['Pitcher', 'PitchType'])
             prob_df_final = prob_df_final.set_index (['Pitcher', 'PitchType'])
             df_bat = df_bat.set_index ('Batter')
