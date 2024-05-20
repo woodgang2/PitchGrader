@@ -238,7 +238,7 @@ with col3:
 col1, col3 = st.columns([15, 4])
 with col1:
     # st.caption ('Stuff, Location, and Swing Mechanics models for collegiate players')
-    st.write('Database last updated: 5/7/2024')
+    st.write('Database last updated: 5/20/2024')
     st.write('Feel free to send any questions, suggestions or bug reports to gangmu.liu@email.virginia.edu')
 with col3:
     # if st.button("⚙️"):
