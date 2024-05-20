@@ -683,14 +683,14 @@ with tab1:
                 df = df[df['Date'].dt.year == year_selected]
                 total_entries = len(df)
                 high_pitch_count = (df['PitchCount'] >= 50).sum() / total_entries
-                low_pitch_count = (df['PitchCount'] <= 30).sum() / total_entries
-                st.dataframe (df)
-                st.success (high_pitch_count )
-                st.error (low_pitch_count)
-                st.error (len (df))
-                if high_pitch_count >= 0.65:
+                low_pitch_count = (df['PitchCount'] <= 35).sum() / total_entries
+                # st.dataframe (df)
+                # st.success (high_pitch_count )
+                # st.error (low_pitch_count)
+                # st.error (len (df))
+                if high_pitch_count >= 0.5:
                     return "Starter"
-                elif low_pitch_count >= 0.65:
+                elif low_pitch_count >= 0.75:
                     return "Short Reliever"
                 else:
                     return "Long Reliever"
