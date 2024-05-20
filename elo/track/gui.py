@@ -684,6 +684,7 @@ with tab1:
                 total_entries = len(df)
                 high_pitch_count = (df['PitchCount'] > 50).sum() / total_entries
                 low_pitch_count = (df['PitchCount'] < 30).sum() / total_entries
+                st.dataframe (df)
                 st.success (high_pitch_count )
                 st.error (low_pitch_count)
                 if high_pitch_count >= 0.65:
