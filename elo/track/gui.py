@@ -147,14 +147,19 @@ if 'calculate_team_list' not in st.session_state:
 if 'hide_unranked' not in st.session_state:
     st.session_state.hide_unranked = False
 
+if 'truncate_game_log' not in st.session_state:
+    st.session_state.truncate_game_log = False
+
 @st.experimental_dialog("Settings", width="large")
 def settings_dialog():
     # st.header("Settings")
     # Team List
     calculate_team_list = st.checkbox("Calculate team leaderboard", value=st.session_state.get("calculate_team_list", True), help = 'By default, selecting "All" in the team view will proc a calculation of overall team ranks for stuff and command')
     st.session_state.calculate_team_list = calculate_team_list
-    hide_unranked = st.checkbox("Only show qualified teams on leaderboard", value=st.session_state.get("hide_unranked", False), help = 'By default, all teams will appear in the list of teams. Selecting this option will hide teams who have thrown too few pitches to qualify for a rank')
+    hide_unranked = st.checkbox("Only show qualified teams on leaderboard", value=st.session_state.get("hide_unranked", False), help = 'By default, every team in the database will appear in the list of teams. Selecting this option will hide teams who have thrown too few pitches to qualify for a rank')
     st.session_state.hide_unranked = hide_unranked
+    truncate_game_log = st.checkbox("Only show games from selected year in game log", value=st.session_state.get("hide_unranked", False), help = 'By default, games from each year included in the database are displayed in the game log')
+    st.session_state.truncate_game_log = truncate_game_log
 
     # Submit button to apply changes
     if st.button("Save and Exit", type = 'primary'):
@@ -912,6 +917,11 @@ with tab1:
                 desired_order = ['Opposing Team', 'PitchCount', 'Command', 'Stuff', 'FF', 'FF%', 'SI', 'SI%', 'FC', 'FC%', 'SL', 'SL%', 'CU', 'CU%', 'FS', 'FS%', 'CH', 'CH%']
                 actual_order = [col for col in desired_order if col in log_df.columns]
                 log_df = log_df [actual_order]
+                if st.session_state.truncate_game_log:
+                    log_df['Year'] = pd.to_datetime(log_df['Date'])
+                    log_df = log_df[log_df['Year'].dt.year == year_selected]
+                    log_df.drop (columns = ['Year'])
+                st.empty ()
                 colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 # usage = {col for col in log_df.columns if col.endswith('%')}
                 usage = ['FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
