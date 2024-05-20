@@ -1835,7 +1835,7 @@ def process_data ():
 # driver.normalize_VAA()
 # driver.write_radar_data()
 def generate_all ():
-    # process_data()
+    process_data()
     run_model(Focus.Stuff)
     generate_stuff_ratings()
     run_model(Focus.Stuff, year = 2023)

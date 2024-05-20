@@ -1910,7 +1910,7 @@ def generate_all ():
     generate_location_ratings(year = 2023)
     generate_location_ratings(year = 2024)
 
-generate_all()
+# generate_all()
 # generate_location_ratings()
 # driver.read_predictions(Focus.Location)
 # driver.calculate_average_xRVs_by_game()
