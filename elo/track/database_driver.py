@@ -556,7 +556,7 @@ class DatabaseDriver:
         self.write_data()
 
     def retrieve_game_logs (self, player):
-        db_filename = os.path.join(self.current_dir, f'game_logs.parquet')
+        db_filename = os.path.join(self.current_dir, f'Data/game_logs{self.side}.parquet')
         df = pd.read_parquet(db_filename)
         df = df [df['Pitcher'] == player]
         return df
