@@ -1083,6 +1083,7 @@ with tab1:
                 populate_player_profile(driver, 'Left')
             with tab_R:
                 populate_player_profile(driver, 'Right')
+            st.empty ()
             # location_df = driver.retrieve_location (name)
             # location_df = location_df [['Pitcher', 'Overall']]
             # location_df['Overall'] = location_df['Overall'].clip(lower=20, upper=80)
