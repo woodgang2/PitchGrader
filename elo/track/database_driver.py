@@ -61,6 +61,7 @@ class DatabaseDriver:
         self.df.to_parquet(f'radar2.parquet', engine='pyarrow', compression='LZ4')
 
     def retrieve_percentiles (self, player, team = None):
+        #TODO: hacking /{year} in name for some reason
         db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3{self.side}.db')
 
         # Create a connection to the database
@@ -78,9 +79,13 @@ class DatabaseDriver:
         # conn.close()
         if team != '':
             df = df [df['PitcherTeam'] == team]
-        df = df [df['Pitcher'] == player]
+        df1 = df [df['Pitcher'] == player]
+        if (df1.empty):
+            player = f'{player}/{self.year}'
+            df2 = df [df['Pitcher'] == player]
+            return df2
         # print (df)
-        return df
+        return df1
 
     def retrieve_percentiles_batter (self, player, team = None):
         db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
@@ -118,9 +123,14 @@ class DatabaseDriver:
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
         # conn.close()
-        df = df [df['Pitcher'] == player]
+        df1 = df [df['Pitcher'] == player]
+        if (df1.empty):
+            player = f'{player}/{self.year}'
+            df2 = df [df['Pitcher'] == player]
+            return df2
+        # df = df [df['Pitcher'] == player]
         # print (df)
-        return df
+        return df1
 
     def retrieve_percentages_team (self, team):
         db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3.db')
