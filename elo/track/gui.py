@@ -833,7 +833,7 @@ with tab1:
                 st.dataframe(prob_df)
                 pitch_types = df['PitchType'].unique().tolist()
                 if (not show_changes):
-                    index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x], key = f'type{side}')
+                    index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x], index=0, key = f'type{side}')
                     temp = df['PitchType'].iloc [index]
                     # st.title (temp)
                     def add_custom_css():
