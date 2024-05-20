@@ -1351,7 +1351,7 @@ with tab2:
             elif pitch_selected != 'All':
                 prob_df_final = prob_df_final[prob_df_final['PitchType'] == pitch_selected]
                 df = df[df['PitchType'] == pitch_selected]
-            df = df.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'ExitSpeed'])
+            df = df.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'ExitSpeed', 'PitcherId'])
             prob_df_final = prob_df_final.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'EV', 'average_xRV', 'ExitSpeed'])
             prob_df_final ['xGB%'] = prob_df_final ['Prob_SoftGB'] + prob_df_final ['Prob_HardGB']
             prob_df_final ['xHH%'] = prob_df_final ['Prob_HardGB'] + prob_df_final ['Prob_HardLD'] + prob_df_final ['Prob_HardFB']
