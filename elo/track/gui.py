@@ -1174,6 +1174,9 @@ with tab2:
                 return value_df2 - value_df1
             else:
                 return None
+    def cannot_code (row, col):
+        value_df2 = row[f"{col}_df2"]
+        return value_df2
     #Here: Team
     # st.success (st.session_state['team_name'])
     # team_name = st.text_input('Team ID (from trackman)', '', placeholder='Team ID (UVA is VIR_CAV) - Enter "All" to see all players', key='team_name')
@@ -1307,7 +1310,7 @@ with tab2:
                             return str(original)
                 for col in stuff_df1.columns:
                     if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
-                        merged_df [f'{col}_original'] = stuff_df2[col]
+                        merged_df [f'{col}_original'] = cannot_code (row, col)
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                         merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
                 # stuff_df.update(merged_df[stuff_df2.columns])
