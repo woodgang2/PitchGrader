@@ -799,6 +799,8 @@ with tab1:
                     prob_df2 ['DifferenceRS'] = prob_df2 [f'DifferenceRS{year-1}']
                     prob_df2 ['DifferenceHB'] = prob_df2 [f'DifferenceHB{year-1}']
                     prob_df2 ['DifferenceIVB'] = prob_df2 [f'DifferenceIVB{year-1}']
+                    prob_df2 ['xGB%'] = prob_df2 ['Prob_SoftGB'] + prob_df2 ['Prob_HardGB']
+                    prob_df2 ['xHH%'] = prob_df2 ['Prob_HardGB'] + prob_df2 ['Prob_HardLD'] + prob_df2 ['Prob_HardFB']
                     prob_df = prob_df.drop (columns = [f'DifferenceRS{year}', f'DifferenceHB{year}', f'DifferenceIVB{year}', f'DifferenceRS{year-1}', f'DifferenceHB{year-1}', f'DifferenceIVB{year-1}'])
                     prob_df2 = prob_df2.drop (columns = [f'DifferenceRS{year}', f'DifferenceHB{year}', f'DifferenceIVB{year}', f'DifferenceRS{year-1}', f'DifferenceHB{year-1}', f'DifferenceIVB{year-1}'])
                     # st.dataframe (stuff_df2)
@@ -1961,8 +1963,8 @@ with tab2:
                 df = df[df['PitchType'] == pitch_selected]
             df = df.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'ExitSpeed', 'PitcherId'])
             prob_df_final = prob_df_final.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'EV', 'average_xRV', 'ExitSpeed'])
-            prob_df_final ['xGB%'] = prob_df_final ['Prob_SoftGB'] + prob_df_final ['Prob_HardGB']
-            prob_df_final ['xHH%'] = prob_df_final ['Prob_HardGB'] + prob_df_final ['Prob_HardLD'] + prob_df_final ['Prob_HardFB']
+            # prob_df_final ['xGB%'] = prob_df_final ['Prob_SoftGB'] + prob_df_final ['Prob_HardGB']
+            # prob_df_final ['xHH%'] = prob_df_final ['Prob_HardGB'] + prob_df_final ['Prob_HardLD'] + prob_df_final ['Prob_HardFB']
             df = df.set_index(['Pitcher', 'PitchType'])
             prob_df_final = prob_df_final.set_index (['Pitcher', 'PitchType'])
             df_bat = df_bat.set_index ('Batter')
