@@ -598,7 +598,7 @@ with tab1:
                     # st.empty ()
                     # Drop these columns
                     stuff_df = merged_df.drop(columns=columns_to_drop)
-                    st.dataframe (stuff_df)
+                    # st.dataframe (stuff_df)
                     st.empty ()
                     # st.table (stuff_df)
                     # st.dataframe (stuff_df)
@@ -643,8 +643,18 @@ with tab1:
                     'Splitter Usage' : 'FS%'
                 }
                 desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                if (show_changes):
+                    new_order = []
+                    for item in desired_order:
+                            new_order.extend([item, item + '_Change'])
+                    desired_order = new_order
                 if (show_location):
                     desired_order = ['Type', 'PitchCount', 'Overall', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
+                    if (show_changes):
+                        new_order = []
+                        for item in desired_order:
+                            new_order.extend([item, item + '_Change'])
+                        desired_order = new_order
                 stuff_df = stuff_df.rename(columns=rename_columns)
                 st.empty ()
 
