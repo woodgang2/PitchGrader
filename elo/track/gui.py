@@ -894,8 +894,8 @@ with tab1:
                 # st.success (colored_columns)
                 # st.success (usage)
                 pitcher_types = {
-                    2023: pitcher_type2023,
-                    2024: pitcher_type2024
+                    '2023': pitcher_type2023,
+                    '2024': pitcher_type2024
                 }
                 stuff_history_df['Role'] = stuff_history_df.index.map(pitcher_types)
                 new_columns = [stuff_history_df.columns[0]] + ['Role'] + [col for col in stuff_history_df.columns if col != 'Role' and col != stuff_history_df.columns[0]]
