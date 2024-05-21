@@ -150,9 +150,6 @@ if 'show_unranked' not in st.session_state:
 if 'truncate_game_log' not in st.session_state:
     st.session_state.truncate_game_log = False
 
-if 'hide_change' not in st.session_state:
-    st.session_state.hide_change = False
-
 @st.experimental_dialog("Settings", width="large")
 def settings_dialog():
     # st.header("Settings")
@@ -165,9 +162,6 @@ def settings_dialog():
     st.write ('Game Log')
     truncate_game_log = st.checkbox("Only show games from selected year in game log", value=st.session_state.get("truncate_game_log", False), help = 'By default, games from each year included in the database are displayed in the game log')
     st.session_state.truncate_game_log = truncate_game_log
-    st.write ('Show Changes')
-    hide_change = st.checkbox("Hide extra columns when showing changes", value=st.session_state.get("hide_change", False), help = 'By default, show changes creates _Original and _Change columns for sorting')
-    st.session_state.hide_change = hide_change
 
     st.markdown("&#160;")
     # Submit button to apply changes
@@ -580,24 +574,10 @@ with tab1:
                                 return f"{round (original)} ({sign}{round (difference)})"
                             else:
                                 return str(original)
-                    # def calculate_difference(row, col):
-                    #     # This function calculates the difference between the columns in df1 and df2
-                    #     value_df1 = row[f"{col}_df1"]
-                    #     value_df2 = row[f"{col}_df2"]
-                    #     if pd.isna(value_df1) or pd.isna(value_df2):
-                    #         # Returns NaN if either value is NaN
-                    #         return None
-                    #     else:
-                    #         # Check if both values are numbers before attempting to calculate difference
-                    #         if isinstance(value_df1, (int, float)) and isinstance(value_df2, (int, float)):
-                    #             return value_df2 - value_df1
-                    #         else:
-                    #             return None
                     for col in stuff_df1.columns:
                         keyword = 'Type' if show_location else 'Pitcher'
                         if col != keyword and col in stuff_df1.columns:  # Check if column is also in df1
                             merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
-                            # merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
                     # st.dataframe (merged_df)
                     # stuff_df.update(merged_df[stuff_df2.columns])
                     columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
@@ -649,18 +629,8 @@ with tab1:
                     'Splitter Usage' : 'FS%'
                 }
                 desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                # if (show_changes):
-                #     new_order = []
-                #     for item in desired_order:
-                #             new_order.extend([item, item + '_Change'])
-                #     desired_order = new_order
                 if (show_location):
                     desired_order = ['Type', 'PitchCount', 'Overall', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                    # if (show_changes):
-                    #     new_order = []
-                    #     for item in desired_order:
-                    #         new_order.extend([item, item + '_Change'])
-                    #     desired_order = new_order
                 stuff_df = stuff_df.rename(columns=rename_columns)
                 st.empty ()
 
@@ -1161,22 +1131,6 @@ with tab1:
     # st.line_chart(df)
 # else:
 with tab2:
-    def calculate_difference(row, col):
-        # This function calculates the difference between the columns in df1 and df2
-        value_df1 = row[f"{col}_df1"]
-        value_df2 = row[f"{col}_df2"]
-        if pd.isna(value_df1) or pd.isna(value_df2):
-            # Returns NaN if either value is NaN
-            return None
-        else:
-            # Check if both values are numbers before attempting to calculate difference
-            if isinstance(value_df1, (int, float)) and isinstance(value_df2, (int, float)):
-                return value_df2 - value_df1
-            else:
-                return None
-    def cannot_code (row, col):
-        value_df2 = row[f"{col}_df2"]
-        return value_df2
     #Here: Team
     # st.success (st.session_state['team_name'])
     # team_name = st.text_input('Team ID (from trackman)', '', placeholder='Team ID (UVA is VIR_CAV) - Enter "All" to see all players', key='team_name')
@@ -1239,16 +1193,6 @@ with tab2:
                     stuff_df = stuff_df [stuff_df ['PitchCount'] >= min_pitch2]
                 except ValueError:
                     st.error("Invalid number for the minimum pitch count.")
-            rename_columns = {
-                'ChangeUp': 'CH',
-                'Curveball': 'CU',
-                'Cutter' : 'FC',
-                'Four-Seam' : 'FF',
-                'Sinker' : 'SI',
-                'Slider' : 'SL',
-                'Splitter' : 'FS'
-            }
-            stuff_df = stuff_df.rename(columns=rename_columns)
             if (show_changes):
                 location_df = driver2.retrieve_location_team (team_name)
                 location_df = location_df [['Pitcher', 'Overall']]
@@ -1308,35 +1252,26 @@ with tab2:
                                 return f"{round (original)} ({sign}{round (difference)})"
                         else:
                             return str(original)
-                # merged_df2 = merged_df
                 for col in stuff_df1.columns:
-                    if col != 'Pitcher' and col in stuff_df2.columns:  # Check if column is also in df1
-                        # merged_df2 [f'{col}_original'] = merged_df.apply(lambda row:cannot_code (row, col), axis=1)
+                    if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
-                        # merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
                 # stuff_df.update(merged_df[stuff_df2.columns])
-                # merged_df = merged_df2
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
                 # Drop these columns
                 stuff_df = merged_df.drop(columns=columns_to_drop)
                 st.empty ()
-            # rename_columns = {
-            #     'ChangeUp': 'CH',
-            #     'Curveball': 'CU',
-            #     'Cutter' : 'FC',
-            #     'Four-Seam' : 'FF',
-            #     'Sinker' : 'SI',
-            #     'Slider' : 'SL',
-            #     'Splitter' : 'FS'
-            # }
+            rename_columns = {
+                'ChangeUp': 'CH',
+                'Curveball': 'CU',
+                'Cutter' : 'FC',
+                'Four-Seam' : 'FF',
+                'Sinker' : 'SI',
+                'Slider' : 'SL',
+                'Splitter' : 'FS'
+            }
             desired_order = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Command', 'Stuff', 'Fastball%', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-            if (not st.session_state.hide_change):
-                new_order = []
-                for item in desired_order:
-                        new_order.extend([item, item + '_Original', item + '_Change'])
-                desired_order = new_order
-            # stuff_df = stuff_df.rename(columns=rename_columns)
+            stuff_df = stuff_df.rename(columns=rename_columns)
             # stuff_df = pitching_stuff_df [pitching_stuff_df ['PitchingTeam'] == team_name]
             if team_name != 'All':
                 stuff_df = stuff_df.drop (columns = ['PitcherTeam'])
@@ -1363,7 +1298,6 @@ with tab2:
                         #     weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:,.0f}")
                         # st.dataframe (weighted_averages)
                         container_wa = st.container()
-            # st.dataframe (stuff_df)
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns and stuff_df[col].notna().any()]
             if not show_changes and show_color and stuff_df.shape[0] < 1000:
