@@ -1313,7 +1313,7 @@ with tab2:
                     if col != 'Pitcher' and col in stuff_df2.columns:  # Check if column is also in df1
                         # merged_df2 [f'{col}_original'] = merged_df.apply(lambda row:cannot_code (row, col), axis=1)
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
-                        merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
+                        # merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
                 # stuff_df.update(merged_df[stuff_df2.columns])
                 # merged_df = merged_df2
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
