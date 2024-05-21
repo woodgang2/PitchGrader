@@ -705,7 +705,7 @@ with tab1:
                     'Short': 'Short Reliever',
                     'Long': 'Long Reliever'
                 }
-                pitcher_type = pitcher_type2023.applymap (dict) if year_selected == 2023 else pitcher_type2024.applymap (dict)
+                pitcher_type = dict[pitcher_type2023 if year_selected == 2023 else pitcher_type2024]
                 # display_name.success (f"Pitcher: {first_name} {last_name}, {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
                 if (side == ''):
                     display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
