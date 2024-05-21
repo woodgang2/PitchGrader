@@ -157,7 +157,7 @@ def settings_dialog():
     st.write ('Team List')
     calculate_team_list = st.checkbox("Calculate team leaderboard", value=st.session_state.get("calculate_team_list", True), help = 'By default, selecting "All" in the team view will proc a calculation of overall team ranks for stuff and command')
     st.session_state.calculate_team_list = calculate_team_list
-    show_unranked = st.checkbox("Show all on leaderboard", value=st.session_state.get("show_unranked", False), help = 'By default, teams with insufficient pitches recorded in the database are hidden in the leaderboard')
+    show_unranked = st.checkbox("Show all teams on leaderboard", value=st.session_state.get("show_unranked", False), help = 'By default, teams with insufficient pitches recorded in the database are hidden in the leaderboard')
     st.session_state.show_unranked = show_unranked
     st.write ('Game Log')
     truncate_game_log = st.checkbox("Only show games from selected year in game log", value=st.session_state.get("truncate_game_log", False), help = 'By default, games from each year included in the database are displayed in the game log')
