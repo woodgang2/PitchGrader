@@ -1310,7 +1310,7 @@ with tab2:
                             return str(original)
                 for col in stuff_df1.columns:
                     if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
-                        merged_df [f'{col}_original'] = cannot_code (row, col)
+                        merged_df [f'{col}_original'] = merged_df.apply(lambda row:cannot_code (row, col), axis=1)
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
                         merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
                 # stuff_df.update(merged_df[stuff_df2.columns])
