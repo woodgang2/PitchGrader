@@ -559,25 +559,45 @@ with tab1:
                         merged_df = stuff_df1.merge(stuff_df2, on='Pitcher', how='left', suffixes=('_df2', '_df1'))
                         # st.dataframe (merged_df)
                         # st.dataframe (merged_df)
-                    def calculate_and_format(row, col):
-                        original = row[f"{col}_df2"]
-                        if pd.isna(row[f"{col}_df1"]) or pd.isna(row[f"{col}_df2"]):
-                            if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
-                                return str(round (original))
-                            else:
-                                return str (original)
+                    # def calculate_and_format(row, col):
+                    #     original = row[f"{col}_df2"]
+                    #     if pd.isna(row[f"{col}_df1"]) or pd.isna(row[f"{col}_df2"]):
+                    #         if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
+                    #             return str(round (original))
+                    #         else:
+                    #             return str (original)
+                    #     else:
+                    #         # Check if both values are numbers before attempting to calculate difference
+                    #         if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
+                    #             difference = original - row[f"{col}_df1"]
+                    #             sign = '+' if difference >= 0 else ''
+                    #             return f"{round (original)} ({sign}{round (difference)})"
+                    #         else:
+                    #             return str(original)
+                    # for col in stuff_df1.columns:
+                    #     keyword = 'Type' if show_location else 'Pitcher'
+                    #     if col != keyword and col in stuff_df1.columns:  # Check if column is also in df1
+                    #         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+                    def calculate_difference(row, col):
+                        value_df1 = row[f"{col}_df1"]
+                        value_df2 = row[f"{col}_df2"]
+                        if pd.isna(value_df1) or pd.isna(value_df2):
+                            return None
                         else:
-                            # Check if both values are numbers before attempting to calculate difference
-                            if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
-                                difference = original - row[f"{col}_df1"]
-                                sign = '+' if difference >= 0 else ''
-                                return f"{round (original)} ({sign}{round (difference)})"
+                            if isinstance(value_df1, (int, float)) and isinstance(value_df2, (int, float)):
+                                return value_df2 - value_df1
                             else:
-                                return str(original)
+                                return None
+
+                    # Assuming 'merged_df' is your merged DataFrame containing columns from both dataframes
                     for col in stuff_df1.columns:
                         keyword = 'Type' if show_location else 'Pitcher'
-                        if col != keyword and col in stuff_df1.columns:  # Check if column is also in df1
-                            merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+                        if col != keyword and col in stuff_df1.columns:
+                            # Calculate the difference
+                            difference_column = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
+                            # Find the position of the original column and insert the new column right after it
+                            col_position = merged_df.columns.get_loc(f"{col}_df2") + 1
+                            merged_df.insert(loc=col_position, column=f"{col}_Change", value=difference_column)
                     # st.dataframe (merged_df)
                     # stuff_df.update(merged_df[stuff_df2.columns])
                     columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
