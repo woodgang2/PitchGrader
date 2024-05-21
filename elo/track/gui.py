@@ -514,7 +514,6 @@ with tab1:
                     display_static_slider('"Game Power"', df ['NeutralHR'].iloc [index])
 
         else:
-
             def populate_player_profile (driver, side = ''):
                 driver.set_side (side)
                 df = driver.retrieve_percentiles (name, team_name)

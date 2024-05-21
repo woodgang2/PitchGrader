@@ -147,6 +147,8 @@ class DatabaseDriver:
         # conn.close()
         if (team != 'All'):
             df = df [df['PitcherTeam'] == team]
+        df ['xGB%'] = df ['Prob_SoftGB'] + df ['Prob_HardGB']
+        df ['xHH%'] = df ['Prob_HardGB'] + df ['Prob_HardLD'] + df ['Prob_HardFB']
         # print (df)
         return df
 
