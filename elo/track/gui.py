@@ -1359,6 +1359,7 @@ with tab2:
                         #     weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:,.0f}")
                         # st.dataframe (weighted_averages)
                         container_wa = st.container()
+            st.dataframe (stuff_df)
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns and stuff_df[col].notna().any()]
             if not show_changes and show_color and stuff_df.shape[0] < 1000:
