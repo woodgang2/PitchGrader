@@ -518,6 +518,7 @@ with tab1:
                 driver.set_side (side)
                 df = driver.retrieve_percentiles (name, team_name)
                 if (show_changes):
+                    driver.set_side (side)
                     if (show_location):
                         location_df = driver.retrieve_location (name)
                         stuff_df = driver.retrieve_stuff (name)
