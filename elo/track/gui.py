@@ -516,9 +516,10 @@ with tab1:
         else:
             def populate_player_profile (driver, side = ''):
                 driver.set_side (side)
+                driver2.side_side (side)
                 df = driver.retrieve_percentiles (name, team_name)
                 if (show_changes):
-                    driver.set_side (side)
+                    # driver2.side_side (side)
                     if (show_location):
                         location_df = driver.retrieve_location (name)
                         stuff_df = driver.retrieve_stuff (name)
