@@ -897,6 +897,8 @@ with tab1:
                     2023: pitcher_type2023,
                     2024: pitcher_type2024
                 }
+                st.success (pitcher_type2023)
+                st.success (pitcher_type2024)
                 role_series = pd.Series(roles, index=stuff_history_df.index, name='Role')
                 stuff_history_df.insert(2, 'Role', role_series)
                 st.empty ()
