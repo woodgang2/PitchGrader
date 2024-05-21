@@ -150,6 +150,9 @@ if 'show_unranked' not in st.session_state:
 if 'truncate_game_log' not in st.session_state:
     st.session_state.truncate_game_log = False
 
+if 'show_extra_change' not in st.session_state:
+    st.session_state.show_extra_change = False
+
 @st.experimental_dialog("Settings", width="large")
 def settings_dialog():
     # st.header("Settings")
@@ -162,6 +165,9 @@ def settings_dialog():
     st.write ('Game Log')
     truncate_game_log = st.checkbox("Only show games from selected year in game log", value=st.session_state.get("truncate_game_log", False), help = 'By default, games from each year included in the database are displayed in the game log')
     st.session_state.truncate_game_log = truncate_game_log
+    st.write ('Show Changes')
+    show_extra_changes = st.checkbox("Show change from previous years as columns", value=st.session_state.get("show_extra_change", False), help = 'By default, the show changes will put the change in parenthesis. If you want to sort by change, you can flip this on')
+    st.session_state.show_extra_change = show_extra_changes
 
     st.markdown("&#160;")
     # Submit button to apply changes
@@ -1131,6 +1137,18 @@ with tab1:
     # st.line_chart(df)
 # else:
 with tab2:
+    def calculate_difference(row, col):
+        value_df1 = row[f"{col}_df1"]
+        value_df2 = row[f"{col}_df2"]
+        if pd.isna(value_df1) or pd.isna(value_df2):
+            # Returns NaN if either value is NaN
+            return None
+        else:
+            # Check if both values are numbers before attempting to calculate difference
+            if isinstance(value_df1, (int, float)) and isinstance(value_df2, (int, float)):
+                return value_df2 - value_df1
+            else:
+                return None
     #Here: Team
     # st.success (st.session_state['team_name'])
     # team_name = st.text_input('Team ID (from trackman)', '', placeholder='Team ID (UVA is VIR_CAV) - Enter "All" to see all players', key='team_name')
@@ -1187,6 +1205,16 @@ with tab2:
             total_weights = np.sum(stuff_df['PitchCount'])
             weighted_stuff = round (weighted_sum1 / (total_weights+1e-6))
             weighted_command = round (weighted_sum2 / (total_weights+1e-6))
+            rename_columns = {
+                'ChangeUp': 'CH',
+                'Curveball': 'CU',
+                'Cutter' : 'FC',
+                'Four-Seam' : 'FF',
+                'Sinker' : 'SI',
+                'Slider' : 'SL',
+                'Splitter' : 'FS'
+            }
+            stuff_df = stuff_df.rename(columns=rename_columns)
             if min_pitch:  # Check if something was entered
                 try:
                     min_pitch2 = int(min_pitch)
@@ -1203,8 +1231,10 @@ with tab2:
                 stuff_df1 = stuff_df1.rename(columns={'Overall': 'Stuff'})
                 stuff_df1 = stuff_df1.merge (location_df, on = 'Pitcher')
                 stuff_df1['Fastball%'] = stuff_df1['Four-Seam Usage'].fillna(0) + stuff_df1['Sinker Usage'].fillna(0)
-                stuff_df1 = stuff_df1.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
+                # st.dataframe (stuff_df1)
+                # stuff_df1 = stuff_df1.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
                 stuff_df1['Fastball%'] = stuff_df1['Fastball%'].round(2)
+                stuff_df1 = stuff_df1.rename(columns=rename_columns)
                 # stuff_df1 = stuff_df1.round(0)
                 # if min_pitch:  # Check if something was entered
                 #     try:
@@ -1255,23 +1285,18 @@ with tab2:
                 for col in stuff_df1.columns:
                     if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+                        merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
                 # stuff_df.update(merged_df[stuff_df2.columns])
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
                 # Drop these columns
                 stuff_df = merged_df.drop(columns=columns_to_drop)
                 st.empty ()
-            rename_columns = {
-                'ChangeUp': 'CH',
-                'Curveball': 'CU',
-                'Cutter' : 'FC',
-                'Four-Seam' : 'FF',
-                'Sinker' : 'SI',
-                'Slider' : 'SL',
-                'Splitter' : 'FS'
-            }
             desired_order = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Command', 'Stuff', 'Fastball%', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-            stuff_df = stuff_df.rename(columns=rename_columns)
+            def update_order_for_changes(order_list, show_changes):
+                return [subitem for item in order_list for subitem in ([item, item + '_Change'] if item not in ['Pitcher','PitcherTeam', 'PitcherThrows'] else [item])] if st.session_state.show_extra_change else order_list
+            desired_order = update_order_for_changes(desired_order, show_changes)
+            # st.success (desired_order)
             # stuff_df = pitching_stuff_df [pitching_stuff_df ['PitchingTeam'] == team_name]
             if team_name != 'All':
                 stuff_df = stuff_df.drop (columns = ['PitcherTeam'])
@@ -1304,9 +1329,9 @@ with tab2:
                 stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns)#
                 stuff_df = stuff_df.format("{:,.0f}", subset = colored_columns + ['PitchCount'])#.format("{:.2f}", subset=['Fastball%'])
                 stuff_df = stuff_df.format("{:.2f}", subset = ['Fastball%'])
-            else:
-                stuff_df = stuff_df.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
-                stuff_df['Fastball%'] = stuff_df['Fastball%'].round(2)
+            # else:
+            #     stuff_df = stuff_df.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
+            #     stuff_df['Fastball%'] = stuff_df['Fastball%'].round(2)
             container = st.container()
             container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
             container.dataframe(stuff_df)
@@ -1347,6 +1372,7 @@ with tab2:
                 for col in df2.columns:
                     if col != 'T' and col in df.columns:
                         merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+                        merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
                 # stuff_df.update(merged_df[stuff_df2.columns])
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
@@ -1398,6 +1424,10 @@ with tab2:
                 prob_df_final = prob_df_final[prob_df_final['PitchType'] == pitch_selected]
                 df = df[df['PitchType'] == pitch_selected]
             df = df.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'ExitSpeed', 'PitcherId'])
+            if (not st.session_state.show_extra_change):
+                df = df.drop([col for col in df.columns if '_Change' in col], axis=1)
+            else:
+                df = df.drop (columns = ['Pitcher_Change', 'PitcherTeam_Change', 'PitcherThrows_Change', 'PitchType_Change', 'ExitSpeed_Change', 'PitcherId_Change', 'Balls_Change', 'Strikes_Change'])
             prob_df_final = prob_df_final.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'EV', 'average_xRV', 'ExitSpeed'])
             # prob_df_final ['xGB%'] = prob_df_final ['Prob_SoftGB'] + prob_df_final ['Prob_HardGB']
             # prob_df_final ['xHH%'] = prob_df_final ['Prob_HardGB'] + prob_df_final ['Prob_HardLD'] + prob_df_final ['Prob_HardFB']
