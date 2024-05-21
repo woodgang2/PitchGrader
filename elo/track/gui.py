@@ -598,7 +598,7 @@ with tab1:
                     # st.empty ()
                     # Drop these columns
                     stuff_df = merged_df.drop(columns=columns_to_drop)
-                    # st.dataframe (stuff_df)
+                    st.dataframe (stuff_df)
                     st.empty ()
                     # st.table (stuff_df)
                     # st.dataframe (stuff_df)
