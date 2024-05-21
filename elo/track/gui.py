@@ -893,14 +893,13 @@ with tab1:
                 usage = [col for col in usage if col in stuff_history_df.columns]
                 # st.success (colored_columns)
                 # st.success (usage)
-                roles = {
+                pitcher_types = {
                     2023: pitcher_type2023,
                     2024: pitcher_type2024
                 }
-                st.success (pitcher_type2023)
-                st.success (pitcher_type2024)
-                role_series = pd.Series(roles, index=stuff_history_df.index, name='Role')
-                stuff_history_df.insert(2, 'Role', role_series)
+                stuff_history_df['Role'] = stuff_history_df['Year'].map(pitcher_types)
+                new_columns = [stuff_history_df.columns[0]] + ['Role'] + [col for col in stuff_history_df.columns if col != 'Role' and col != stuff_history_df.columns[0]]
+                stuff_history_df = stuff_history_df[new_columns]
                 st.empty ()
                 stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:,.0f}", subset = colored_columns + ['PitchCount'])
                 st.empty ()
