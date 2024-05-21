@@ -717,7 +717,7 @@ with tab1:
                 st.empty ()
                 if (show_changes):
                     df2 = driver2.retrieve_percentiles (name, team_name)
-                    df2 = df2.drop(columns=['ExitSpeed', 'PitcherId'])
+                    # df2 = df2.drop(columns=['ExitSpeed', 'PitcherId'])
                     df2 = df2.drop_duplicates ('PitchType')
                     df2 = df2.drop (columns = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'Balls', 'Strikes'])
                     df2 = df2.drop(columns=['ExitSpeed', 'PitcherId', 'overall_avg_xRV', 'PitchxRV'])
