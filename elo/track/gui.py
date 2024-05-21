@@ -692,15 +692,20 @@ with tab1:
                     # st.error (low_pitch_count)
                     # st.error (len (df))
                     if high_pitch_count >= 0.65:
-                        return "Starter"
+                        return "Start"
                     elif low_pitch_count >= 0.75:
-                        return "Short Reliever"
+                        return "Short"
                     else:
-                        return "Long Reliever"
+                        return "Long"
                 #year manual hack
                 pitcher_type2023 = classify_pitcher(log_df.copy (), 2023)
                 pitcher_type2024 = classify_pitcher(log_df.copy (), 2024)
-                pitcher_type = pitcher_type2023 if year_selected == 2023 else pitcher_type2024
+                dict = {
+                    'Start': 'Starter',
+                    'Short': 'Short Reliever',
+                    'Long': 'Long Reliever'
+                }
+                pitcher_type = pitcher_type2023.applymap (dict) if year_selected == 2023 else pitcher_type2024.applymap (dict)
                 # display_name.success (f"Pitcher: {first_name} {last_name}, {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
                 if (side == ''):
                     display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
