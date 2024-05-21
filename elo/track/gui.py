@@ -168,6 +168,7 @@ def settings_dialog():
     st.write ('Show Changes')
     show_extra_changes = st.checkbox("Show change from previous years as columns", value=st.session_state.get("show_extra_change", False), help = 'By default, the show changes will put the change in parenthesis. If you want to sort by change, you can flip this on')
     st.session_state.show_extra_change = show_extra_changes
+    st.empty ()
 
     st.markdown("&#160;")
     # Submit button to apply changes
