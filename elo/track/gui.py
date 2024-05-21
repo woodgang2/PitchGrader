@@ -893,14 +893,14 @@ with tab1:
                 usage = [col for col in usage if col in stuff_history_df.columns]
                 # st.success (colored_columns)
                 # st.success (usage)
-                stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:,.0f}", subset = colored_columns + ['PitchCount'])
-                st.empty ()
                 roles = {
                     2023: pitcher_type2023,
                     2024: pitcher_type2024
                 }
                 role_series = pd.Series(roles, name='Role')
-                stuff_history_df.insert(2, 'Role', role_series)
+                stuff_history_df = stuff_history_df.insert(2, 'Role', role_series)
+                st.empty ()
+                stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:,.0f}", subset = colored_columns + ['PitchCount'])
                 st.empty ()
                 st.dataframe (stuff_history_df)
                 with st.expander(f"Game Log"):
