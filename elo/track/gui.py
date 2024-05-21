@@ -681,9 +681,9 @@ with tab1:
                 container.markdown("</div>", unsafe_allow_html=True)
                 desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 log_df = driver.retrieve_game_logs(name, force_both = True)
-                def classify_pitcher(df):
+                def classify_pitcher(df, year = year_selected):
                     df['Date'] = pd.to_datetime(df['Date'])
-                    df = df[df['Date'].dt.year == year_selected]
+                    df = df[df['Date'].dt.year == year]
                     total_entries = len(df)
                     high_pitch_count = (df['PitchCount'] >= 50).sum() / total_entries
                     low_pitch_count = (df['PitchCount'] <= 40).sum() / total_entries
@@ -697,7 +697,10 @@ with tab1:
                         return "Short Reliever"
                     else:
                         return "Long Reliever"
-                pitcher_type = classify_pitcher(log_df.copy ())
+                #year manual hack
+                pitcher_type2023 = classify_pitcher(log_df.copy (), 2023)
+                pitcher_type2024 = classify_pitcher(log_df.copy (), 2024)
+                pitcher_type = pitcher_type2023 if year_selected == 2023 else pitcher_type2024
                 # display_name.success (f"Pitcher: {first_name} {last_name}, {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
                 if (side == ''):
                     display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
@@ -891,6 +894,13 @@ with tab1:
                 # st.success (colored_columns)
                 # st.success (usage)
                 stuff_history_df = stuff_history_df.style.applymap(color_values, subset = colored_columns).format("{:,.0f}", subset = colored_columns + ['PitchCount'])
+                st.empty ()
+                roles = {
+                    2023: pitcher_type2023,
+                    2024: pitcher_type2024
+                }
+                role_series = pd.Series(roles, name='Role')
+                stuff_history_df.insert(2, 'Role', role_series)
                 st.empty ()
                 st.dataframe (stuff_history_df)
                 with st.expander(f"Game Log"):
