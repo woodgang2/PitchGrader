@@ -1326,7 +1326,7 @@ with tab2:
             #     'Splitter' : 'FS'
             # }
             desired_order = ['Pitcher', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Command', 'Stuff', 'Fastball%', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-            if (not st.session_state.hide_changes):
+            if (not st.session_state.hide_change):
                 new_order = []
                 for item in desired_order:
                         new_order.extend([item, item + '_Original'])
