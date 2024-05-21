@@ -574,10 +574,24 @@ with tab1:
                                 return f"{round (original)} ({sign}{round (difference)})"
                             else:
                                 return str(original)
+                    def calculate_difference(row, col):
+                        # This function calculates the difference between the columns in df1 and df2
+                        value_df1 = row[f"{col}_df1"]
+                        value_df2 = row[f"{col}_df2"]
+                        if pd.isna(value_df1) or pd.isna(value_df2):
+                            # Returns NaN if either value is NaN
+                            return None
+                        else:
+                            # Check if both values are numbers before attempting to calculate difference
+                            if isinstance(value_df1, (int, float)) and isinstance(value_df2, (int, float)):
+                                return value_df2 - value_df1
+                            else:
+                                return None
                     for col in stuff_df1.columns:
                         keyword = 'Type' if show_location else 'Pitcher'
                         if col != keyword and col in stuff_df1.columns:  # Check if column is also in df1
                             merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
+                            merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
                     # st.dataframe (merged_df)
                     # stuff_df.update(merged_df[stuff_df2.columns])
                     columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
