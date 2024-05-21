@@ -19,8 +19,8 @@ def calculate_grades ():
 def add_sides ():
     start_year = 2023
     end_year = 2024
-    # stuff_plus.add_stuff_ratings(side = stuff_plus.Side.Left)
-    # stuff_plus.add_stuff_ratings(side = stuff_plus.Side.Right)
+    stuff_plus.add_stuff_ratings(side = stuff_plus.Side.Left)
+    stuff_plus.add_stuff_ratings(side = stuff_plus.Side.Right)
     location_plus.add_location_ratings(side = location_plus.Side.Left)
     location_plus.add_location_ratings(side = location_plus.Side.Right)
     database_driver.update_gui(side = 'Left')
