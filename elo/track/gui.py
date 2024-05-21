@@ -691,7 +691,7 @@ with tab1:
                     # st.success (high_pitch_count )
                     # st.error (low_pitch_count)
                     # st.error (len (df))
-                    if high_pitch_count >= 0.65:
+                    if high_pitch_count >= 0.5:
                         return "Start"
                     elif low_pitch_count >= 0.75:
                         return "Short"
