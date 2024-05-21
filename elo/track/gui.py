@@ -643,18 +643,18 @@ with tab1:
                     'Splitter Usage' : 'FS%'
                 }
                 desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                if (show_changes):
-                    new_order = []
-                    for item in desired_order:
-                            new_order.extend([item, item + '_Change'])
-                    desired_order = new_order
+                # if (show_changes):
+                #     new_order = []
+                #     for item in desired_order:
+                #             new_order.extend([item, item + '_Change'])
+                #     desired_order = new_order
                 if (show_location):
                     desired_order = ['Type', 'PitchCount', 'Overall', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
-                    if (show_changes):
-                        new_order = []
-                        for item in desired_order:
-                            new_order.extend([item, item + '_Change'])
-                        desired_order = new_order
+                    # if (show_changes):
+                    #     new_order = []
+                    #     for item in desired_order:
+                    #         new_order.extend([item, item + '_Change'])
+                    #     desired_order = new_order
                 stuff_df = stuff_df.rename(columns=rename_columns)
                 st.empty ()
 
