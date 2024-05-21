@@ -1329,8 +1329,7 @@ with tab2:
             if (not st.session_state.hide_change):
                 new_order = []
                 for item in desired_order:
-                        new_order.extend([item, item + '_Original'])
-                        new_order.extend([item, item + '_Change'])
+                        new_order.extend([item, item + '_Original', item + '_Change'])
                 desired_order = new_order
             # stuff_df = stuff_df.rename(columns=rename_columns)
             # stuff_df = pitching_stuff_df [pitching_stuff_df ['PitchingTeam'] == team_name]
@@ -1359,7 +1358,7 @@ with tab2:
                         #     weighted_averages = weighted_averages.style.applymap(color_values, subset = colored_columns).format("{:,.0f}")
                         # st.dataframe (weighted_averages)
                         container_wa = st.container()
-            st.dataframe (stuff_df)
+            # st.dataframe (stuff_df)
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns and stuff_df[col].notna().any()]
             if not show_changes and show_color and stuff_df.shape[0] < 1000:
