@@ -1427,7 +1427,7 @@ with tab2:
             df = df.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'ExitSpeed', 'PitcherId'])
             if (not st.session_state.show_extra_change):
                 df = df.drop([col for col in df.columns if '_Change' in col], axis=1)
-            else:
+            elif (show_changes):
                 df = df.drop (columns = ['Pitcher_Change', 'PitcherTeam_Change', 'PitcherThrows_Change', 'PitchType_Change', 'ExitSpeed_Change', 'PitcherId_Change', 'Balls_Change', 'Strikes_Change'])
             prob_df_final = prob_df_final.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'EV', 'average_xRV', 'ExitSpeed'])
             # prob_df_final ['xGB%'] = prob_df_final ['Prob_SoftGB'] + prob_df_final ['Prob_HardGB']
