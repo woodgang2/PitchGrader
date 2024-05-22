@@ -1482,9 +1482,9 @@ with tab2:
                     valid_pitchers = stuff_df.index
                     prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
                     if not show_changes:
-                        mask = df.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
+                        mask = prob_df_final.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
                     else:
-                        mask = df.apply(lambda row: (stuff_df_copy.at[row['Pitcher'], row['PitchType']] != 'nan'), axis=1)
+                        mask = prob_df_final.apply(lambda row: (stuff_df_copy.at[row['Pitcher'], row['PitchType']] != 'nan'), axis=1)
                     prob_df_final = prob_df_final[mask]
 
                     reverse_rename = {v: k for k, v in rename.items()}
