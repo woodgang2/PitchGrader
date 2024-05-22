@@ -1167,7 +1167,11 @@ with tab2:
     # st.success (team_name)
     st.session_state.team_name_update = team_name
     # st.success ('n1')
-    min_pitch = st.text_input('Minimum Pitch Count', '', placeholder='Pitch Count', key='min_pitch')
+    col1, col2 = st.columns(2)
+    with col1:
+        min_pitch = st.text_input('Minimum Pitch Count (By Pitcher)', '', placeholder='Total Pitch Count', key='min_pitch')
+    with col2:
+        min_pitch_individual = st.text_input('Minimum Pitch Count (By Pitch Type)', '', placeholder='Individual Pitch Count', key='min_pitch_individual')
     st.empty ()
     display_name = st.empty()
     # st.success (team_name)
@@ -1215,11 +1219,29 @@ with tab2:
                 'Slider' : 'SL',
                 'Splitter' : 'FS'
             }
-            stuff_df = stuff_df.rename(columns=rename_columns)
+            # stuff_df = stuff_df.rename(columns=rename_columns)
+            for old_name, new_name in rename_columns.items():
+                stuff_df.columns = [col.replace(old_name, new_name) for col in stuff_df.columns]
+            # st.dataframe (stuff_df)
             if min_pitch:  # Check if something was entered
                 try:
                     min_pitch2 = int(min_pitch)
                     stuff_df = stuff_df [stuff_df ['PitchCount'] >= min_pitch2]
+                except ValueError:
+                    st.error("Invalid number for the minimum pitch count.")
+            if (min_pitch_individual):
+                try:
+                    min_pitch3 = int(min_pitch_individual)
+                    stuff_df = stuff_df[stuff_df['PitchCount'] >= min_pitch3]
+                    for col in stuff_df.columns:
+                        if col.endswith('Usage'):
+                            pitch_type = col.replace(' Usage', '')  # Get the corresponding pitch type column name
+                            effective_usage = stuff_df['PitchCount'] * stuff_df[col]
+                            stuff_df.loc[effective_usage < min_pitch3, pitch_type] = None
+                    temp = stuff_df [['Pitcher', 'FF', 'SI', 'FC', 'SL', 'CU', 'CH', 'FS']]
+                    temp = temp.set_index ('Pitcher')
+                    temp = temp.dropna(thresh=1)
+                    stuff_df = stuff_df[stuff_df['Pitcher'].isin(temp.index)]
                 except ValueError:
                     st.error("Invalid number for the minimum pitch count.")
             if (show_changes):
@@ -1235,7 +1257,9 @@ with tab2:
                 # st.dataframe (stuff_df1)
                 # stuff_df1 = stuff_df1.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
                 stuff_df1['Fastball%'] = stuff_df1['Fastball%'].round(2)
-                stuff_df1 = stuff_df1.rename(columns=rename_columns)
+                # stuff_df1 = stuff_df1.rename(columns=rename_columns)
+                for old_name, new_name in rename_columns.items():
+                    stuff_df1.columns = [col.replace(old_name, new_name) for col in stuff_df1.columns]
                 # stuff_df1 = stuff_df1.round(0)
                 # if min_pitch:  # Check if something was entered
                 #     try:
@@ -1326,6 +1350,7 @@ with tab2:
                         container_wa = st.container()
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns and stuff_df[col].notna().any()]
+            stuff_df_copy = stuff_df.copy ()
             if not show_changes and show_color and stuff_df.shape[0] < 1000:
                 stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns)#
                 stuff_df = stuff_df.format("{:,.0f}", subset = colored_columns + ['PitchCount'])#.format("{:.2f}", subset=['Fastball%'])
@@ -1391,6 +1416,28 @@ with tab2:
                     df = df[df['Pitcher'].isin(valid_pitchers)]
                 except ValueError:
                     print ('hey')
+            if min_pitch_individual:  # Check if something was entered
+                try:
+                    #asdf
+                    rename = {
+                        'ChangeUp': 'CH',
+                        'Curveball': 'CU',
+                        'Cutter' : 'FC',
+                        'Four-Seam' : 'FF',
+                        'Sinker' : 'SI',
+                        'Slider' : 'SL',
+                        'Splitter' : 'FS',
+                    }
+                    df['PitchType'] = df['PitchType'].replace(rename)
+                    valid_pitchers = stuff_df.index
+                    df = df[df['Pitcher'].isin(valid_pitchers)]
+                    mask = df.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
+                    df = df[mask]
+
+                    reverse_rename = {v: k for k, v in rename.items()}
+                    df['PitchType'] = df['PitchType'].replace(reverse_rename)
+                except ValueError:
+                    print ('hey')
             cols = [col for col in df.columns if col != 'xRV']
             cols.insert(5, 'xRV')
             df = df[cols]
@@ -1403,6 +1450,27 @@ with tab2:
                 try:
                     valid_pitchers = stuff_df.index
                     prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
+                except ValueError:
+                    print ('hey')
+            if min_pitch_individual:  # Check if something was entered
+                try:
+                    rename = {
+                        'ChangeUp': 'CH',
+                        'Curveball': 'CU',
+                        'Cutter' : 'FC',
+                        'Four-Seam' : 'FF',
+                        'Sinker' : 'SI',
+                        'Slider' : 'SL',
+                        'Splitter' : 'FS',
+                    }
+                    prob_df_final['PitchType'] = prob_df_final['PitchType'].replace(rename)
+                    valid_pitchers = stuff_df.index
+                    prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
+                    mask = prob_df_final.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
+                    prob_df_final = prob_df_final[mask]
+
+                    reverse_rename = {v: k for k, v in rename.items()}
+                    prob_df_final['PitchType'] = prob_df_final['PitchType'].replace(reverse_rename)
                 except ValueError:
                     print ('hey')
             cols = [col for col in prob_df_final.columns if col != 'xRV']
