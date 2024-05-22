@@ -1355,6 +1355,9 @@ with tab2:
                 stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns)#
                 stuff_df = stuff_df.format("{:,.0f}", subset = colored_columns + ['PitchCount'])#.format("{:.2f}", subset=['Fastball%'])
                 stuff_df = stuff_df.format("{:.2f}", subset = ['Fastball%'])
+            elif (not show_changes):
+                stuff_df = stuff_df.apply(lambda x: round(x, 0) if pd.api.types.is_numeric_dtype(x) and x.name != 'Fastball%' else x)
+                stuff_df['Fastball%'] = stuff_df['Fastball%'].round(2)
             # else:
             #     stuff_df = stuff_df.apply(lambda x: round(x, 0) if x.name != 'Fastball%' else x)
             #     stuff_df['Fastball%'] = stuff_df['Fastball%'].round(2)
