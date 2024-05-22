@@ -1184,13 +1184,13 @@ with tab2:
             formatted_original = original.round(2).astype(str)
             formatted_difference = difference.round(2).apply(lambda x: f"+{x}" if x >= 0 else str(x))
         else:
-            formatted_original = original.round().astype(str)
+            formatted_original = original.round().apply(lambda x: f"{x:04}" if x < 10 else str(x))
             formatted_difference = difference.round().apply(lambda x: f"+{x}" if x >= 0 else str(x))
 
         # Combine original and difference with condition
         result = pd.Series(np.where(valid_numbers,
                                     formatted_original + " (" + formatted_difference + ")",
-                                    original.astype(str)),
+                                    formatted_original),
                            index=df.index)
 
         # Handle NaN cases separately if needed
