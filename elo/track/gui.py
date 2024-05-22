@@ -1150,6 +1150,53 @@ with tab2:
                 return value_df2 - value_df1
             else:
                 return None
+    def calculate_differences_vectorized(df, col):
+        # Columns to compare
+        col1 = f"{col}_df1"
+        col2 = f"{col}_df2"
+
+        # Ensure the values are numeric for calculation and non-NaN
+        mask_numeric_and_notna = df[col1].notna() & df[col2].notna() & \
+                                 df[col1].apply(lambda x: isinstance(x, (int, float))) & \
+                                 df[col2].apply(lambda x: isinstance(x, (int, float)))
+
+        # Calculate differences where both entries are numbers and not NaN
+        differences = np.where(mask_numeric_and_notna, df[col2] - df[col1], None)
+
+        return pd.Series(differences, index=df.index)
+    def calculate_and_format_vectorized(df, col):
+        original_col = f"{col}_df2"
+        baseline_col = f"{col}_df1"
+
+        # Extract columns
+        original = df[original_col]
+        baseline = df[baseline_col]
+
+        # Compute differences
+        difference = original - baseline
+
+        # Determine which entries are non-NaN numbers
+        valid_entries = original.notna() & baseline.notna()
+        valid_numbers = valid_entries & original.apply(lambda x: isinstance(x, (int, float)))
+
+        # Formatting results
+        if col == 'Usage':
+            formatted_original = original.round(2).astype(str)
+            formatted_difference = difference.round(2).apply(lambda x: f"+{x}" if x >= 0 else str(x))
+        else:
+            formatted_original = original.round().astype(str)
+            formatted_difference = difference.round().apply(lambda x: f"+{x}" if x >= 0 else str(x))
+
+        # Combine original and difference with condition
+        result = pd.Series(np.where(valid_numbers,
+                                    formatted_original + " (" + formatted_difference + ")",
+                                    original.astype(str)),
+                           index=df.index)
+
+        # Handle NaN cases separately if needed
+        result = result.where(original.notna(), original.astype(str))
+
+        return result
     #Here: Team
     # st.success (st.session_state['team_name'])
     # team_name = st.text_input('Team ID (from trackman)', '', placeholder='Team ID (UVA is VIR_CAV) - Enter "All" to see all players', key='team_name')
@@ -1307,10 +1354,13 @@ with tab2:
                                 return f"{round (original)} ({sign}{round (difference)})"
                         else:
                             return str(original)
+                merged_df ['PitcherTeam'] = merged_df ['PitcherTeam_df2']
+                merged_df ['PitcherThrows'] = merged_df ['PitcherThrows_df2']
                 for col in stuff_df1.columns:
-                    if col != 'Pitcher' and col in stuff_df1.columns:  # Check if column is also in df1
-                        merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
-                        merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
+                    if col not in ['Pitcher','PitcherTeam', 'PitcherThrows'] and col in stuff_df1.columns:  # Check if column is also in df1
+                        # st.success (col)
+                        merged_df[f"{col}"] = calculate_and_format_vectorized(merged_df, col)
+                        merged_df[f"{col}_Change"] = calculate_differences_vectorized(merged_df, col)
                 # stuff_df.update(merged_df[stuff_df2.columns])
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
@@ -1378,31 +1428,14 @@ with tab2:
                 merged_df = df.merge(df2, on='T', how='left', suffixes=('_df2', '_df1'))
                 # st.dataframe (merged_df)
                 # st.dataframe (merged_df)
-                def calculate_and_format(row, col):
-                    original = row[f"{col}_df2"]
-                    if pd.isna(row[f"{col}_df1"]) or pd.isna(row[f"{col}_df2"]):
-                        if isinstance(original, (int, float)) and not pd.isna (row[f"{col}_df2"]):
-                            if (col == 'Usage'):
-                                return str(round (original, 2))
-                            else:
-                                return str(round (original))
-                        else:
-                            return str (original)
-                    else:
-                        # Check if both values are numbers before attempting to calculate difference
-                        if isinstance(original, (int, float)) and isinstance(row[f"{col}_df1"], (int, float)):
-                            difference = original - row[f"{col}_df1"]
-                            sign = '+' if difference >= 0 else ''
-                            if (col == 'Usage'):
-                                return f"{round (original, 2)} ({sign}{round (difference, 2)})"
-                            else:
-                                return f"{round (original)} ({sign}{round (difference)})"
-                        else:
-                            return str(original)
+                merged_df ['Pitcher'] = merged_df ['Pitcher_df2']
+                merged_df ['PitcherTeam'] = merged_df ['PitcherTeam_df2']
+                merged_df ['PitcherThrows'] = merged_df ['PitcherThrows_df2']
+                merged_df ['PitchType'] = merged_df ['PitchType_df2']
                 for col in df2.columns:
-                    if col != 'T' and col in df.columns:
-                        merged_df[col] = merged_df.apply(lambda row: calculate_and_format(row, col), axis=1)
-                        merged_df[f"{col}_Change"] = merged_df.apply(lambda row: calculate_difference(row, col), axis=1)
+                    if col not in ['Pitcher','PitcherTeam', 'PitcherThrows', 'PitchType', 'T'] and col in df.columns:
+                        merged_df[f"{col}"] = calculate_and_format_vectorized(merged_df, col)
+                        merged_df[f"{col}_Change"] = calculate_differences_vectorized(merged_df, col)
                 # stuff_df.update(merged_df[stuff_df2.columns])
                 columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
                 # st.empty ()
