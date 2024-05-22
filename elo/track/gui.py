@@ -1369,6 +1369,7 @@ with tab2:
             # weighted_command = round (np.sum(stuff_df['PitchCount'] * stuff_df['Command']) / (np.sum(stuff_df['PitchCount']+1e-6)))
 
             display_name.success (f"Team: {team_name}. Average Command: {weighted_command}, Average Stuff: {weighted_stuff} | {unweighted_stuff} unweighted")
+            # df ['PitchType_old'] = df ['PitchType']
             if (show_changes):
                 df2 = driver2.retrieve_percentiles_team (team_name)
                 # st.dataframe (stuff_df2)
@@ -1421,7 +1422,6 @@ with tab2:
                     print ('hey')
             if min_pitch_individual:  # Check if something was entered
                 try:
-                    #asdf
                     rename = {
                         'ChangeUp': 'CH',
                         'Curveball': 'CU',
@@ -1431,14 +1431,26 @@ with tab2:
                         'Slider' : 'SL',
                         'Splitter' : 'FS',
                     }
+                    # st.dataframe (df [['PitchType']])
                     df['PitchType'] = df['PitchType'].replace(rename)
+                    # st.dataframe (df [['PitchType']])
+                    # st.error ("above")
                     valid_pitchers = stuff_df.index
                     df = df[df['Pitcher'].isin(valid_pitchers)]
-                    mask = df.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
+                    #hack: ultra scuffed
+                    if not show_changes:
+                        mask = df.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
+                    else:
+                        mask = df.apply(lambda row: (stuff_df_copy.at[row['Pitcher'], row['PitchType']] != 'nan'), axis=1)
+                    # st.success (stuff_df_copy.at['Abeldt, Benjamin', 'SL'])
+                    # st.success (pd.isna(stuff_df_copy.at['Abeldt, Benjamin', 'SL']))
+                    # st.dataframe (stuff_df_copy)
                     df = df[mask]
 
                     reverse_rename = {v: k for k, v in rename.items()}
                     df['PitchType'] = df['PitchType'].replace(reverse_rename)
+                    # st.error ('here')
+                    # st.dataframe (df)
                 except ValueError:
                     print ('hey')
             cols = [col for col in df.columns if col != 'xRV']
@@ -1469,7 +1481,10 @@ with tab2:
                     prob_df_final['PitchType'] = prob_df_final['PitchType'].replace(rename)
                     valid_pitchers = stuff_df.index
                     prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
-                    mask = prob_df_final.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
+                    if not show_changes:
+                        mask = df.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
+                    else:
+                        mask = df.apply(lambda row: (stuff_df_copy.at[row['Pitcher'], row['PitchType']] != 'nan'), axis=1)
                     prob_df_final = prob_df_final[mask]
 
                     reverse_rename = {v: k for k, v in rename.items()}
