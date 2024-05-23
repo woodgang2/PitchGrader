@@ -1475,9 +1475,9 @@ with tab2:
             stuff_df_copy = stuff_df.copy ()
             # st.dataframe (stuff_df)
             if (team_name == 'All'):
-                new_columns = [stuff_df.columns[0], stuff_df.columns[1]] + ['Role'] + [col for col in stuff_df.columns if col != 'Role' and col not in  [stuff_df.columns[0], stuff_df.columns[1]]]
-            else:
                 new_columns = [stuff_df.columns[0]] + ['Role'] + [col for col in stuff_df.columns if col != 'Role' and col not in  [stuff_df.columns[0]]]
+            else:
+                new_columns = ['Role'] + [col for col in stuff_df.columns if col != 'Role']
             stuff_df = stuff_df [new_columns]
             stuff_df = stuff_df.rename(columns={'PitcherThrows': 'Throws'})
             st.empty ()
