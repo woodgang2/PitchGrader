@@ -7,6 +7,7 @@ from scipy.stats import zscore
 from scipy.spatial import distance
 from sklearn.preprocessing import StandardScaler
 import matplotlib.colors as mcolors
+from decimal import Decimal, ROUND_HALF_UP
 
 import database_driver
 import stuff_plus
@@ -153,6 +154,9 @@ if 'truncate_game_log' not in st.session_state:
 if 'show_extra_change' not in st.session_state:
     st.session_state.show_extra_change = False
 
+if 'break_up_dfs' not in st.session_state:
+    st.session_state.break_up_dfs = False
+
 @st.experimental_dialog("Settings", width="large")
 def settings_dialog():
     # st.header("Settings")
@@ -165,7 +169,10 @@ def settings_dialog():
     st.write ('Game Log')
     truncate_game_log = st.checkbox("Only show games from selected year in game log", value=st.session_state.get("truncate_game_log", False), help = 'By default, games from each year included in the database are displayed in the game log')
     st.session_state.truncate_game_log = truncate_game_log
-    st.write ('Show Changes')
+    st.write ('Player Profile')
+    break_up_dfs = st.checkbox("Break up dfs on player profile", value=st.session_state.get("break_up_dfs", False), help = 'By default, the dfs are just thrown onto the page in large blobs')
+    st.session_state.break_up_dfs = break_up_dfs
+    st.write ('Team List')
     show_extra_changes = st.checkbox("Show change from previous years as columns", value=st.session_state.get("show_extra_change", False), help = 'By default, the show changes will put the change in parenthesis. If you want to sort by change, you can flip this on')
     st.session_state.show_extra_change = show_extra_changes
     st.empty ()
@@ -229,7 +236,7 @@ def readme_dialog():
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Harvard. Baseball Research Journal, Spring 2017.
     """)
 
-# Your title and divider with reduced whitespace
+pd.options.display.float_format = '{:,.2f}'.format
 st.title('PitchGrader')
 # st.markdown('<hr style="height:2px;border:none;color:#333;background-color:#333;" /> ', unsafe_allow_html=True)
 # st.divider ()
@@ -778,9 +785,30 @@ with tab1:
                 df_display = df_display.set_index('PitchType')
                 df_display.index.name = "Pitch Type"
                 st.empty ()
-                st.write ("Percentiles")
-                st.dataframe(df_display)
-                st.write ("Attributes")
+                # st.write ("Percentiles")
+                # with st.expander(f"Percentiles", expanded = True):
+                release_columns = ['Usage', 'RelHeight', 'RelSide', 'Extension', 'VertRelAngle', 'HorzRelAngle', 'PlateLocHeight', 'PlateLocSide']
+                character_columns = ['RelSpeed', 'ZoneSpeed', 'InducedVertBreak', 'HorzBreak', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'VAA', f'DifferenceRS', f'DifferenceIVB', f'DifferenceHB']
+                rename_character = {
+                    'InducedVertBreak' : 'IVB',
+                    f'DifferenceRS' : f'Diff_RS',
+                    f'DifferenceIVB' : f'Diff_IVB',
+                    f'DifferenceHB' : f'Diff_HB',
+                    'AxisDifference' : 'Axis_Diff'
+                }
+                calculated_columns = ['xRV', 'xWhiff%', 'Prob_SoftGB', 'Prob_HardGB', 'Prob_SoftLD', 'Prob_HardLD', 'Prob_SoftFB', 'Prob_HardFB', 'xGB%', 'xHH%']
+                if (not st.session_state.break_up_dfs):
+                    st.write ("Percentiles")
+                    st.dataframe(df_display)
+                else:
+                    with st.expander(f"Percentiles", expanded = True):
+                        st.caption ("Release")
+                        st.dataframe(df_display [release_columns])
+                        st.caption ("Character")
+                        st.dataframe((df_display [character_columns]).rename(columns=rename_character))
+                        st.caption ("Model")
+                        st.dataframe(df_display [calculated_columns])
+                # st.write ("Attributes")
                 prob_df = driver.retrieve_percentages(name)
                 prob_df = prob_df.drop_duplicates ('PitchType')
                 # prob_df = pitching_percentages_df [pitching_percentages_df ['Pitcher'] == name]
@@ -850,7 +878,26 @@ with tab1:
                 prob_df = prob_df.set_index('PitchType')
                 prob_df.index.name = "Pitch Type"
                 # input_df = st.data_editor(prob_df)
-                st.dataframe(prob_df)
+                # with st.expander(f"Attributes", expanded = True):
+                exclude_columns = ['xRV', 'SpinRate']#, 'xWhiff%', 'Prob_SoftGB', 'Prob_HardGB', 'Prob_SoftLD',
+                                   #'Prob_HardLD', 'Prob_SoftFB', 'Prob_HardFB', 'xGB%', 'xHH%']
+                # prob_df = prob_df.apply(lambda x: x.round(2) if x.name not in exclude_columns else x)
+                prob_df = prob_df.apply(lambda x: x.apply(lambda y: Decimal(str(y)).quantize(Decimal('.01'), rounding=ROUND_HALF_UP)) if x.name not in exclude_columns else x)
+                # prob_df = prob_df.apply(lambda x: x.apply(lambda y: f"{Decimal(str(y)).quantize(Decimal('0.00'), rounding=ROUND_HALF_UP)}") if x.name not in exclude_columns else x)
+                prob_df ['SpinRate'] = round (prob_df ['SpinRate'])
+
+                if (not st.session_state.break_up_dfs):
+                    st.write ('Attributes')
+                    st.dataframe(prob_df)
+                else:
+                    with st.expander(f"Attributes", expanded = True):
+                        st.caption ("Release")
+                        st.dataframe(prob_df [release_columns])
+                        st.caption ("Character")
+                        st.dataframe((prob_df [character_columns]).rename(columns=rename_character))
+                        st.caption ("Model")
+                        st.dataframe(prob_df [calculated_columns])
+                # st.dataframe(prob_df)
                 pitch_types = df['PitchType'].unique().tolist()
                 if (not show_changes):
                     index = st.selectbox("Pitch Type", range(len(pitch_types)), format_func=lambda x: pitch_types[x], index=0, key = f'type{side}')
