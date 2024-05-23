@@ -1429,7 +1429,8 @@ with tab2:
                 # st.dataframe (merged_df)
                 # st.dataframe (merged_df)
                 merged_df ['Pitcher'] = merged_df ['Pitcher_df2']
-                merged_df ['PitcherTeam'] = merged_df ['PitcherTeam_df2']
+                if (team_name == 'All'):
+                    merged_df ['PitcherTeam'] = merged_df ['PitcherTeam_df2']
                 merged_df ['PitcherThrows'] = merged_df ['PitcherThrows_df2']
                 merged_df ['PitchType'] = merged_df ['PitchType_df2']
                 for col in df2.columns:
@@ -1445,7 +1446,9 @@ with tab2:
             if (team_name == 'All'):
                 df = df.drop (columns = ['Balls', 'Strikes'])
             else:
-                df = df.drop (columns = ['PitcherTeam', 'Balls', 'Strikes'])
+                if (team_name == 'All'):
+                    df = df.drop (columns = ['PitcherTeam'])
+                df = df.drop (columns = ['Balls', 'Strikes'])
                 df_bat = df_bat.drop (columns = ['BatterTeam'])
             if min_pitch:  # Check if something was entered
                 try:
@@ -1563,7 +1566,8 @@ with tab2:
 
                 # st.dataframe (merged_df)
                 # st.dataframe (merged_df)
-                merged_df ['PitcherTeam'] = merged_df ['PitcherTeam_df2']
+                if (team_name == 'All'):
+                    merged_df ['PitcherTeam'] = merged_df ['PitcherTeam_df2']
                 merged_df ['PitcherThrows'] = merged_df ['PitcherThrows_df2']
                 for col in prob_df_final2.columns:
                     if col not in ['Pitcher','PitcherTeam', 'PitcherThrows', 'PitchType'] and col in prob_df_final.columns:
