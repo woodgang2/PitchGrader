@@ -915,13 +915,13 @@ with tab1:
                 else:
                     with st.expander(f"Attributes", expanded = True):
                         # st.write ("Release")
-                        st.button ("Release", disabled = True)
+                        st.button ("Release", disabled = True, key = 'display_release_attributes')
                         st.dataframe(prob_df [release_columns])
                         # st.write ("Flight")
-                        st.button ("Flight", disabled = True)
+                        st.button ("Flight", disabled = True, key = 'display_flight_attributes')
                         st.dataframe((prob_df [character_columns]).rename(columns=rename_character))
                         # st.write ("Model")
-                        st.button ("Model", disabled = True)
+                        st.button ("Model", disabled = True, key = 'display_model_attributes')
                         st.dataframe(prob_df [calculated_columns])
                 # st.dataframe(prob_df)
                 pitch_types = df['PitchType'].unique().tolist()
