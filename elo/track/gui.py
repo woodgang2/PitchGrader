@@ -823,7 +823,7 @@ with tab1:
                     with st.expander(f"Percentiles", expanded = True):
                         st.caption ("Release")
                         st.dataframe(df_display [release_columns])
-                        st.caption ("Character")
+                        st.caption ("Flight")
                         st.dataframe((df_display [character_columns]).rename(columns=rename_character))
                         st.caption ("Model")
                         st.dataframe(df_display [calculated_columns])
@@ -913,7 +913,7 @@ with tab1:
                     with st.expander(f"Attributes", expanded = True):
                         st.caption ("Release")
                         st.dataframe(prob_df [release_columns])
-                        st.caption ("Character")
+                        st.caption ("Flight")
                         st.dataframe((prob_df [character_columns]).rename(columns=rename_character))
                         st.caption ("Model")
                         st.dataframe(prob_df [calculated_columns])
