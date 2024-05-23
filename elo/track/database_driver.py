@@ -580,7 +580,8 @@ class DatabaseDriver:
         else:
             db_filename = os.path.join(self.current_dir, f'Data/game_logs.parquet')
         df = pd.read_parquet(db_filename)
-        df = df [df['Pitcher'] == player]
+        if (player != 'All'):
+            df = df [df['Pitcher'] == player]
         return df
 
 def copy_tables(source_db, target_db, table_names):

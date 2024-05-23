@@ -438,6 +438,41 @@ def color_values (value):
 # st.success (st.session_state['selected_player_index'] )
 # Conditional rendering based on the toggle state
 # if not st.session_state.team_flag:
+def classify_pitcher(df, year = year_selected):
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+    df = df[df['Date'].dt.year == year]
+    total_entries = len(df)
+    high_pitch_count = (df['PitchCount'] >= 50).sum() / total_entries
+    low_pitch_count = (df['PitchCount'] <= 40).sum() / total_entries
+    # st.dataframe (df)
+    # st.success (high_pitch_count )
+    # st.error (low_pitch_count)
+    # st.error (len (df))
+    if high_pitch_count >= 0.5:
+        return "Start"
+    elif low_pitch_count >= 0.75:
+        return "Short"
+    else:
+        return "Long"
+def classify_pitcher_vectorized(df, year):
+    df['Date_temp'] = pd.to_datetime(df['Date'], errors='coerce')
+    df = df[df['Date_temp'].dt.year == year]
+    df = df.drop (columns = ['Date_temp'])
+
+    # Calculate proportions of pitch counts for each pitcher
+    high_pitch_count = df[df['PitchCount'] >= 50].groupby('Pitcher')['PitchCount'].count() / df.groupby('Pitcher')['PitchCount'].count()
+    low_pitch_count = df[df['PitchCount'] <= 40].groupby('Pitcher')['PitchCount'].count() / df.groupby('Pitcher')['PitchCount'].count()
+
+    # Create a dataframe for roles based on conditions
+    roles = pd.DataFrame(index=df['Pitcher'].unique())
+    roles['High'] = high_pitch_count
+    roles['Low'] = low_pitch_count
+    roles['Role'] = 'Long'  # Default role
+    roles.loc[roles['High'] >= 0.5, 'Role'] = 'Start'
+    roles.loc[roles['Low'] >= 0.75, 'Role'] = 'Short'
+    df = df.drop_duplicates (subset = 'Pitcher')
+    df['Role'] = df['Pitcher'].map(roles['Role'])
+    return df [['Pitcher', 'Role']]
 with tab1:
     # container_a.header ("Player Profile")
     # first_name = st.text_input('First Name', '', placeholder='First name', key='first_name')
@@ -696,22 +731,6 @@ with tab1:
                 container.markdown("</div>", unsafe_allow_html=True)
                 desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 log_df = driver.retrieve_game_logs(name, force_both = True)
-                def classify_pitcher(df, year = year_selected):
-                    df['Date'] = pd.to_datetime(df['Date'])
-                    df = df[df['Date'].dt.year == year]
-                    total_entries = len(df)
-                    high_pitch_count = (df['PitchCount'] >= 50).sum() / total_entries
-                    low_pitch_count = (df['PitchCount'] <= 40).sum() / total_entries
-                    # st.dataframe (df)
-                    # st.success (high_pitch_count )
-                    # st.error (low_pitch_count)
-                    # st.error (len (df))
-                    if high_pitch_count >= 0.5:
-                        return "Start"
-                    elif low_pitch_count >= 0.75:
-                        return "Short"
-                    else:
-                        return "Long"
                 #year manual hack
                 pitcher_type2023 = classify_pitcher(log_df.copy (), 2023)
                 pitcher_type2024 = classify_pitcher(log_df.copy (), 2024)
@@ -881,10 +900,11 @@ with tab1:
                 # with st.expander(f"Attributes", expanded = True):
                 exclude_columns = ['xRV', 'SpinRate']#, 'xWhiff%', 'Prob_SoftGB', 'Prob_HardGB', 'Prob_SoftLD',
                                    #'Prob_HardLD', 'Prob_SoftFB', 'Prob_HardFB', 'xGB%', 'xHH%']
-                # prob_df = prob_df.apply(lambda x: x.round(2) if x.name not in exclude_columns else x)
-                prob_df = prob_df.apply(lambda x: x.apply(lambda y: Decimal(str(y)).quantize(Decimal('.01'), rounding=ROUND_HALF_UP)) if x.name not in exclude_columns else x)
-                # prob_df = prob_df.apply(lambda x: x.apply(lambda y: f"{Decimal(str(y)).quantize(Decimal('0.00'), rounding=ROUND_HALF_UP)}") if x.name not in exclude_columns else x)
-                prob_df ['SpinRate'] = round (prob_df ['SpinRate'])
+                if (not show_changes):
+                    prob_df = prob_df.apply(lambda x: x.round(2) if x.name not in exclude_columns else x)
+                    # prob_df = prob_df.apply(lambda x: x.apply(lambda y: Decimal(str(y)).quantize(Decimal('.01'), rounding=ROUND_HALF_UP)) if x.name not in exclude_columns else x)
+                    # prob_df = prob_df.apply(lambda x: x.apply(lambda y: f"{Decimal(str(y)).quantize(Decimal('0.00'), rounding=ROUND_HALF_UP)}") if x.name not in exclude_columns else x)
+                    prob_df ['SpinRate'] = round (prob_df ['SpinRate'])
 
                 if (not st.session_state.break_up_dfs):
                     st.write ('Attributes')
@@ -1447,7 +1467,21 @@ with tab2:
                         container_wa = st.container()
             colored_columns = ['Command', 'Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
             colored_columns = [col for col in colored_columns if col in stuff_df.columns and stuff_df[col].notna().any()]
+            roles_df = classify_pitcher_vectorized(driver.retrieve_game_logs('All', force_both=True), year=year)#.drop_duplicates(subset = 'Pitcher')
+            stuff_df = stuff_df.merge (roles_df, on='Pitcher')
+            stuff_df = stuff_df.set_index ('Pitcher')
+            stuff_df.index.name = 'Pitcher'
+            st.empty ()
             stuff_df_copy = stuff_df.copy ()
+            # st.dataframe (stuff_df)
+            if (team_name == 'All'):
+                new_columns = [stuff_df.columns[0], stuff_df.columns[1]] + ['Role'] + [col for col in stuff_df.columns if col != 'Role' and col not in  [stuff_df.columns[0], stuff_df.columns[1]]]
+            else:
+                new_columns = [stuff_df.columns[0]] + ['Role'] + [col for col in stuff_df.columns if col != 'Role' and col not in  [stuff_df.columns[0]]]
+            stuff_df = stuff_df [new_columns]
+            stuff_df = stuff_df.rename(columns={'PitcherThrows': 'Throws'})
+            st.empty ()
+            # stuff_df_copy = stuff_df.copy ()
             if not show_changes and show_color and stuff_df.shape[0] < 1000:
                 stuff_df = stuff_df.style.applymap(color_values, subset = colored_columns)#
                 stuff_df = stuff_df.format("{:,.0f}", subset = colored_columns + ['PitchCount'])#.format("{:.2f}", subset=['Fastball%'])
