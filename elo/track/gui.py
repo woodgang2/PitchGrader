@@ -1164,7 +1164,7 @@ with tab2:
         differences = np.where(mask_numeric_and_notna, df[col2] - df[col1], None)
 
         return pd.Series(differences, index=df.index)
-    def calculate_and_format_vectorized(df, col):
+    def calculate_and_format_vectorized(df, col, rounding = 2):
         original_col = f"{col}_df2"
         baseline_col = f"{col}_df1"
 
@@ -1184,8 +1184,8 @@ with tab2:
             formatted_original = original.round(2).astype(str)
             formatted_difference = difference.round(2).apply(lambda x: f"+{x}" if x >= 0 else str(x))
         else:
-            formatted_original = original.round().apply(lambda x: f"{x:04}" if x < 10 else str(x))
-            formatted_difference = difference.round().apply(lambda x: f"+{x}" if x >= 0 else str(x))
+            formatted_original = original.round(rounding).apply(lambda x: f"{x:04}" if x < 10 else str(x))
+            formatted_difference = difference.round(rounding).apply(lambda x: f"+{x}" if x >= 0 else str(x))
 
         # Combine original and difference with condition
         result = pd.Series(np.where(valid_numbers,
@@ -1489,70 +1489,103 @@ with tab2:
             cols = [col for col in df.columns if col != 'xRV']
             cols.insert(5, 'xRV')
             df = df[cols]
-            prob_df_final = driver.retrieve_percentages_team (team_name)
-            if (team_name == 'All'):
-                prob_df_final = prob_df_final.drop (columns = ['Balls', 'Strikes'])
-            else:
-                prob_df_final = prob_df_final.drop (columns = ['PitcherTeam', 'Balls', 'Strikes'])
-            if min_pitch:  # Check if something was entered
-                try:
-                    valid_pitchers = stuff_df.index
-                    prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
-                except ValueError:
-                    print ('hey')
-            if min_pitch_individual:  # Check if something was entered
-                try:
-                    rename = {
-                        'ChangeUp': 'CH',
-                        'Curveball': 'CU',
-                        'Cutter' : 'FC',
-                        'Four-Seam' : 'FF',
-                        'Sinker' : 'SI',
-                        'Slider' : 'SL',
-                        'Splitter' : 'FS',
-                    }
-                    prob_df_final['PitchType'] = prob_df_final['PitchType'].replace(rename)
-                    valid_pitchers = stuff_df.index
-                    prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
-                    if not show_changes:
-                        mask = prob_df_final.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
-                    else:
-                        mask = prob_df_final.apply(lambda row: (stuff_df_copy.at[row['Pitcher'], row['PitchType']] != 'nan'), axis=1)
-                    prob_df_final = prob_df_final[mask]
-
-                    reverse_rename = {v: k for k, v in rename.items()}
-                    prob_df_final['PitchType'] = prob_df_final['PitchType'].replace(reverse_rename)
-                except ValueError:
-                    print ('hey')
-            cols = [col for col in prob_df_final.columns if col != 'xRV']
-            cols.insert(5, 'xRV')
-            prob_df_final = prob_df_final[cols]
-            prob_df_final = round (prob_df_final, 4)
-            prob_df_final = prob_df_final.drop (['PitcherId'], axis = 1)
-            # df = df.sort_values(by='Usage', ascending = False)
-            options = ['All', 'Fastball', 'Breaking Ball', 'Offspeed'] + list(prob_df_final['PitchType'].unique())
-            pitch_selected = st.selectbox ("Pitch Type", options = options, key = 'pitch_selected')
+            options_pitch = ['All', 'Fastball', 'Breaking Ball', 'Offspeed'] + list(df['PitchType'].unique())
+            pitch_selected = st.selectbox ("Pitch Type", options = options_pitch, key = 'pitch_selected')
             pitch_categories = {
                 'Fastball': ['Four-Seam', 'Sinker'],
                 'Breaking Ball': ['Cutter', 'Slider', 'Curveball'],
                 'Offspeed': ['ChangeUp', 'Splitter']
             }
+            prob_df_final = driver.retrieve_percentages_team (team_name)
+            prob_df_final2 = driver2.retrieve_percentages_team (team_name)
+            def calculate_prob_df_final (prob_df_final, pitch_selected):
+                if (team_name == 'All'):
+                    prob_df_final = prob_df_final.drop (columns = ['Balls', 'Strikes'])
+                else:
+                    prob_df_final = prob_df_final.drop (columns = ['PitcherTeam', 'Balls', 'Strikes'])
+                if min_pitch:  # Check if something was entered
+                    try:
+                        valid_pitchers = stuff_df.index
+                        prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
+                    except ValueError:
+                        print ('hey')
+                if min_pitch_individual:  # Check if something was entered
+                    try:
+                        rename = {
+                            'ChangeUp': 'CH',
+                            'Curveball': 'CU',
+                            'Cutter' : 'FC',
+                            'Four-Seam' : 'FF',
+                            'Sinker' : 'SI',
+                            'Slider' : 'SL',
+                            'Splitter' : 'FS',
+                        }
+                        prob_df_final['PitchType'] = prob_df_final['PitchType'].replace(rename)
+                        valid_pitchers = stuff_df.index
+                        prob_df_final = prob_df_final[prob_df_final['Pitcher'].isin(valid_pitchers)]
+                        if not show_changes:
+                            mask = prob_df_final.apply(lambda row: not pd.isna(stuff_df_copy.at[row['Pitcher'], row['PitchType']]), axis=1)
+                        else:
+                            mask = prob_df_final.apply(lambda row: (stuff_df_copy.at[row['Pitcher'], row['PitchType']] != 'nan'), axis=1)
+                        prob_df_final = prob_df_final[mask]
+
+                        reverse_rename = {v: k for k, v in rename.items()}
+                        prob_df_final['PitchType'] = prob_df_final['PitchType'].replace(reverse_rename)
+                    except ValueError:
+                        print ('hey')
+                cols = [col for col in prob_df_final.columns if col != 'xRV']
+                cols.insert(5, 'xRV')
+                prob_df_final = prob_df_final[cols]
+                prob_df_final = round (prob_df_final, 4)
+                prob_df_final = prob_df_final.drop (['PitcherId'], axis = 1)
+                # df = df.sort_values(by='Usage', ascending = False)
+                pitch_categories = {
+                    'Fastball': ['Four-Seam', 'Sinker'],
+                    'Breaking Ball': ['Cutter', 'Slider', 'Curveball'],
+                    'Offspeed': ['ChangeUp', 'Splitter']
+                }
+                if pitch_selected in pitch_categories:
+                    prob_df_final = prob_df_final[prob_df_final['PitchType'].isin(pitch_categories[pitch_selected])]
+                elif pitch_selected != 'All':
+                    prob_df_final = prob_df_final[prob_df_final['PitchType'] == pitch_selected]
+                prob_df_final = prob_df_final.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'EV', 'average_xRV', 'ExitSpeed'])
+                # prob_df_final ['xGB%'] = prob_df_final ['Prob_SoftGB'] + prob_df_final ['Prob_HardGB']
+                # prob_df_final ['xHH%'] = prob_df_final ['Prob_HardGB'] + prob_df_final ['Prob_HardLD'] + prob_df_final ['Prob_HardFB']
+                prob_df_final = prob_df_final.set_index (['Pitcher', 'PitchType'])
+                return prob_df_final
+            prob_df_final = calculate_prob_df_final(prob_df_final, pitch_selected)
+            if (show_changes):
+                prob_df_final2 = calculate_prob_df_final (prob_df_final2, pitch_selected)
+                # st.dataframe (stuff_df2)
+                # prob_df_final['T'] = prob_df_final.index.get_level_values('Pitcher') + prob_df_final.index.get_level_values('PitchType')
+                # prob_df_final2['T'] = prob_df_final2.index.get_level_values('Pitcher') + prob_df_final2.index.get_level_values('PitchType')
+                merged_df = prob_df_final.merge(prob_df_final2, left_index=True, right_index=True, how='left', suffixes=('_df2', '_df1'))
+
+                # st.dataframe (merged_df)
+                # st.dataframe (merged_df)
+                merged_df ['PitcherTeam'] = merged_df ['PitcherTeam_df2']
+                merged_df ['PitcherThrows'] = merged_df ['PitcherThrows_df2']
+                for col in prob_df_final2.columns:
+                    if col not in ['Pitcher','PitcherTeam', 'PitcherThrows', 'PitchType'] and col in prob_df_final.columns:
+                        merged_df[f"{col}"] = calculate_and_format_vectorized(merged_df, col, rounding = 4)
+                        merged_df[f"{col}_Change"] = calculate_differences_vectorized(merged_df, col)
+                # stuff_df.update(merged_df[stuff_df2.columns])
+                columns_to_drop = [col for col in merged_df.columns if col.endswith('_df1') or col.endswith('_df2')]
+                # st.empty ()
+                # Drop these columns
+                prob_df_final = merged_df.drop(columns=columns_to_drop)
+                st.empty ()
             if pitch_selected in pitch_categories:
-                prob_df_final = prob_df_final[prob_df_final['PitchType'].isin(pitch_categories[pitch_selected])]
                 df = df[df['PitchType'].isin(pitch_categories[pitch_selected])]
             elif pitch_selected != 'All':
-                prob_df_final = prob_df_final[prob_df_final['PitchType'] == pitch_selected]
                 df = df[df['PitchType'] == pitch_selected]
             df = df.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'ExitSpeed', 'PitcherId'])
             if (not st.session_state.show_extra_change):
                 df = df.drop([col for col in df.columns if '_Change' in col], axis=1)
             elif (show_changes):
-                df = df.drop (columns = ['Pitcher_Change', 'PitcherTeam_Change', 'PitcherThrows_Change', 'PitchType_Change', 'ExitSpeed_Change', 'PitcherId_Change', 'Balls_Change', 'Strikes_Change'])
-            prob_df_final = prob_df_final.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'EV', 'average_xRV', 'ExitSpeed'])
-            # prob_df_final ['xGB%'] = prob_df_final ['Prob_SoftGB'] + prob_df_final ['Prob_HardGB']
-            # prob_df_final ['xHH%'] = prob_df_final ['Prob_HardGB'] + prob_df_final ['Prob_HardLD'] + prob_df_final ['Prob_HardFB']
+                df = df.drop (columns = ['ExitSpeed_Change', 'PitcherId_Change', 'Balls_Change', 'Strikes_Change'])
             df = df.set_index(['Pitcher', 'PitchType'])
-            prob_df_final = prob_df_final.set_index (['Pitcher', 'PitchType'])
+            # st.dataframe (prob_df_final)
             df_bat = df_bat.set_index ('Batter')
             st.write ("Percentiles")
             st.dataframe (df)
