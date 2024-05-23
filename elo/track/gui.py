@@ -131,6 +131,37 @@ def display_static_slider(label, value, max_value=100.0):
 #     st.markdown(display_static_slider('xK%', 91), unsafe_allow_html=True)
 #     st.markdown(display_static_slider('xGB%', 92), unsafe_allow_html=True)
 # st.empty ()
+def inject_custom_css():
+    text_color = st.get_option('theme.textColor')
+    primary_color = st.get_option('theme.primaryColor')
+    # CSS that changes only the text color of the button with class `customInactiveButton`
+    css = f"""
+                            <style>
+                                .customInactiveButton {{
+                                    color: #FFFFFF; /* Dynamic primary text color */
+                                    background-color: #FF4B4B;
+                                    margin-left: 0.65em; /* Adjust this value to push the button to the right by 4em */
+                                    display: inline-block; 
+                                    border: none; 
+                                    opacity: 0.85;
+                                    width: 6em;
+                                    font-size: 0.9em;
+                                }}
+                            </style>
+                            """
+    st.markdown(css, unsafe_allow_html=True)
+
+    # Inject the CSS
+inject_custom_css()
+
+# Function to create a custom button with specific text color
+def custom_button(label, key):
+    # Using an HTML button with class for specific styling
+    st.markdown(f"""
+                            <button class="customInactiveButton" enabled>
+                                {label}
+                            </button>
+                            """, unsafe_allow_html=True)
 st.markdown("""
     <style>
     .reportview-container .markdown-text-container {
@@ -822,13 +853,16 @@ with tab1:
                 else:
                     with st.expander(f"Percentiles", expanded = True):
                         # st.write ("Release")
-                        st.button ("Release", disabled = True)
+                        # st.button ("Release", disabled = True)
+                        custom_button("Release", key=f"display_release_p{side}")
                         st.dataframe(df_display [release_columns])
                         # st.write ("Flight")
-                        st.button ("Flight", disabled = True)
+                        # st.button ("Flight", disabled = True)
+                        custom_button("Flight", key=f"display_flight_p{side}")
                         st.dataframe((df_display [character_columns]).rename(columns=rename_character))
                         # st.write ("Model")
-                        st.button ("Model", disabled = True)
+                        # st.button ("Model", disabled = True)
+                        custom_button("Model", key=f"display_model_p{side}")
                         st.dataframe(df_display [calculated_columns])
                 # st.write ("Attributes")
                 prob_df = driver.retrieve_percentages(name)
@@ -914,14 +948,18 @@ with tab1:
                     st.dataframe(prob_df)
                 else:
                     with st.expander(f"Attributes", expanded = True):
+                        # Create a custom styled inactive button
+                        custom_button("Release", key=f"display_release_a{side}")
                         # st.write ("Release")
-                        st.button ("Release", disabled = True, key = 'display_release_attributes')
+                        # st.button ("Release", disabled = True, key = 'display_release_attributes')
                         st.dataframe(prob_df [release_columns])
                         # st.write ("Flight")
-                        st.button ("Flight", disabled = True, key = 'display_flight_attributes')
+                        # st.button ("Flight", disabled = True, key = 'display_flight_attributes')
+                        custom_button("Flight", key=f"display_flight_a{side}")
                         st.dataframe((prob_df [character_columns]).rename(columns=rename_character))
                         # st.write ("Model")
-                        st.button ("Model", disabled = True, key = 'display_model_attributes')
+                        # st.button ("Model", disabled = True, key = 'display_model_attributes')
+                        custom_button("Model", key=f"display_model_a{side}")
                         st.dataframe(prob_df [calculated_columns])
                 # st.dataframe(prob_df)
                 pitch_types = df['PitchType'].unique().tolist()
