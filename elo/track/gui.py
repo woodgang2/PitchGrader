@@ -1582,6 +1582,7 @@ with tab2:
             df = df.drop (columns = ['overall_avg_xRV', 'PitchxRV', 'ExitSpeed', 'PitcherId'])
             if (not st.session_state.show_extra_change):
                 df = df.drop([col for col in df.columns if '_Change' in col], axis=1)
+                prob_df_final = prob_df_final.drop ([col for col in prob_df_final.columns if '_Change' in col], axis=1)
             elif (show_changes):
                 df = df.drop (columns = ['ExitSpeed_Change', 'PitcherId_Change', 'Balls_Change', 'Strikes_Change'])
             df = df.set_index(['Pitcher', 'PitchType'])
