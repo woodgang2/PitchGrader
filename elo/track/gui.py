@@ -821,11 +821,11 @@ with tab1:
                     st.dataframe(df_display)
                 else:
                     with st.expander(f"Percentiles", expanded = True):
-                        st.caption ("Release")
+                        st.write ("Release")
                         st.dataframe(df_display [release_columns])
-                        st.caption ("Flight")
+                        st.write ("Flight")
                         st.dataframe((df_display [character_columns]).rename(columns=rename_character))
-                        st.caption ("Model")
+                        st.write ("Model")
                         st.dataframe(df_display [calculated_columns])
                 # st.write ("Attributes")
                 prob_df = driver.retrieve_percentages(name)
@@ -911,11 +911,11 @@ with tab1:
                     st.dataframe(prob_df)
                 else:
                     with st.expander(f"Attributes", expanded = True):
-                        st.caption ("Release")
+                        st.write ("Release")
                         st.dataframe(prob_df [release_columns])
-                        st.caption ("Flight")
+                        st.write ("Flight")
                         st.dataframe((prob_df [character_columns]).rename(columns=rename_character))
-                        st.caption ("Model")
+                        st.write ("Model")
                         st.dataframe(prob_df [calculated_columns])
                 # st.dataframe(prob_df)
                 pitch_types = df['PitchType'].unique().tolist()
