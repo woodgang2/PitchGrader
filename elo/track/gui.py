@@ -1620,7 +1620,7 @@ with tab2:
                 cols = [col for col in prob_df_final.columns if col != 'xRV']
                 cols.insert(5, 'xRV')
                 prob_df_final = prob_df_final[cols]
-                prob_df_final = round (prob_df_final, 4)
+                prob_df_final = round (prob_df_final, 2)
                 prob_df_final = prob_df_final.drop (['PitcherId'], axis = 1)
                 # df = df.sort_values(by='Usage', ascending = False)
                 pitch_categories = {
