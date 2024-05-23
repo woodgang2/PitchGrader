@@ -155,7 +155,7 @@ if 'show_extra_change' not in st.session_state:
     st.session_state.show_extra_change = False
 
 if 'break_up_dfs' not in st.session_state:
-    st.session_state.break_up_dfs = False
+    st.session_state.break_up_dfs = True
 
 @st.experimental_dialog("Settings", width="large")
 def settings_dialog():
@@ -170,7 +170,7 @@ def settings_dialog():
     truncate_game_log = st.checkbox("Only show games from selected year in game log", value=st.session_state.get("truncate_game_log", False), help = 'By default, games from each year included in the database are displayed in the game log')
     st.session_state.truncate_game_log = truncate_game_log
     st.write ('Player Profile')
-    break_up_dfs = st.checkbox("Break up dfs on player profile", value=st.session_state.get("break_up_dfs", False), help = 'By default, the dfs are just thrown onto the page in large blobs')
+    break_up_dfs = st.checkbox("Break up dfs on player profile", value=st.session_state.get("break_up_dfs", True), help = 'By default, the attribute and percentile dfs on the player page get broken up. You can uncheck this to turn them into large blobs, like those on the team list')
     st.session_state.break_up_dfs = break_up_dfs
     st.write ('Team List')
     show_extra_changes = st.checkbox("Show change from previous years as columns", value=st.session_state.get("show_extra_change", False), help = 'By default, the show changes will put the change in parenthesis. If you want to sort by change, you can flip this on')
