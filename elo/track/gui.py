@@ -988,7 +988,8 @@ with tab1:
                         display_static_slider('xGB%', df ['xGB%'].iloc [index])
                         display_static_slider('xHH%', 100 - df ['xHH%'].iloc [index])
                         display_static_slider('xHHFB%', 100 - df ['Prob_HardFB'].iloc [index])
-                st.write ("History")
+                # st.write ("History")
+                custom_button("History", key=f"history")
                 stuff_history_df = driver.retrieve_stuff_history(name)
                 location_history_df = driver.retrieve_location_history(name)
                 location_history_df = location_history_df [['Pitcher', 'Overall', 'Year']]
