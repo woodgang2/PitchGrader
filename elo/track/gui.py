@@ -143,7 +143,7 @@ def inject_custom_css():
                                     margin-left: 0.65em; /* Adjust this value to push the button to the right by 4em */
                                     display: inline-block; 
                                     border: none; 
-                                    opacity: 0.85;
+                                    opacity: 0.95;
                                     width: 6em;
                                     font-size: 0.9em;
                                 }}
@@ -756,6 +756,8 @@ with tab1:
                 if not show_changes:
                     stuff_df = stuff_df.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                     st.empty ()
+                # custom_button("Grades", key=f"grades{side}")
+                # st.dataframe(stuff_df)
                 container = st.container()
                 container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
                 container.dataframe(stuff_df)
