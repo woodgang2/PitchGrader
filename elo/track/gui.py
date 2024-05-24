@@ -837,6 +837,9 @@ with tab1:
                 df_display = df_display.set_index('PitchType')
                 df_display.index.name = "Pitch Type"
                 st.empty ()
+                indices_to_none = {'Four-Seam', 'Sinker'}
+                columns_to_modify = ['DifferenceRS', 'DifferenceIVB', 'DifferenceHB']
+                df_display.loc[df_display.index.isin(indices_to_none), columns_to_modify] = None
                 # st.write ("Percentiles")
                 # with st.expander(f"Percentiles", expanded = True):
                 release_columns = ['Usage', 'RelHeight', 'RelSide', 'Extension', 'VertRelAngle', 'HorzRelAngle', 'PlateLocHeight', 'PlateLocSide']
@@ -935,6 +938,9 @@ with tab1:
                 prob_df = prob_df.sort_values(by='Usage', ascending = False)
                 prob_df = prob_df.set_index('PitchType')
                 prob_df.index.name = "Pitch Type"
+                indices_to_none = {'Four-Seam', 'Sinker'}
+                columns_to_modify = ['DifferenceRS', 'DifferenceIVB', 'DifferenceHB']
+                prob_df.loc[prob_df.index.isin(indices_to_none), columns_to_modify] = None
                 # input_df = st.data_editor(prob_df)
                 # with st.expander(f"Attributes", expanded = True):
                 exclude_columns = ['xRV', 'SpinRate']#, 'xWhiff%', 'Prob_SoftGB', 'Prob_HardGB', 'Prob_SoftLD',
@@ -1719,6 +1725,10 @@ with tab2:
             elif (show_changes):
                 df = df.drop (columns = ['ExitSpeed_Change', 'PitcherId_Change', 'Balls_Change', 'Strikes_Change'])
             df = df.set_index(['Pitcher', 'PitchType'])
+            indices_to_none = {'Four-Seam', 'Sinker'}
+            columns_to_modify = ['DifferenceRS', 'DifferenceIVB', 'DifferenceHB', 'DifferenceRS2023', 'DifferenceIVB2023', 'DifferenceHB2023', 'DifferenceRS2024', 'DifferenceIVB2024', 'DifferenceHB2024']
+            df.loc[df.index.get_level_values('PitchType').isin(indices_to_none), columns_to_modify] = None
+            prob_df_final.loc[prob_df_final.index.get_level_values('PitchType').isin(indices_to_none), columns_to_modify] = None
             # st.dataframe (prob_df_final)
             df_bat = df_bat.set_index ('Batter')
             st.write ("Percentiles")
