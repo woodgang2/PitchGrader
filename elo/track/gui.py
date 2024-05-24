@@ -851,7 +851,7 @@ with tab1:
                     st.write ("Percentiles")
                     st.dataframe(df_display)
                 else:
-                    with st.expander(f"Percentiles", expanded = True):
+                    with st.expander(f"Percentiles", expanded = False):
                         # st.write ("Release")
                         # st.button ("Release", disabled = True)
                         custom_button("Release", key=f"display_release_p{side}")
