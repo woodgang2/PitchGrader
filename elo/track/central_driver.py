@@ -34,7 +34,7 @@ def add_sides ():
         database_driver.update_gui(year = year, side = 'Right')
 
 
-# calculate_grades()
+calculate_grades()
 add_sides()
 # table_names = ["batting_variables", "Percentiles_Batters", "Probabilities_Batters", "variable"]
 # database_driver.copy_tables('radar2_old.db', 'radar2.db', table_names)

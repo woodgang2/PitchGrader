@@ -1318,6 +1318,9 @@ class Driver:
         xRV_df = pd.concat([pitch_stats_df, overall_stats], ignore_index=True)
         self.xRV_df = xRV_df
         print (xRV_df.to_string ())
+        if (self.year is None and self.side is Side.Both):
+            file_path = f'Data/xRV{game_log}.parquet'
+            xRV_df.to_parquet(file_path, engine='pyarrow', compression='lz4')
         # exit (0)
         avg_xRV = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].mean().reset_index()
         avg_xRV = avg_xRV.rename(columns={'xRV': 'average_xRV'})
@@ -1390,10 +1393,72 @@ class Driver:
         # exit (0)
         # exit (0)
         self.players_df = players_df
+
+    def calculate_average_xRVs_side (self, game_log = 0):
+        predictions_df = self.predictions_df
+        predictions_df ["OldPitcher"] = predictions_df ["Pitcher"]
+        if (game_log == 1):
+            predictions_df ["Pitcher"] = predictions_df ["Pitcher"] + "/" + predictions_df ['Date']
+        else:
+            predictions_df ["Pitcher"] = predictions_df ["Pitcher"] + "/" + predictions_df ['Year']
+        pitcher_total_pitches = predictions_df.groupby('Pitcher')['PitchType'].transform('count')
+        pitch_type_count = predictions_df.groupby(['Pitcher', 'PitchType'])['PitchType'].transform('count')
+        predictions_df['Usage'] = (pitch_type_count / pitcher_total_pitches).round(2)
+        # print (predictions_df)
+        predictions_df = predictions_df [predictions_df ['Usage'] >= 0.03]
+        # predictions_df = predictions_df[pitcher_total_pitches >= 20]
+        predictions_df = predictions_df.drop_duplicates(subset=['PitchUID'], keep='first')
+        predictions_df.drop ('Usage', axis=1)
+
+        xRV_df = pd.read_parquet(f'Data/xRV{game_log}.parquet')
+        self.xRV_df = xRV_df
+        print (xRV_df.to_string ())
+        # exit (0)
+        avg_xRV = predictions_df.groupby(['Pitcher', 'PitchType'])['xRV'].mean().reset_index()
+        avg_xRV = avg_xRV.rename(columns={'xRV': 'average_xRV'})
+        avg_xRV = avg_xRV.merge(xRV_df[['PitchType', 'Average_xRV', 'StDev_xRV']], on='PitchType', how='left')
+        avg_xRV['z_score'] = round ((avg_xRV['average_xRV'] - avg_xRV['Average_xRV']) / avg_xRV['StDev_xRV'] * 10 + 50, 2)
+        players_df = avg_xRV.pivot(index='Pitcher', columns='PitchType', values='z_score').reset_index()
+        overall_avg_xRV = predictions_df.groupby('Pitcher')['PitchxRV'].mean ().reset_index()
+        overall_stats = xRV_df[xRV_df['PitchType'] == 'Overall'][['Average_PitchxRV', 'StDev_PitchxRV']].iloc[0]
+        overall_avg_xRV['Overall_z_score'] = round ((overall_avg_xRV['PitchxRV'] - overall_stats['Average_PitchxRV']) / overall_stats['StDev_PitchxRV'] * 10 + 50, 2)
+        players_df = players_df.merge(overall_avg_xRV[['Pitcher', 'Overall_z_score']], on='Pitcher', how='left')
+        pitch_counts = predictions_df.groupby('Pitcher')['PitchUID'].nunique().reset_index(name='PitchCount')
+        players_df = players_df.merge(pitch_counts, on='Pitcher', how='left')
+        players_df = players_df.rename(columns={'Overall_z_score': 'Overall'}).fillna(np.nan)
+        pitcher_team_mapping = predictions_df[['Pitcher', 'PitcherTeam', 'PitcherThrows', 'OldPitcher', 'Date']].drop_duplicates()
+        players_df = players_df.merge(pitcher_team_mapping, on='Pitcher', how='left')
+        pitch_counts = predictions_df.groupby('Pitcher').size().reset_index(name='TotalPitches')
+        pitch_type_counts = predictions_df.groupby(['Pitcher', 'PitchType']).size().reset_index(name='PitchTypeCount')
+        usage_df = pitch_type_counts.merge(pitch_counts, on='Pitcher')
+        usage_df['Usage'] = (usage_df['PitchTypeCount'] / usage_df['TotalPitches']).round(2)
+        # usage_df = usage_df.replace(0, np.nan)
+        usage_2d_df = usage_df.pivot(index='Pitcher', columns='PitchType', values='Usage')
+        usage_2d_df.columns = [f"{col} Usage" for col in usage_2d_df.columns]
+        usage_2d_df_reset = usage_2d_df.reset_index()
+        players_df = players_df.merge(usage_2d_df_reset, on='Pitcher', how='left')
+        # if players_df['Year'].nunique() == 1:
+        players_df['Pitcher'] = players_df['OldPitcher']
+        players_df = players_df.drop (columns = ['OldPitcher'])
+        base_columns = ['Pitcher', 'Date', 'PitcherTeam', 'PitcherThrows', 'PitchCount', 'Overall']#, 'Four-Seam', 'Four-Seam Usage', 'Sinker', 'Sinker Usage', 'Cutter', 'Cutter Usage', 'Cutter_S', 'Cutter_S Usage', 'Curveball', 'Curveball Usage', 'Slider', 'Slider Usage', 'ChangeUp', 'ChangeUp Usage', 'Splitter', 'Splitter Usage']
+        usage_columns1 = [col for col in players_df.columns if (not col.endswith('Usage')) and (col not in base_columns)]
+        usage_columns2 = [col for col in players_df.columns if col.endswith('Usage')]
+        final_columns = base_columns + usage_columns1 + usage_columns2
+        if game_log == 0:
+            final_columns.remove ('Date')
+            players_df = players_df.drop_duplicates(subset=['Pitcher'], keep='first')
+        players_df = players_df[final_columns]
+        self.players_df = players_df
     def calculate_average_xRVs (self):
-        self.calculate_average_xRVs_wrapped (game_log = 0)
+        if (self.side is Side.Both):
+            self.calculate_average_xRVs_wrapped (game_log = 0)
+        else:
+            self.calculate_average_xRVs_side(game_log = 0)
     def calculate_average_xRVs_by_game (self):
-        self.calculate_average_xRVs_wrapped (game_log = 1)
+        if (self.side is Side.Both):
+            self.calculate_average_xRVs_wrapped (game_log = 1)
+        else:
+            self.calculate_average_xRVs_side(game_log = 1)
     def write_players_df_to_parquet (self, name = 'players_df'):
         side = self.side.name
         if (self.side == Side.Both):
@@ -1402,17 +1467,17 @@ class Driver:
             self.read_radar_data()
             self.radar_df.to_parquet(f'radar_data.parquet', engine='pyarrow', compression='LZ4')
             side = ''
-        self.players_df.to_parquet(f'{name}{side}.parquet', engine='pyarrow', compression='ZSTD')
+        self.players_df.to_parquet(f'Data/{name}{side}.parquet', engine='pyarrow', compression='ZSTD')
 
     def calculate_percentiles (self, focus=Focus.Stuff):
         year = self.year
         if (self.year is None):
             year = ''
-        side = self.side.name
+        side = f'_{self.side.name}'
         if (self.side.name == 'Both'):
             side = ''
         print ("Reading player predictions")
-        table_name = f'{focus.name}_Probabilities_Pitchers{year}_{side}'
+        table_name = f'{focus.name}_Probabilities_Pitchers{year}{side}'
         conn = sqlite3.connect(f'{self.db_file}')
         total_rows = pd.read_sql_query(f'SELECT COUNT(*) FROM {table_name}', conn).iloc[0, 0]
         chunksize = 10000
@@ -1456,18 +1521,34 @@ class Driver:
 
 # print (players_df)
         # exit (0)
-        def calculate_percentiles(df, group_field):
-        # Group the DataFrame by PitchType and then apply the percentile function
-            percentiles_df = df.groupby(group_field).transform(lambda x: round(100*x.rank(pct=True),0) if np.issubdtype(x.dtype, np.number) else x)
+        # def calculate_percentiles(df, group_field):
+        # # Group the DataFrame by PitchType and then apply the percentile function
+        #     percentiles_df = df.groupby(group_field).transform(lambda x: round(100*x.rank(pct=True),0) if np.issubdtype(x.dtype, np.number) else x)
+        #     # Keep non-numeric columns as they are
+        #     for col in df.columns:
+        #         if not np.issubdtype(df[col].dtype, np.number):
+        #             percentiles_df[col] = df[col]
+        #         elif col == 'Usage':
+        #             percentiles_df[col] = df[col]
+        #     return percentiles_df
+        #
+        # players_percentiles_df = calculate_percentiles(players_df, 'PitchType')
+        def calculate_percentiles(df, primary_group_field, secondary_group_field):
+            # Group the DataFrame by both PitcherSide and the primary grouping field
+            # and then apply the percentile function
+            percentiles_df = df.groupby([secondary_group_field, primary_group_field]).transform(
+                lambda x: round(100 * x.rank(pct=True), 0) if np.issubdtype(x.dtype, np.number) else x
+            )
+
             # Keep non-numeric columns as they are
             for col in df.columns:
-                if not np.issubdtype(df[col].dtype, np.number):
+                if not np.issubdtype(df[col].dtype, np.number) or col == 'Usage':
                     percentiles_df[col] = df[col]
-                elif col == 'Usage':
-                    percentiles_df[col] = df[col]
+
             return percentiles_df
 
-        players_percentiles_df = calculate_percentiles(players_df, 'PitchType')
+        # Example usage, assuming 'players_df' has columns for PitchType and PitcherSide
+        players_percentiles_df = calculate_percentiles(players_df, 'PitchType', 'PitcherSide')
         # print (players_percentiles_df)
         self.percentiles_df = players_percentiles_df
         # print (percentiles_df.to_string ())

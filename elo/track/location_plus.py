@@ -1633,7 +1633,7 @@ class Driver:
         side = self.side.name
         if (self.side == Side.Both):
             side = ''
-        db_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), f'game_logs{side}.parquet')
+        db_filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), f'Data/game_logs{side}.parquet')
         df = pd.read_parquet(db_filename)
         # self.read_radar_data()
         # self.radar_df.to_parquet(f'radar_data.parquet', engine='pyarrow', compression='ZSTD')
@@ -1841,11 +1841,11 @@ def generate_location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus
         driver.add_command_to_game_logs()
 
 def add_location_ratings (driver = Driver ('radar4.db', 'radar_data', Focus.Location), year = None, side = Side.Both):
-    if (year is None):
-        driver.read_variable_data ()
-        driver.load_predictions ()
-        driver.calculate_run_values_swing()
-        driver.write_predictions ();
+    # if (year is None):
+    #     driver.read_variable_data ()
+    #     driver.load_predictions ()
+    #     driver.calculate_run_values_swing()
+    #     driver.write_predictions ();
     prune = False
     if (year is not None):
         driver.set_year(year)
