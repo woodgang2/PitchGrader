@@ -755,46 +755,6 @@ with tab1:
                 #     """, unsafe_allow_html=True)
                 # container = st.empty ()
                 colored_columns = [col for col in actual_order if col != 'PitchCount' and col != 'Type']
-                def plot_clustered_columns(df, num_clusters):
-                    clustered_df = df.copy()
-
-                    for column in clustered_df.columns:
-                        # Ensure the column is numeric
-                        if np.issubdtype(clustered_df[column].dtype, np.number):
-                            # Reshape data for k-means
-                            data = clustered_df[column].values.reshape(-1, 1)
-
-                            # Apply k-means clustering
-                            kmeans = KMeans(n_clusters=num_clusters, random_state=0)
-                            clusters = kmeans.fit_predict(data)
-
-                            # Sorting clusters by the mean values of the original entries
-                            # Map the cluster labels to ordered labels
-                            means = pd.DataFrame(data, columns=[column])
-                            means['cluster'] = clusters
-                            ordered_labels = means.groupby('cluster')[column].mean().sort_values().index
-                            cluster_map = {k: v for v, k in enumerate(ordered_labels)}
-
-                            # Apply mapping to DataFrame
-                            clustered_df[column] = clusters
-                            clustered_df[column] = clustered_df[column].map(cluster_map)
-
-                            fig, ax = plt.subplots(figsize=(10, 6))
-                            for cluster in sorted(cluster_map.values()):
-                                cluster_data = clustered_df[clustered_df[column] == cluster]
-                                ax.scatter(cluster_data.index, [cluster] * len(cluster_data), label=f'Cluster {cluster}', alpha=0.7)
-
-                            ax.set_title(f"Dotplot of {column} Divided into k-means Intervals")
-                            ax.set_xlabel('Index')
-                            ax.set_ylabel(f'k-means Group')
-                            ax.set_yticks(sorted(cluster_map.values()))
-                            ax.legend(title="Cluster")
-                            ax.grid(True)
-
-                            st.pyplot(fig)
-
-                    return clustered_df
-                plot_clustered_columns(stuff_df, 10)
                 if not show_changes:
                     stuff_df = stuff_df.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                     st.empty ()
