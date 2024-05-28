@@ -756,12 +756,12 @@ with tab1:
                 if not show_changes:
                     stuff_df = stuff_df.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                     st.empty ()
-                # custom_button("Grades", key=f"grades{side}")
-                # st.dataframe(stuff_df)
-                container = st.container()
-                container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
-                container.dataframe(stuff_df)
-                container.markdown("</div>", unsafe_allow_html=True)
+                custom_button("Grades", key=f"grades{side}")
+                st.dataframe(stuff_df)
+                # container = st.container()
+                # container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
+                # container.dataframe(stuff_df)
+                # container.markdown("</div>", unsafe_allow_html=True)
                 desired_order = ['PitchCount', 'Command', 'Overall Stuff', 'FF', 'SI', 'FC', 'SL', 'CU', 'FS', 'CH']
                 log_df = driver.retrieve_game_logs(name, force_both = True)
                 #year manual hack
