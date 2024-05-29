@@ -842,11 +842,19 @@ with tab1:
                 indices_to_none = {'Four-Seam', 'Sinker'}
                 columns_to_modify = ['DifferenceRS', 'DifferenceIVB', 'DifferenceHB']
                 df_display.loc[df_display.index.isin(indices_to_none), columns_to_modify] = None
+                # df_display.columns = ['x' + col[5:] + '%' if col.startswith('Prob_') else col for col in df.columns]
                 # st.write ("Percentiles")
                 # with st.expander(f"Percentiles", expanded = True):
                 release_columns = ['Usage', 'RelHeight', 'RelSide', 'Extension', 'VertRelAngle', 'HorzRelAngle', 'PlateLocHeight', 'PlateLocSide']
                 character_columns = ['RelSpeed', 'ZoneSpeed', 'InducedVertBreak', 'HorzBreak', 'SpinRate', 'SpinEfficiency', 'AxisDifference', 'VAA', f'DifferenceRS', f'DifferenceIVB', f'DifferenceHB']
                 rename_character = {
+                    'InducedVertBreak' : 'IVB',
+                    f'DifferenceRS' : f'Diff_RS',
+                    f'DifferenceIVB' : f'Diff_IVB',
+                    f'DifferenceHB' : f'Diff_HB',
+                    'AxisDifference' : 'Axis_Diff'
+                }
+                rename_model = {
                     'InducedVertBreak' : 'IVB',
                     f'DifferenceRS' : f'Diff_RS',
                     f'DifferenceIVB' : f'Diff_IVB',
@@ -871,7 +879,7 @@ with tab1:
                         # st.write ("Model")
                         # st.button ("Model", disabled = True)
                         custom_button("Model", key=f"display_model_p{side}")
-                        st.dataframe(df_display [calculated_columns])
+                        st.dataframe(df_display [calculated_columns].rename (columns={col: 'x' + col[5:] + '%' if col.startswith('Prob_') else col for col in df.columns}))
                 # st.write ("Attributes")
                 prob_df = driver.retrieve_percentages(name)
                 prob_df = prob_df.drop_duplicates ('PitchType')
