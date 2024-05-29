@@ -979,7 +979,7 @@ with tab1:
                         # st.write ("Model")
                         # st.button ("Model", disabled = True, key = 'display_model_attributes')
                         custom_button("Model", key=f"display_model_a{side}")
-                        st.dataframe(prob_df [calculated_columns])
+                        st.dataframe(prob_df [calculated_columns].rename (columns={col: 'Prob' + col[5:] if col.startswith('Prob_') else col for col in df.columns}))
                 # st.dataframe(prob_df)
                 pitch_types = df['PitchType'].unique().tolist()
                 if (not show_changes):
