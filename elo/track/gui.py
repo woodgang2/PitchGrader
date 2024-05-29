@@ -879,7 +879,7 @@ with tab1:
                         # st.write ("Model")
                         # st.button ("Model", disabled = True)
                         custom_button("Model", key=f"display_model_p{side}")
-                        st.dataframe(df_display [calculated_columns].rename (columns={col: 'x' + col[5:] + '%' if col.startswith('Prob_') else col for col in df.columns}))
+                        st.dataframe(df_display [calculated_columns].rename (columns={col: 'Prob' + col[5:] if col.startswith('Prob_') else col for col in df.columns}))
                 # st.write ("Attributes")
                 prob_df = driver.retrieve_percentages(name)
                 prob_df = prob_df.drop_duplicates ('PitchType')
