@@ -853,7 +853,8 @@ with tab1:
                     f'DifferenceHB' : f'Diff_HB',
                     'AxisDifference' : 'Axis_Diff'
                 }
-                calculated_columns = ['xRV', 'xWhiff%', 'xFoul%', 'xSoftGB%', 'xHardGB%', 'xSoftLD%', 'xHardLD%', 'xSoftFB%', 'xHardFB%', 'xGB%', 'xHH%']
+                #'xSoftGB%', 'xHardGB%', 'xSoftLD%', 'xHardLD%', 'xSoftFB%', 'xHardFB%',
+                calculated_columns = ['xRV', 'xWhiff%', 'xFoul%', 'Prob_SoftGB', 'Prob_HardGB', 'Prob_SoftLD', 'Prob_HardLD', 'Prob_SoftFB', 'Prob_HardFB', 'xGB%', 'xHH%']
                 if (not st.session_state.break_up_dfs):
                     st.write ("Percentiles")
                     st.dataframe(df_display)
