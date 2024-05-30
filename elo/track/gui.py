@@ -1047,6 +1047,7 @@ with tab1:
                     '2024': pitcher_type2024
                 }
                 stuff_history_df['Role'] = stuff_history_df.index.map(pitcher_types)
+                st.empty ()
                 new_columns = [stuff_history_df.columns[0]] + ['Role'] + [col for col in stuff_history_df.columns if col != 'Role' and col != stuff_history_df.columns[0]]
                 stuff_history_df = stuff_history_df[new_columns]
                 st.empty ()
