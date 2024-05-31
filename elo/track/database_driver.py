@@ -68,13 +68,13 @@ class DatabaseDriver:
         return df
     def retrieve_draft_info (self, player):
         df = self.read_db ('draft_data.db', 'draft_results')
-        df ['Player'] = df['Player'].str.replace('NBSP', '', regex=False)
+        df ['Name'] = df['Name'].str.replace('NBSP', '', regex=False)
         def reformat_name(name):
             parts = name.split(', ')
             return ' '.join(parts[::-1])
 
         player = reformat_name(player)
-        df = df[df['Player'] == player]
+        df = df[df['Name'] == player]
         return df
 
 
