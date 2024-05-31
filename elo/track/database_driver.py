@@ -75,7 +75,7 @@ class DatabaseDriver:
 
         player = reformat_name(player)
         df = df[df['Name'] == player]
-        return df
+        return df, player
 
 
     def retrieve_percentiles (self, player, team = None):
