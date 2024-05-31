@@ -779,7 +779,7 @@ with tab1:
                 draft_df = driver.retrieve_draft_info(name)
                 if (side == ''):
                     if (not draft_df.empty):
-                        custom_button (f"Drafted: {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}")
+                        custom_button (f"Drafted: {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", 'draft')
                     display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
                 df = df.drop(columns=['ExitSpeed', 'PitcherId', 'overall_avg_xRV', 'PitchxRV'])
                 df = df.drop_duplicates ('PitchType')
