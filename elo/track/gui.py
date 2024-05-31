@@ -776,7 +776,10 @@ with tab1:
                 }
                 pitcher_type = dict[pitcher_type2023 if year_selected == 2023 else pitcher_type2024]
                 # display_name.success (f"Pitcher: {first_name} {last_name}, {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
+                draft_df = driver.retrieve_draft_info(name)
                 if (side == ''):
+                    if (not draft_df.empty):
+                        custom_button (f"Drafted: {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}")
                     display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
                 df = df.drop(columns=['ExitSpeed', 'PitcherId', 'overall_avg_xRV', 'PitchxRV'])
                 df = df.drop_duplicates ('PitchType')

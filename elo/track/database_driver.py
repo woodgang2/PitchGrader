@@ -60,6 +60,24 @@ class DatabaseDriver:
     def write_data_parquet (self):
         self.df.to_parquet(f'radar2.parquet', engine='pyarrow', compression='LZ4')
 
+    def read_db (self, file, table):
+        db_filename = os.path.join(self.current_dir, f'Data/{file}')
+        query = f'SELECT * FROM {table}'
+        engine = create_engine(f'sqlite:///{db_filename}')
+        df = pd.read_sql_query(query, engine)
+        return df
+    def retrieve_draft_info (self, player):
+        df = self.read_db ('draft_data.db', 'draft_results')
+        df ['Player'] = df['Player'].str.replace('NBSP', '', regex=False)
+        def reformat_name(name):
+            parts = name.split(', ')
+            return ' '.join(parts[::-1])
+
+        player = reformat_name(player)
+        df = df[df['Player'] == player]
+        return df
+
+
     def retrieve_percentiles (self, player, team = None):
         #TODO: hacking /{year} in name for some reason
         db_filename = os.path.join(self.current_dir, f'Data/{self.year}radar3{self.side}.db')
@@ -123,11 +141,13 @@ class DatabaseDriver:
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
         # conn.close()
+        df.loc[df['PitcherThrows'] == 'Left', 'AxisDifference'] = df['AxisDifference'] * -1
         df1 = df [df['Pitcher'] == player]
         if (df1.empty):
             player = f'{player}/{self.year}'
             df2 = df [df['Pitcher'] == player]
             return df2
+
         # df = df [df['Pitcher'] == player]
         # print (df)
         return df1
@@ -144,6 +164,7 @@ class DatabaseDriver:
         query = f'SELECT * FROM {table}'
         engine = create_engine(f'sqlite:///{db_filename}')
         df = pd.read_sql_query(query, engine)
+        df.loc[df['PitcherThrows'] == 'Left', 'AxisDifference'] = df['AxisDifference'] * -1
         # conn.close()
         if (team != 'All'):
             df = df [df['PitcherTeam'] == team]
