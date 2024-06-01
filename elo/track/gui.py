@@ -156,7 +156,7 @@ def inject_custom_css():
                                     display: inline-block; 
                                     border: none; 
                                     opacity: 0.95;
-                                    width: 10em;
+                                    /*width: 10em;*/
                                     font-size: 0.9em;
                                     float: right;
                                 }}
