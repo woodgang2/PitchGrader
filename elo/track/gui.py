@@ -1727,7 +1727,6 @@ with tab2:
                 'Offspeed': ['ChangeUp', 'Splitter']
             }
             prob_df_final = driver.retrieve_percentages_team (team_name)
-            prob_df_final2 = driver2.retrieve_percentages_team (team_name)
             def calculate_prob_df_final (prob_df_final, pitch_selected):
                 if (team_name == 'All'):
                     prob_df_final = prob_df_final.drop (columns = ['Balls', 'Strikes'])
@@ -1785,6 +1784,7 @@ with tab2:
                 return prob_df_final
             prob_df_final = calculate_prob_df_final(prob_df_final, pitch_selected)
             if (show_changes):
+                prob_df_final2 = driver2.retrieve_percentages_team (team_name)
                 prob_df_final2 = calculate_prob_df_final (prob_df_final2, pitch_selected)
                 # st.dataframe (stuff_df2)
                 # prob_df_final['T'] = prob_df_final.index.get_level_values('Pitcher') + prob_df_final.index.get_level_values('PitchType')
