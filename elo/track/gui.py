@@ -151,6 +151,7 @@ def inject_custom_css():
                                 }}
                                  .customDraftButton {{
                                     color: #FFFFFF; /* Dynamic primary text color */
+                                    background-color: #4B006E;
                                     margin-left: 0.65em; /* Adjust this value to push the button to the right by 4em */
                                     display: inline-block; 
                                     border: none; 
@@ -189,15 +190,7 @@ def custom_draft_button(label, bg_color, key):
     # background-color: #4B006E;
     # Using an HTML button with class for specific styling
     st.markdown(f"""
-                            <button class="customButton" style="background-color: {bg_color}; 
-                                    color: #FFFFFF; /* Dynamic primary text color */
-                                    margin-left: 0.65em; /* Adjust this value to push the button to the right by 4em */
-                                    display: inline-block; 
-                                    border: none; 
-                                    opacity: 0.95;
-                                    width: 10em;
-                                    font-size: 0.9em;
-                                    float: right;" enabled>
+                            <button class="customButton" enabled>
                                 {label}
                             </button>
                             """, unsafe_allow_html=True)
