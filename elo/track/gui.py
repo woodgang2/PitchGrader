@@ -593,7 +593,7 @@ with tab1:
                 speed_df = raw_df [['AttackAngle', 'TrueBatSpeed', 'AverageBatSpeed', 'AverageHandSpeed', 'AverageBarrelSpeed']]
                 speed_df.rename(columns={'AverageBatSpeed': 'EffectiveBatSpeed', 'AverageHandSpeed': '"HandSpeed"', 'AverageBarrelSpeed' : '"BarrelSpeed"'}, inplace=True)
                 raw_df = raw_df.drop (columns = ['AttackAngle', 'TrueBatSpeed', 'AverageBatSpeed', 'AverageHandSpeed', 'AverageBarrelSpeed'])
-                left, right = st.columns ([3,1])
+                left, right = st.columns ([4,1])
                 with left:
                     container = st.container()
                     container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
@@ -793,7 +793,7 @@ with tab1:
                 if not show_changes:
                     stuff_df = stuff_df.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                     st.empty ()
-                left, right = st.columns ([3,1])
+                left, right = st.columns ([6,1])
                 with left:
                     custom_button("Grades", key=f"grades{side}")
                     st.dataframe(stuff_df)
