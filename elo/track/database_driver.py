@@ -75,7 +75,7 @@ class DatabaseDriver:
 
         # player = f'{reformat_name(player)} '
         df_old = df
-        df = df[df['Name'].contains (player)]
+        df = df[df['Name'].str.contains(player, na=False)]
         return df, player, df_old
 
 
