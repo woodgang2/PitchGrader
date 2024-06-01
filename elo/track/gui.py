@@ -152,12 +152,13 @@ def inject_custom_css():
                                  .customDraftButton {{
                                     color: #FFFFFF; /* Dynamic primary text color */
                                     background-color: #4B006E;
-                                    margin-right: 0.65em; /* Adjust this value to push the button to the right by 4em */
+                                    margin-left: 0.65em; /* Adjust this value to push the button to the right by 4em */
                                     display: inline-block; 
                                     border: none; 
                                     opacity: 0.95;
-                                    width: 6em;
+                                    width: 10em;
                                     font-size: 0.9em;
+                                    float: right;
                                 }}
                             </style>
                             """
@@ -804,10 +805,10 @@ with tab1:
                 }
                 pitcher_type = dict[pitcher_type2023 if year_selected == 2023 else pitcher_type2024]
                 # display_name.success (f"Pitcher: {first_name} {last_name}, {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
-                draft_df, temp, temp2 = driver.retrieve_draft_info(name)
-                st.dataframe (draft_df)
-                st.error (temp)
-                st.dataframe (temp2)
+                draft_df = driver.retrieve_draft_info(name)
+                # st.dataframe (draft_df)
+                # st.error (temp)
+                # st.dataframe (temp2)
                 if (side == ''):
                     if (not draft_df.empty):
                         custom_draft_button (f"Drafted: {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", 'draft')
