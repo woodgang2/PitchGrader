@@ -73,7 +73,7 @@ class DatabaseDriver:
             parts = name.split(', ')
             return ' '.join(parts[::-1])
 
-        player = reformat_name(player)
+        player = f'{reformat_name(player)} '
         df_old = df
         df = df[df['Name'] == player]
         return df, player, df_old
