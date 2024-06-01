@@ -151,7 +151,6 @@ def inject_custom_css():
                                 }}
                                  .customDraftButton {{
                                     color: #FFFFFF; /* Dynamic primary text color */
-                                    background-color: #4B006E;
                                     margin-left: 0.65em; /* Adjust this value to push the button to the right by 4em */
                                     display: inline-block; 
                                     border: none; 
@@ -186,10 +185,11 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
-def custom_draft_button(label, key):
+def custom_draft_button(label, bg_color, key):
+    # background-color: #4B006E;
     # Using an HTML button with class for specific styling
     st.markdown(f"""
-                            <button class="customDraftButton" enabled>
+                            <button class="customButton" style="background-color: {bg_color};" enabled>
                                 {label}
                             </button>
                             """, unsafe_allow_html=True)
@@ -603,7 +603,7 @@ with tab1:
                 with right:
                     draft_df = driver.retrieve_draft_info(name)
                     if (not draft_df.empty):
-                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", 'draft')
+                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", '#4B006E', 'draft')
                 index = 0
                 def add_custom_css():
                     st.markdown("""
@@ -800,7 +800,7 @@ with tab1:
                 with right:
                     draft_df = driver.retrieve_draft_info(name)
                     if (not draft_df.empty):
-                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", 'draft')
+                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", '#4B006E','draft')
                 # container = st.container()
                 # container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
                 # container.dataframe(stuff_df)
