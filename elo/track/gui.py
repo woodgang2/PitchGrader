@@ -149,6 +149,16 @@ def inject_custom_css():
                                     width: 6em;
                                     font-size: 0.9em;
                                 }}
+                                 .customDraftButton {{
+                                    color: #FFFFFF; /* Dynamic primary text color */
+                                    background-color: #4B006E;
+                                    margin-right: 0.65em; /* Adjust this value to push the button to the right by 4em */
+                                    display: inline-block; 
+                                    border: none; 
+                                    opacity: 0.95;
+                                    width: 6em;
+                                    font-size: 0.9em;
+                                }}
                             </style>
                             """
     st.markdown(css, unsafe_allow_html=True)
@@ -161,6 +171,24 @@ def custom_button(label, key):
     # Using an HTML button with class for specific styling
     st.markdown(f"""
                             <button class="customInactiveButton" enabled>
+                                {label}
+                            </button>
+                            """, unsafe_allow_html=True)
+st.markdown("""
+    <style>
+    .reportview-container .markdown-text-container {
+        padding-top: 0rem;
+    }
+    .reportview-container .main .block-container{
+        padding-top: 0rem;
+        padding-bottom: 0rem;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+def custom_draft_button(label, key):
+    # Using an HTML button with class for specific styling
+    st.markdown(f"""
+                            <button class="customDraftButton" enabled>
                                 {label}
                             </button>
                             """, unsafe_allow_html=True)
@@ -782,7 +810,7 @@ with tab1:
                 st.dataframe (temp2)
                 if (side == ''):
                     if (not draft_df.empty):
-                        custom_button (f"Drafted: {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", 'draft')
+                        custom_draft_button (f"Drafted: {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", 'draft')
                     display_name.success (f"Pitcher ({pitcher_type}): {name}. {df ['PitcherTeam'].iloc [0]}. Throws: {df ['PitcherThrows'].iloc [0]}")
                 df = df.drop(columns=['ExitSpeed', 'PitcherId', 'overall_avg_xRV', 'PitchxRV'])
                 df = df.drop_duplicates ('PitchType')
