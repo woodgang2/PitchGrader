@@ -73,7 +73,7 @@ class DatabaseDriver:
             parts = name.split(', ')
             return ' '.join(parts[::-1])
 
-        # player = f'{reformat_name(player)} '
+        player = reformat_name(player)
         df_old = df
         df = df[df['Name'].str.contains(player, na=False)]
         return df, player, df_old
