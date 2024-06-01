@@ -593,11 +593,17 @@ with tab1:
                 speed_df = raw_df [['AttackAngle', 'TrueBatSpeed', 'AverageBatSpeed', 'AverageHandSpeed', 'AverageBarrelSpeed']]
                 speed_df.rename(columns={'AverageBatSpeed': 'EffectiveBatSpeed', 'AverageHandSpeed': '"HandSpeed"', 'AverageBarrelSpeed' : '"BarrelSpeed"'}, inplace=True)
                 raw_df = raw_df.drop (columns = ['AttackAngle', 'TrueBatSpeed', 'AverageBatSpeed', 'AverageHandSpeed', 'AverageBarrelSpeed'])
-                container = st.container()
-                container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
-                container.dataframe(speed_df)
-                container.dataframe(raw_df)
-                container.markdown("</div>", unsafe_allow_html=True)
+                left, right = st.columns ([3,1])
+                with left:
+                    container = st.container()
+                    container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
+                    container.dataframe(speed_df)
+                    container.dataframe(raw_df)
+                    container.markdown("</div>", unsafe_allow_html=True)
+                with right:
+                    draft_df = driver.retrieve_draft_info(name)
+                    if (not draft_df.empty):
+                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", 'draft')
                 index = 0
                 def add_custom_css():
                     st.markdown("""
