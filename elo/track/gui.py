@@ -800,7 +800,7 @@ with tab1:
                 with right:
                     draft_df = driver.retrieve_draft_info(name)
                     if (not draft_df.empty):
-                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", '#4B006E','draft')
+                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", '#FFFFFF','draft')
                 # container = st.container()
                 # container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
                 # container.dataframe(stuff_df)
