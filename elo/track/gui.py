@@ -205,6 +205,40 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+
+team_color = {
+    "Diamondbacks" : "#A71930",
+    "Braves" : "#CE1141",
+    "Orioles" : "#DF4601",
+    "Red Sox" : "#BD3039",
+    "Cubs" : "#0E3386",
+    "White Sox" : "#27251F",
+    "Reds" : "#C6011F",
+    "Guardians" : "#00385D",
+    "Rockies" : "#333366",
+    "Tigers" : "#0C2340",
+    "Astros" : "#EB6E1F",
+    "Royals" : "#78b4fc",
+    "Angels" : "#BA0021",
+    "Dodgers" : "#005A9C",
+    "Marlins" : "#00A3E0",
+    "Brewers" : "#12284B",
+    "Twins" : "#002B5C",
+    "Mets" : "#FF5910",
+    "Yankees" : "#0C2340",
+    "Athletics" : "#003831",
+    "Phillies" : "#E81828",
+    "Pirates" : "#FDB827",
+    "Cardinals" : "#C41E3A",
+    "Padres" : "#473729",
+    "Giants" : "#FD5A1E",
+    "Mariners" : "#005C5C",
+    "Rays" : "#F5D130",
+    "Rangers" : "#C0111F",
+    "Blue Jays" : "#134A8E",
+    "Nationals" : "#AB0003"
+}
+
 if 'calculate_team_list' not in st.session_state:
     st.session_state.calculate_team_list = True
 
@@ -604,7 +638,8 @@ with tab1:
                 with right:
                     draft_df = driver.retrieve_draft_info(name)
                     if (not draft_df.empty):
-                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", '#4B006E', 'draft')
+                        # '#4B006E'
+                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", team_color.get(draft_df ['Tm'].iloc [0], '#4B006E'), 'draft')
                 index = 0
                 def add_custom_css():
                     st.markdown("""
@@ -801,7 +836,7 @@ with tab1:
                 with right:
                     draft_df = driver.retrieve_draft_info(name)
                     if (not draft_df.empty):
-                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", '#4B006E','draft')
+                        custom_draft_button (f"Drafted {draft_df ['Year'].iloc [0]}: <br> {draft_df ['Tm'].iloc [0]}, {draft_df ['Round'].iloc [0]}-{draft_df ['Pick'].iloc [0]+1}", team_color.get(draft_df ['Tm'].iloc [0], '#4B006E'),'draft')
                 # container = st.container()
                 # container.markdown("<div margin-left: auto, margin-right: auto>", unsafe_allow_html=True)
                 # container.dataframe(stuff_df)
