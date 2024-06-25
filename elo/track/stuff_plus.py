@@ -638,10 +638,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        side = self.side.name
+        side = f'_{self.side.name}'
         if (self.side.name == 'Both'):
             side = ''
-        table = f'{focus.name}_Probabilities_Pitchers{year}_{side}'
+        table = f'{focus.name}_Probabilities_Pitchers{year}{side}'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(predictions_df) // chunk_size + 1
         conn = sqlite3.connect(f'{self.db_file}')
@@ -712,10 +712,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        side = self.side.name
+        side = f'_{self.side.name}'
         if (self.side.name == 'Both'):
             side = ''
-        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}_{side}'
+        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}{side}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.players_df) // chunk_size + 1
@@ -737,10 +737,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        side = self.side.name
+        side = f'_{self.side.name}'
         if (self.side.name == 'Both'):
             side = ''
-        table = f'Percentiles_{focus.name}_Pitchers{year}_{side}'
+        table = f'Percentiles_{focus.name}_Pitchers{year}{side}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.percentiles_df) // chunk_size + 1
@@ -1060,20 +1060,20 @@ class Driver:
         X['PitcherThrows'] = X['PitcherThrows'].astype('category')
         X['BatterSide'] = X['BatterSide'].astype('category')
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=20504)
-        # sample_weights = compute_sample_weight(
-        #     class_weight='balanced',
-        #     y=y_train
-        # )
+        sample_weights = compute_sample_weight(
+            class_weight='balanced',
+            y=y_train
+        )
         def objective(trial):
-            estimators = trial.suggest_int('n_estimators', 150, 800)
+            estimators = trial.suggest_int('n_estimators', 150, 1000)
             stopping_rounds = estimators // 10
             param = {
                 'verbosity': 0,
                 # 'objective': 'binary:logistic',
                 # 'eval_metric': 'logloss',
                 'n_estimators': estimators,
-                'learning_rate': trial.suggest_float('learning_rate', 1e-12, 0.01, log=True),
-                'max_depth': trial.suggest_int('max_depth', 3, 8),
+                'learning_rate': trial.suggest_float('learning_rate', 1e-12, 1e-4, log=True),
+                'max_depth': trial.suggest_int('max_depth', 3, 10),
                 'subsample': trial.suggest_float('subsample', 0.4, 1.0),
                 'colsample_bytree': trial.suggest_float('colsample_bytree', 0.4, 1.0),
                 'early_stopping_rounds': stopping_rounds
@@ -1097,10 +1097,10 @@ class Driver:
             # class_preds = np.argmax(preds, axis=1)
             score = log_loss(y_test, preds)
             return score
-        storage_url = "sqlite:///optuna2.db"
+        storage_url = "sqlite:///optuna_low_eta.db"
         study_name = f"{self.focus.name}_{self.currently_modeling}--{self.current_pitch_class}optimization"
         study = optuna.create_study(direction='minimize', storage=storage_url, study_name=study_name, load_if_exists=True)
-        study.optimize(objective, n_trials=500)
+        study.optimize(objective, n_trials=1250)
         best_params = study.best_trial.params  # Get the best hyperparameters
         model_directory = "JobLib_Model_Stuff"
         if not os.path.exists(model_directory):
@@ -1140,7 +1140,7 @@ class Driver:
         # Create a new column for each class probability
         for i, class_label in enumerate(class_labels):
             self.current_df[f'Prob_{class_label}'] = probabilities[:, i]
-        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}"-"{self.current_pitch_class}')
+        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
 
     #post prediction flowchart
     # predictions -> Stuff_Probabilities
@@ -1548,7 +1548,7 @@ class Driver:
             return percentiles_df
 
         # Example usage, assuming 'players_df' has columns for PitchType and PitcherSide
-        players_percentiles_df = calculate_percentiles(players_df, 'PitchType', 'PitcherSide')
+        players_percentiles_df = calculate_percentiles(players_df, 'PitchType', 'PitcherThrows')
         # print (players_percentiles_df)
         self.percentiles_df = players_percentiles_df
         # print (percentiles_df.to_string ())
@@ -1649,7 +1649,7 @@ class Driver:
         # Create a new column for each class probability
         for i, class_label in enumerate(class_labels):
             self.current_df.loc[:, f'Prob_{class_label}'] = probabilities[:, i]
-        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}"-"{self.current_pitch_class}')
+        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
 
     def prune_predictions (self):
         self.predictions_df['NewDate'] = pd.to_datetime(self.predictions_df['Date'], errors='coerce')
@@ -1711,35 +1711,35 @@ def train_model (focus=Focus.Stuff):
     # driver.load_relevant_data()
     # driver.write_variable_data()
 
-    driver.read_variable_data()
+    # driver.read_variable_data()
     # driver.clean_data_for_contact_model()
     # driver.clean_data_for_fastballs()
     # driver.train_classifier()
     # driver.clean_data_for_contact_model()
     # driver.clean_data_for_breakingballs()
     # driver.train_classifier()
-    driver.clean_data_for_contact_model()
-    driver.clean_data_for_offspeed()
-    driver.train_classifier()
+    # driver.clean_data_for_contact_model()
+    # driver.clean_data_for_offspeed()
+    # driver.train_classifier()
 
-    driver.read_variable_data()
+    # driver.read_variable_data()
     # driver.clean_data_for_foul_model()
     # driver.clean_data_for_fastballs()
     # driver.train_classifier()
     # driver.clean_data_for_foul_model()
     # driver.clean_data_for_breakingballs()
     # driver.train_classifier()
-    driver.clean_data_for_foul_model()
-    driver.clean_data_for_offspeed()
-    driver.train_classifier()
+    # driver.clean_data_for_foul_model()
+    # driver.clean_data_for_offspeed()
+    # driver.train_classifier()
 
     driver.read_variable_data()
     # driver.clean_data_for_in_play_model()
     # driver.clean_data_for_fastballs()
     # driver.train_classifier()
-    # driver.clean_data_for_in_play_model()
-    # driver.clean_data_for_breakingballs()
-    # driver.train_classifier()
+    driver.clean_data_for_in_play_model()
+    driver.clean_data_for_breakingballs()
+    driver.train_classifier()
     driver.clean_data_for_in_play_model()
     driver.clean_data_for_offspeed()
     driver.train_classifier()
@@ -1980,6 +1980,15 @@ def process_data ():
 # driver.normalize_VAA()
 # driver.write_radar_data()
 def generate_all ():
+    # process_data()
+    run_model(Focus.Stuff)
+    generate_stuff_ratings()
+    run_model(Focus.Stuff, year = 2023)
+    generate_stuff_ratings(year = 2023)
+    run_model(Focus.Stuff, year = 2024)
+    generate_stuff_ratings(year = 2024)
+
+def process_and_generate_all ():
     process_data()
     run_model(Focus.Stuff)
     generate_stuff_ratings()
