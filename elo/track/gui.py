@@ -1258,7 +1258,7 @@ with tab1:
                 df = pd.DataFrame(data)
 
                 # Streamlit app
-                st.title('Pitch Insights')
+                st.write('Pitch Insights')
 
                 # Display sorted insights with calculated colors
                 for insight, value, color in pitch_insights:
