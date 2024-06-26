@@ -1093,6 +1093,7 @@ with tab1:
                 #     st.markdown(f'<div style="background-color:{color}; padding: 10px; border-radius: 5px; margin-bottom: 10px;">'
                 #                 f'{insight}</div>', unsafe_allow_html=True)
                 # st.success ('test')
+
                 if (not st.session_state.break_up_dfs):
                     st.write ('Attributes')
                     st.dataframe(prob_df)
