@@ -1053,6 +1053,7 @@ with tab1:
                 insights_df.loc[insights_df.index.get_level_values('PitchType').isin(indices_to_none), columns_to_modify] = None
                 columns_to_modify = ['VAA']
                 insights_df.loc[~insights_df.index.get_level_values('PitchType').isin(indices_to_none), columns_to_modify] = None
+                st.empty ()
                 conditions = [
                     insights_df >= 100,
                     insights_df >= 97,
