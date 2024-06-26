@@ -1042,6 +1042,57 @@ with tab1:
                     # prob_df = prob_df.apply(lambda x: x.apply(lambda y: f"{Decimal(str(y)).quantize(Decimal('0.00'), rounding=ROUND_HALF_UP)}") if x.name not in exclude_columns else x)
                     prob_df ['SpinRate'] = round (prob_df ['SpinRate'])
 
+                insights_df = df.set_index ('PitchType')
+                insights_df = insights_df [character_columns]
+                insights_df = insights_df.drop (columns = 'ZoneSpeed')
+                insights_df['VAA'] = insights_df.apply(lambda row: row['VAA'] if row.name == 'Four-Seam' else 100 - row['VAA'], axis=1)
+                insights_df ['AxisDifference'] = abs(insights_df ['AxisDifference'] - 50)*2
+                insights_df ['HorzBreak'] = abs(insights_df ['HorzBreak'] - 50)*2
+                indices_to_none = {'Four-Seam', 'Sinker'}
+                columns_to_modify = ['DifferenceRS', 'DifferenceIVB', 'DifferenceHB']
+                insights_df.loc[insights_df.index.get_level_values('PitchType').isin(indices_to_none), columns_to_modify] = None
+                conditions = [
+                    insights_df >= 100,
+                    insights_df >= 97,
+                    insights_df >= 90,
+                    insights_df >= 80,
+                    insights_df >= 60,
+                    insights_df >= 50,
+                    insights_df >= 45,
+                    insights_df >= 35,
+                    insights_df >= 0
+                    ]
+
+                choices = ["Exceptional", "Elite", "Great", "Excellent", "Good", "Above Average", "Below Average", "Dubious", "Poor"]
+                quality = pd.DataFrame(np.select(conditions, choices, default="None"), index=insights_df.index, columns=insights_df.columns)
+
+                # Function to get color based on value
+                cmap = mcolors.LinearSegmentedColormap.from_list("colormap", ["#ff0000", "#ffff00", "#00ff00"])
+                norm = mcolors.Normalize(vmin=0, vmax=100)
+                def get_color(value):
+                    rgba = cmap(norm(value))
+                    color = mcolors.rgb2hex(rgba)
+                    return color
+                # st.success ('test')
+                insights = []
+                colors = []
+                for col in insights_df.columns:
+                    for idx in insights_df.index:
+                        value = insights_df.at[idx, col]
+                        quality_label = quality.at[idx, col]
+                        if quality_label != "None":
+                            insights.append((f"{col} of {idx} is {quality_label}", value, get_color(value)))
+
+                # Sort insights by the value in descending order
+                sorted_insights = sorted(insights, key=lambda x: x[1], reverse=True)
+                # # Streamlit app
+                # st.title('Key Insights')
+                #
+                # # Display sorted insights with calculated colors
+                # for insight, value, color in sorted_insights:
+                #     st.markdown(f'<div style="background-color:{color}; padding: 10px; border-radius: 5px; margin-bottom: 10px;">'
+                #                 f'{insight}</div>', unsafe_allow_html=True)
+                # st.success ('test')
                 if (not st.session_state.break_up_dfs):
                     st.write ('Attributes')
                     st.dataframe(prob_df)
@@ -1173,19 +1224,63 @@ with tab1:
                     usage = ['FF%', 'SI%', 'FC%', 'SL%', 'CU%', 'FS%', 'CH%']
                     log_df = log_df.style.applymap(color_values, subset = colored_columns).format ("{:.2f}", subset = usage).format("{:,.0f}", subset = colored_columns)
                     st.dataframe (log_df)
+                return sorted_insights
                 # actual_order = [col for col in desired_order if col in stuff_history_df.columns]
                 # stuff_history_df = stuff_history_df[actual_order]
                 # st.dataframe (stuff_history_df)
                 # update = st.button("Update Percentiles", key='update_percentiles', type = 'secondary')
                 # st.write ("Game Log")
+            def populate_player_insights (driver, pitch_insights):
+                data = {
+                    "Category": ["INT", "RCO", "QST", "APL", "ENC", "MSG", "LGH", "LOR", "ACP", "RES", "FRS"],
+                    "Insight": [
+                        "You should start more conversations, as it's very unbalanced at the moment",
+                        "Try being the one to reach out if you haven't spoken in a while",
+                        "You need to ask them more questions",
+                        "Apologies are shared equally between you",
+                        "You're both offering each other the same level of encouragement",
+                        "You send slightly more messages than they do",
+                        "You laugh the most",
+                        "You leave them on read less than they do you",
+                        "The quality of conversations that you start are much better",
+                        "Your average response time during conversations is much faster than theirs",
+                        "The average time it takes you to respond to a new conversation is much faster"
+                    ],
+                    "Color": ["#FF6666", "#FF6666", "#FF6666", "#FFFF66", "#FFFF66", "#6666FF", "#6666FF", "#6666FF", "#66FF66", "#66FF66", "#66FF66"]
+                    # Insights to add:
+                    # Pitch specific
+                    # Finishers
+                    # Usage
 
-            tab_B, tab_L, tab_R = st.tabs(["Overall", "vs. Left", "vs. Right"])
+                }
+
+                df = pd.DataFrame(data)
+
+                # Streamlit app
+                st.title('Pitch Insights')
+
+                # Display sorted insights with calculated colors
+                for insight, value, color in pitch_insights:
+                    st.markdown(f'<div style="background-color:{color}; padding: 10px; border-radius: 5px; margin-bottom: 10px;">'
+                                f'{insight}</div>', unsafe_allow_html=True)
+
+                # Streamlit app
+                # st.title('Key Insights')
+                #
+                # # Display insights
+                # for i, row in df.iterrows():
+                #     st.markdown(f'<div style="background-color:{row["Color"]}; padding: 10px; border-radius: 5px; margin-bottom: 10px;">'
+                #                 f'<strong>{row["Category"]}</strong>: {row["Insight"]}</div>', unsafe_allow_html=True)
+
+            tab_B, tab_L, tab_R, tab_I = st.tabs(["Overall", "vs. Left", "vs. Right", "Insights"])
             with tab_B:
-                populate_player_profile(driver)
+                pitch_insights = populate_player_profile(driver)
             with tab_L:
                 populate_player_profile(driver, 'Left')
             with tab_R:
                 populate_player_profile(driver, 'Right')
+            with tab_I:
+                populate_player_insights(driver, pitch_insights)
             st.empty ()
             #TODO: this
             if (not show_changes):
