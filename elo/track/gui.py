@@ -829,7 +829,7 @@ with tab1:
                 if not show_changes:
                     stuff_df = stuff_df.style.applymap(color_values, subset=colored_columns).format("{:,.0f}")
                     st.empty ()
-                left, right = st.columns ([10,1])
+                left, right = st.columns ([20,1])
                 with left:
                     custom_button("Grades", key=f"grades{side}")
                     st.dataframe(stuff_df)
