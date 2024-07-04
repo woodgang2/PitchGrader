@@ -1,9 +1,13 @@
 import database_driver
 import stuff_plus
 import location_plus
-def calculate_grades ():
+def process_data ():
+    stuff_plus.process_data()
+def update_db ():
     driver = database_driver.DatabaseDriver ()
     driver.update_DB()
+def calculate_grades ():
+    driver = database_driver.DatabaseDriver ()
     stuff_plus.generate_all()
     location_plus.generate_all()
     # driver = database_driver.DatabaseDriver ()
@@ -33,9 +37,18 @@ def add_sides ():
         database_driver.update_gui(year = year, side = 'Left')
         database_driver.update_gui(year = year, side = 'Right')
 
+def set_up_and_calculate ():
+    update_db()
+    process_data()
+    calculate_grades()
+    add_sides()
 
-calculate_grades()
+# set_up_and_calculate()
 add_sides()
+
+# process_data()
+# calculate_grades()
+# add_sides()
 # table_names = ["batting_variables", "Percentiles_Batters", "Probabilities_Batters", "variable"]
 # database_driver.copy_tables('radar2_old.db', 'radar2.db', table_names)
 # driver = database_driver.DatabaseDriver ()

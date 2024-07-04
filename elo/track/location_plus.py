@@ -176,25 +176,12 @@ class Driver:
         # self.input_variables_df = self.input_variables_df[self.input_variables_df['TaggedHitType'] != 'Undefined']
         self.input_variables_df = self.input_variables_df[self.input_variables_df['TaggedHitType'] != 'Bunt']
         self.input_variables_df = self.input_variables_df[self.input_variables_df['TaggedHitType'] != ',']
-        # self.input_variables_df = self.input_variables_df.loc[(self.input_variables_df['PitchType'] == 'Cutter') & (self.input_variables_df['DifferenceRS'] != 0), 'PitchType'] = 'Cutter_S'
-        # self.input_variables_df.loc[(self.input_variables_df['PitchType'] == 'Cutter') & (self.input_variables_df['DifferenceRS'] != 0), 'PitchType'] = 'Cutter_S'
-        # self.input_variables_df = self.input_variables_df.merge(
-        #     self.radar_df[['PitchUID', 'AutoPitchType']],
-        #     on='PitchUID',
-        #     how='left'
         self.input_variables_df = self.input_variables_df.drop_duplicates(subset='PitchUID', keep='first')
-        # self.input_variables_df.loc[(self.input_variables_df['PitchType'] == 'Fastball') & (self.input_variables_df['AutoPitchType'] != 'Changeup'), 'PitchType'] = self.input_variables_df['AutoPitchType']
-        # self.input_variables_df.loc[(self.input_variables_df['PitchType'] == 'Fastball') & (self.input_variables_df['AutoPitchType'] == 'Changeup'), 'PitchType'] = 'Sinker'
-        # self.input_variables_df = self.input_variables_df.drop ('AutoPitchType', axis = 1)
-        print (self.input_variables_df ['PitchCall'].unique ())
-        print (self.input_variables_df ['TaggedHitType'].unique ())
-        print (self.input_variables_df ['PitchType'].unique ())
-
-        # self.input_variables_df = pd.merge(self.input_variables_df, self.radar_df[['PitchUID'] + ['ZoneSpeed']], on='PitchUID', how='left')
-
-        # print (self.input_variables_df)
-        # self.radar_df.to_sql ('radar_data', conn, if_exists='replace', index=False)
+        # print (self.input_variables_df ['PitchCall'].unique ())
+        # print (self.input_variables_df ['TaggedHitType'].unique ())
+        # print (self.input_variables_df ['PitchType'].unique ())
         conn.close()
+        print ("Closed")
 
     def read_predictions (self, focus = Focus.Location):
         print ("Reading predictions")
@@ -598,10 +585,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        side = self.side.name
+        side = f'_{self.side.name}'
         if (self.side.name == 'Both'):
             side = ''
-        table = f'{focus.name}_Probabilities_Pitchers{year}_{side}'
+        table = f'{focus.name}_Probabilities_Pitchers{year}{side}'
         # table = f'{focus.name}_Probabilities_Pitchers'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(predictions_df) // chunk_size + 1
@@ -674,10 +661,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        side = self.side.name
+        side = f'_{self.side.name}'
         if (self.side.name == 'Both'):
             side = ''
-        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}_{side}'
+        table = f'Pitcher_{focus.name}_Ratings_20_80_scale{year}{side}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.players_df) // chunk_size + 1
@@ -699,10 +686,10 @@ class Driver:
         year = self.year
         if (self.year is None):
             year = ''
-        side = self.side.name
+        side = f'_{self.side.name}'
         if (self.side.name == 'Both'):
             side = ''
-        table = f'Percentiles_{focus.name}_Pitchers{year}_{side}'
+        table = f'Percentiles_{focus.name}_Pitchers{year}{side}'
         # table = f'Pitcher_{focus.name}_Ratings_100_scale'
         chunk_size = 1000  # Adjust based on your needs and system capabilities
         num_chunks = len(self.percentiles_df) // chunk_size + 1
@@ -1112,7 +1099,7 @@ class Driver:
         # Create a new column for each class probability
         for i, class_label in enumerate(class_labels):
             self.current_df[f'Prob_{class_label}'] = probabilities[:, i]
-        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}"-"{self.current_pitch_class}')
+        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
 
     #post prediction flowchart
     # predictions -> Location_Probabilities
@@ -1542,7 +1529,7 @@ class Driver:
         # Create a new column for each class probability
         for i, class_label in enumerate(class_labels):
             self.current_df[f'Prob_{class_label}'] = probabilities[:, i]
-        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}"-"{self.current_pitch_class}')
+        self.write_current_data(f'{self.focus.name}_{self.currently_modeling}-{self.current_pitch_class}')
 
     def generate_loc_plot (self):
         df = self.predictions_df
@@ -1650,7 +1637,12 @@ class Driver:
         df = df.merge(self.players_df[['Pitcher', 'Date', 'Command']], on=['Pitcher', 'Date'], how='left')
         # print (df.head().to_string ())
         # exit (0)
-        df.to_parquet(f'game_logs{side}.parquet', engine='pyarrow', compression='ZSTD')
+        df.to_parquet(f'Data/game_logs{side}.parquet', engine='pyarrow', compression='ZSTD')
+
+    def test (self):
+        self.read_predictions()
+        self.calculate_run_values_swing()
+        print (self.predictions_df)
 
 # xgb_clf = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss')
 # xgb.set_config(verbosity=1)
@@ -1974,3 +1966,13 @@ def generate_all ():
 # driver.read_predictions(Focus.Location)
 # driver.calculate_average_xRVs_by_game()
 # driver.add_command_to_game_logs()
+# driver.set_side(Side.Left)
+# driver.read_predictions(Focus.Location)
+# driver.calculate_average_xRVs_by_game()
+# driver.add_command_to_game_logs()
+# driver.set_side(Side.Right)
+# driver.read_predictions(Focus.Location)
+# driver.calculate_average_xRVs_by_game()
+# driver.add_command_to_game_logs()
+#generate_location_ratings ()
+# generate_location_ratings()
